@@ -23,6 +23,7 @@ class OrdinalTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST(testLessEq2);
   CPPUNIT_TEST(testLessEqImpossible);
   CPPUNIT_TEST(testLessEqTrivial);
+  CPPUNIT_TEST(testNotEq);
   CPPUNIT_TEST_SUITE_END();
 protected:
   void testIsOrdinal(void);
@@ -33,6 +34,7 @@ protected:
   void testLessEq2(void);
   void testLessEqImpossible(void);
   void testLessEqTrivial(void);
+  void testNotEq(void);
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( OrdinalTest );
@@ -194,4 +196,25 @@ void OrdinalTest::testLessEqTrivial(void) {
   Requirement expected; // "TRUE"
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
+}
+
+void OrdinalTest::testNotEq(void) {
+  // This exceedingly crude "dummy object" will segfault on any attempted use.
+  // I'm ok with that.  Use something more sophisticated if desired.
+  SolverManager& dummyManager = *(SolverManager*)0;
+
+  // Object under test.
+  Var var = 0;
+  Ordinal ord1(dummyManager, -1, 4, var);
+  Ordinal ord2(dummyManager, 1, 7, var);
+
+  Requirement result = ord1 != ord2;
+  
+  Requirement expected;
+  expected &= (ord1 != 1 | ord2 != 1);
+  expected &= (ord1 != 2 | ord2 != 2);
+  expected &= (ord1 != 3 | ord2 != 3);
+
+  CPPUNIT_ASSERT_EQUAL(expected, result);
+  
 }

@@ -183,8 +183,15 @@ Requirement Ordinal::operator==(const Ordinal& rhs) const {
 // have the same manager.  Does not require the range for each ordinal to be the same, or even
 // overlap.
 Requirement Ordinal::operator!=(const Ordinal& rhs) const {
-  // Not implemented
-  throw new exception();
+  const Ordinal& lhs = *this;
+
+  Requirement result;
+
+  for ( int i = ::max(lhs.min, rhs.min); i < ::min(lhs.max, rhs.max); i++ ) {
+    result &= (lhs != i | rhs != i);
+  }
+
+  return result;
 }
 
 DualClause operator==(value_type lhs, const Ordinal& rhs) {
@@ -209,6 +216,7 @@ value_type Ordinal::modelValue() const {
 Clause Ordinal::diffSolnReq() const {
   return (*this) != this->modelValue();
 }
+
 DualClause Ordinal::currSolnReq() const {
   return (*this) == this->modelValue();
 }
