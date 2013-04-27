@@ -28,10 +28,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ListTest );
 
 namespace {
 
-typedef Scalar::value_type value_type;
+typedef Index::value_type value_type;
 
-Scalar builder(SolverManager& manager, value_type index, Var& var) {
-  return Scalar(manager, 0, 2*index+1, var);
+Index builder(SolverManager& manager, value_type index, Var& var) {
+  return Index(manager, 0, 2*index+1, var);
 }
 }
 

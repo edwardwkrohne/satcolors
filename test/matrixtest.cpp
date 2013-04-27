@@ -17,9 +17,9 @@ using Minisat::Var;
 class MatrixTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST_SUITE(MatrixTest);
   CPPUNIT_TEST(testIsMatrix);
-  CPPUNIT_TEST(testPairIndexedScalarEquals);
-  CPPUNIT_TEST(testPairIndexedScalarNotEquals);
-  CPPUNIT_TEST(testPairIndexedScalarEqualsWithRange);
+  CPPUNIT_TEST(testPairIndexedIndexEquals);
+  CPPUNIT_TEST(testPairIndexedIndexNotEquals);
+  CPPUNIT_TEST(testPairIndexedIndexEqualsWithRange);
   CPPUNIT_TEST(test3x3);
   CPPUNIT_TEST(testIncrementVar);
   CPPUNIT_TEST(testView);
@@ -28,9 +28,9 @@ class MatrixTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST_SUITE_END();
 protected:
   void testIsMatrix(void);
-  void testPairIndexedScalarEquals(void);
-  void testPairIndexedScalarNotEquals(void);
-  void testPairIndexedScalarEqualsWithRange(void);
+  void testPairIndexedIndexEquals(void);
+  void testPairIndexedIndexNotEquals(void);
+  void testPairIndexedIndexEqualsWithRange(void);
   void test3x3(void);
   void testIncrementVar(void);
   void testView(void);
@@ -59,7 +59,7 @@ void MatrixTest::testIsMatrix(void) {
   CPPUNIT_ASSERT_EQUAL(expected, matrix.typeRequirement());
 }
 
-void MatrixTest::testPairIndexedScalarEquals(void) {
+void MatrixTest::testPairIndexedIndexEquals(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
@@ -67,8 +67,8 @@ void MatrixTest::testPairIndexedScalarEquals(void) {
   // Object under test.
   Var var = 0;
   Matrix matrix(dummyManager, 2, 2, 0, 3, var);
-  Scalar row(dummyManager, 0, 2, var);
-  Scalar col(dummyManager, 0, 2, var);
+  Index row(dummyManager, 0, 2, var);
+  Index col(dummyManager, 0, 2, var);
 
   // Require (row == 0 & col == 0) implies matrix[0][0] == 1, etc.
   Requirement expectedReq;
@@ -84,7 +84,7 @@ void MatrixTest::testPairIndexedScalarEquals(void) {
   CPPUNIT_ASSERT_EQUAL(expectedReq, result);
 }
 
-void MatrixTest::testPairIndexedScalarNotEquals(void) {
+void MatrixTest::testPairIndexedIndexNotEquals(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
@@ -92,8 +92,8 @@ void MatrixTest::testPairIndexedScalarNotEquals(void) {
   // Object under test.
   Var var = 0;
   Matrix matrix(dummyManager, 2, 2, 0, 3, var); // values are in [0,3)
-  Scalar row(dummyManager, 0, 2, var);
-  Scalar col(dummyManager, 0, 2, var);
+  Index row(dummyManager, 0, 2, var);
+  Index col(dummyManager, 0, 2, var);
 
   // Require (row == 0 & col == 0) implies matrix[0][0] == 1, etc.
   Requirement expectedReq;
@@ -109,7 +109,7 @@ void MatrixTest::testPairIndexedScalarNotEquals(void) {
   CPPUNIT_ASSERT_EQUAL(expectedReq, result);
 }
 
-void MatrixTest::testPairIndexedScalarEqualsWithRange(void) {
+void MatrixTest::testPairIndexedIndexEqualsWithRange(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
@@ -117,8 +117,8 @@ void MatrixTest::testPairIndexedScalarEqualsWithRange(void) {
   // Object under test.
   Var var = 0;
   Matrix matrix(dummyManager, 3, 3, 0, 3, var);
-  Scalar row(dummyManager,  1, 4, var);
-  Scalar col(dummyManager, -1, 2, var);
+  Index row(dummyManager,  1, 4, var);
+  Index col(dummyManager, -1, 2, var);
 
   Requirement expectedReq;
 

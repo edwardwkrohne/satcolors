@@ -1,6 +1,6 @@
 // -*- Mode:C++ -*-
 //
-// Implementation of the Scalar class
+// Implementation of the Index class
 
 #include <iostream>
 #include <sstream>

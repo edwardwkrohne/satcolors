@@ -14,12 +14,12 @@
 #include "array2d.h"
 #include "requirement.h"
 #include "solvermanager.h"
-#include "scalar.h"
+#include "index.h"
 
 template<class obj_type>
 class List {
 public:
-  typedef Scalar::value_type value_type;
+  typedef Index::value_type value_type;
   typedef std::function<obj_type(SolverManager&, value_type, Minisat::Var&)> builder_type;
   // Creates an object representing the list
   List(SolverManager& manager, value_type size, builder_type builder, Minisat::Var& startingVar = SolverManager::allocateNew);
@@ -32,7 +32,7 @@ public:
   Clause diffSolnReq() const;
   DualClause currSolnReq() const;
 
-  // Return a scalar representing an element of the vector
+  // Return a index representing an element of the vector
   obj_type operator[](value_type index) const;
 
   const value_type size;
@@ -50,7 +50,7 @@ private:
 
 // Function to simplify determining the type of a particular list.
 template<class builder_type>
-auto makeList(SolverManager& manager, Scalar::value_type size, builder_type builder, Minisat::Var& startingVar = SolverManager::allocateNew)
+auto makeList(SolverManager& manager, Index::value_type size, builder_type builder, Minisat::Var& startingVar = SolverManager::allocateNew)
   -> List<decltype(builder(manager, size, startingVar))> {
 
   typedef decltype(builder(manager, size, startingVar)) obj_type;

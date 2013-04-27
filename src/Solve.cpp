@@ -24,7 +24,10 @@ using Minisat::Lit;
 using Minisat::mkLit;
 
 int main (int argc, char** argv) {
-  
+  SolverManager manager;
+  vector<Index> testVec;
+
+  testVec.emplace_back(manager, 0, 5, SolverManager::allocateNew);
 
   return 0;
 }

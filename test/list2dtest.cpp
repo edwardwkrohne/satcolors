@@ -28,10 +28,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( List2dTest );
 
 namespace {
 
-typedef Scalar::value_type value_type;
+typedef Index::value_type value_type;
 
-Scalar builder2d(SolverManager& manager, value_type row, value_type col, Var& var) {
-  return Scalar(manager, row, row+2*col+1, var);
+Index builder2d(SolverManager& manager, value_type row, value_type col, Var& var) {
+  return Index(manager, row, row+2*col+1, var);
 }
 
 }

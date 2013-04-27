@@ -1,9 +1,9 @@
 // -*- Mode:C++ -*-
 //
-// An vector of scalars
+// An vector of indices
 //
-// One or more scalars confined to the same range.  Overloads the subscript operator
-// to return a corresponding scalar in a particular location, upon which requirements
+// One or more indices confined to the same range.  Overloads the subscript operator
+// to return a corresponding index in a particular location, upon which requirements
 // can be established.
 //
 // The naming is, of course, unfortunate. There exist std::vector, Minisat::vec, and ::Vector, all of
@@ -17,11 +17,11 @@
 #include <minisat/core/SolverTypes.h>
 #include "requirement.h"
 #include "solvermanager.h"
-#include "scalar.h"
+#include "index.h"
 
 class Vector {
 public:
-  typedef Scalar::value_type value_type;
+  typedef Index::value_type value_type;
   typedef value_type size_type;
 
   // Creates an object representing a vector.
@@ -43,15 +43,15 @@ public:
   Clause diffSolnReq() const;
   DualClause currSolnReq() const;
 
-  // Return a scalar representing an element of the vector
-  Scalar operator[](size_type index) const;
+  // Return a index representing an element of the vector
+  Index operator[](size_type index) const;
 
-  class ScalarIndexedScalar;
+  class IndexIndexedIndex;
 
-  // Index into the vector using a Scalar type.  Very powerful, slightly expensive.
+  // Index into the vector using a Index type.  Very powerful, slightly expensive.
   // Assignments will depend on the ultimate value of the index in the model.
   // Not yet implemented.
-  ScalarIndexedScalar operator[](Scalar index);
+  IndexIndexedIndex operator[](Index index);
 
   const size_type size;
   const value_type min;

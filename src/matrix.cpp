@@ -30,7 +30,7 @@ Matrix::Matrix(const Matrix& copy) :
 }
 
 // The corresponding requirement of being a matrix --
-// each element is a scalar
+// each element is a index
 Requirement Matrix::typeRequirement() const {
   Requirement result;
 

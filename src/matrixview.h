@@ -31,47 +31,47 @@ public:
   // Return a vector representing a row of the matrix.  Can be used to double-index the matrix.
   Vector operator[](size_type index) const;
 
-  class ScalarIndexedVector;
-  class PairIndexedScalar;
+  class IndexIndexedVector;
+  class PairIndexedIndex;
 
-  // Allows indexing of Scalars by Scalars.  Thus, the location of the Scalar indexed can
+  // Allows indexing of Indices by Indices.  Thus, the location of the Index indexed can
   // depend on constraints.
-  ScalarIndexedVector operator[](Scalar row) const;
+  IndexIndexedVector operator[](Index row) const;
 
-  // An intermediate class for arriving at a PairIndexedScalar.
+  // An intermediate class for arriving at a PairIndexedIndex.
   // May be best, at some point, to replace this with a SubscriptWrapper.
-  class ScalarIndexedVector {
-    friend ScalarIndexedVector MatrixView::operator[](Scalar row) const;
+  class IndexIndexedVector {
+    friend IndexIndexedVector MatrixView::operator[](Index row) const;
   public:
-    // Continue indexing -- we just want to get to the PairIndexedScalar.
-    PairIndexedScalar operator[](Scalar col) const;
+    // Continue indexing -- we just want to get to the PairIndexedIndex.
+    PairIndexedIndex operator[](Index col) const;
 
   private:
-    ScalarIndexedVector(const MatrixView& matrix, Scalar row);
+    IndexIndexedVector(const MatrixView& matrix, Index row);
 
     const MatrixView& matrix;
-    Scalar row;
+    Index row;
   };
 
   // A class (intended as a temporary) which can establish restrictions on
-  // scalars in situations where the exact location of the scalar depends
+  // indices in situations where the exact location of the index depends
   // on other constraints
-  class PairIndexedScalar {
-    friend PairIndexedScalar MatrixView::ScalarIndexedVector::operator[](Scalar col) const;
+  class PairIndexedIndex {
+    friend PairIndexedIndex MatrixView::IndexIndexedVector::operator[](Index col) const;
   public:
-    // Value requirements on PairIndexedScalars
+    // Value requirements on PairIndexedIndices
     Requirement operator ==(value_type rhs) const;
     Requirement operator !=(value_type rhs) const;
 
-    Requirement operator == (const Scalar& rhs) const;
-    Requirement operator != (const Scalar& rhs) const;
+    Requirement operator == (const Index& rhs) const;
+    Requirement operator != (const Index& rhs) const;
 
   private:
-    PairIndexedScalar(const MatrixView& matrix, Scalar row, Scalar col);
+    PairIndexedIndex(const MatrixView& matrix, Index row, Index col);
 
     const MatrixView& matrix;
-    Scalar row;
-    Scalar col;
+    Index row;
+    Index col;
   };
 
   const size_type height;
@@ -92,9 +92,9 @@ protected:
 // Output operator
 std::ostream& operator<<(std::ostream& out, const MatrixView& matrix);
 
-Requirement operator==(MatrixView::value_type lhs, const MatrixView::PairIndexedScalar& rhs);
-Requirement operator!=(MatrixView::value_type lhs, const MatrixView::PairIndexedScalar& rhs);
-Requirement operator==(const Scalar& lhs, const MatrixView::PairIndexedScalar& rhs);
-Requirement operator!=(const Scalar& lhs, const MatrixView::PairIndexedScalar& rhs);
+Requirement operator==(MatrixView::value_type lhs, const MatrixView::PairIndexedIndex& rhs);
+Requirement operator!=(MatrixView::value_type lhs, const MatrixView::PairIndexedIndex& rhs);
+Requirement operator==(const Index& lhs, const MatrixView::PairIndexedIndex& rhs);
+Requirement operator!=(const Index& lhs, const MatrixView::PairIndexedIndex& rhs);
 
 #endif // MATRIXVIEW_H

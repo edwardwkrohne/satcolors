@@ -49,32 +49,32 @@ public:
   Requirement typeRequirement() const;
 
   SolverManager& manager;
-  Scalar scalar1;
-  Scalar scalar2;
+  Index index1;
+  Index index2;
   Matrix matrix1;
 
-  tuple<Scalar&, Scalar&, Matrix&> objTuple;
+  tuple<Index&, Index&, Matrix&> objTuple;
 };
 
 typedef CompoundObject<TestImpl> Test;
 
 TestImpl::TestImpl(SolverManager& _manager, Var& var) :
   manager(_manager),
-  scalar1(manager, 0, 5, var),
-  scalar2(manager, 2, 3, var),
+  index1(manager, 0, 5, var),
+  index2(manager, 2, 3, var),
   matrix1(manager, 3, 5, 0, 2, var),
-  objTuple(scalar1, scalar2, matrix1)
+  objTuple(index1, index2, matrix1)
 {
 
 }
 
 // Easy to test but basically arbitrary definitions of these functions.
 Clause TestImpl::diffSolnReq() const {
-  return scalar1.diffSolnReq();
+  return index1.diffSolnReq();
 }
 
 Requirement TestImpl::typeRequirement() const {
-  return scalar1 == scalar2;
+  return index1 == index2;
 }
 
 }
@@ -109,7 +109,7 @@ void CompoundObjectTest::testExplicitVarConstruction(void) {
 
   // Require the exact opposite of the requirement that testObj would
   // have required, if we had allowed it to.
-  manager.require(testObj.scalar1 != testObj.scalar2);
+  manager.require(testObj.index1 != testObj.index2);
 
   ASSERT_SAT(manager);
 }
@@ -143,7 +143,7 @@ void CompoundObjectTest::testCopyConstruction(void) {
 
   // Require the exact opposite of the requirement that testObj or its copies
   // would have required, if any were allowed to.
-  manager.require(testObj.scalar1 != testObj.scalar2);
+  manager.require(testObj.index1 != testObj.index2);
 
   ASSERT_SAT(manager);
 }
@@ -154,7 +154,7 @@ void CompoundObjectTest::testNoVarConstruction(void) {
 
   // Require the exact opposite of the requirement that testObj should
   // have required.
-  manager.require(testObj.scalar1 != testObj.scalar2);
+  manager.require(testObj.index1 != testObj.index2);
 
   ASSERT_UNSAT(manager, "");
 }
@@ -166,7 +166,7 @@ void CompoundObjectTest::testAllocateNewConstruction(void) {
 
   // Require the exact opposite of the requirement that testObj should
   // have required
-  manager.require(testObj.scalar1 != testObj.scalar2);
+  manager.require(testObj.index1 != testObj.index2);
 
   ASSERT_UNSAT(manager, "");
 }
@@ -177,8 +177,8 @@ void CompoundObjectTest::testGetNumLiterals(void) {
   Test testObj(manager, var);
 
   Matrix::value_type expected =
-      testObj.scalar1.getNumLiterals() +
-      testObj.scalar2.getNumLiterals() +
+      testObj.index1.getNumLiterals() +
+      testObj.index2.getNumLiterals() +
       testObj.matrix1.getNumLiterals();
 
 
@@ -191,8 +191,8 @@ void CompoundObjectTest::testTypeRequirement(void) {
   Test testObj(manager, var);
 
   Requirement expected =
-      testObj.scalar1.typeRequirement() &
-      testObj.scalar2.typeRequirement() &
+      testObj.index1.typeRequirement() &
+      testObj.index2.typeRequirement() &
       testObj.matrix1.typeRequirement() &
       testObj.TestImpl::typeRequirement();
 

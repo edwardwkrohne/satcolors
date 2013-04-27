@@ -57,7 +57,7 @@ MatrixView MatrixView::view(size_type startRow, size_type startCol, size_type en
   }
 
   Var var = 0;
-  Scalar dummyScalar(manager, min, max, var);
+  Index dummyIndex(manager, min, max, var);
   return MatrixView(
       manager,
       endRow-startRow,
@@ -65,7 +65,7 @@ MatrixView MatrixView::view(size_type startRow, size_type startCol, size_type en
       pitch,
       min,
       max,
-      startingVar + (startRow*pitch + startCol)*dummyScalar.getNumLiterals());
+      startingVar + (startRow*pitch + startCol)*dummyIndex.getNumLiterals());
 }
 
 // Index into the matrix, producing a row vector
@@ -79,28 +79,28 @@ Vector MatrixView::operator[](size_type index) const {
 
 
   Var var = 0;
-  Scalar dummyScalar(manager, min, max, var);
-  var = startingVar + index*pitch*dummyScalar.getNumLiterals();
+  Index dummyIndex(manager, min, max, var);
+  var = startingVar + index*pitch*dummyIndex.getNumLiterals();
   return Vector(manager, width, min, max, var);
 }
 
-// The following four functions access a PairIndexedScalar
-MatrixView::ScalarIndexedVector MatrixView::operator[](Scalar row) const {
-  return ScalarIndexedVector(*this, row);
+// The following four functions access a PairIndexedIndex
+MatrixView::IndexIndexedVector MatrixView::operator[](Index row) const {
+  return IndexIndexedVector(*this, row);
 }
 
-MatrixView::ScalarIndexedVector::ScalarIndexedVector(const MatrixView& _matrix, Scalar _row) :
+MatrixView::IndexIndexedVector::IndexIndexedVector(const MatrixView& _matrix, Index _row) :
     matrix(_matrix),
     row(_row)
 {
   ;
 }
 
-MatrixView::PairIndexedScalar MatrixView::ScalarIndexedVector::operator[](Scalar col) const {
-  return PairIndexedScalar(matrix,row,col);
+MatrixView::PairIndexedIndex MatrixView::IndexIndexedVector::operator[](Index col) const {
+  return PairIndexedIndex(matrix,row,col);
 }
 
-MatrixView::PairIndexedScalar::PairIndexedScalar(const MatrixView& _matrix, Scalar _row, Scalar _col) :
+MatrixView::PairIndexedIndex::PairIndexedIndex(const MatrixView& _matrix, Index _row, Index _col) :
     matrix(_matrix),
     row(_row),
     col(_col)
@@ -108,8 +108,8 @@ MatrixView::PairIndexedScalar::PairIndexedScalar(const MatrixView& _matrix, Scal
   ;
 }
 
-// Now that we have a PairIndexedScalar, define its basic equals operation
-Requirement MatrixView::PairIndexedScalar::operator ==(value_type rhs) const {
+// Now that we have a PairIndexedIndex, define its basic equals operation
+Requirement MatrixView::PairIndexedIndex::operator ==(value_type rhs) const {
   Requirement result;
 
   size_type height = matrix.height;
@@ -134,12 +134,12 @@ Requirement MatrixView::PairIndexedScalar::operator ==(value_type rhs) const {
 
   return result;
 }
-Requirement operator==(value_type lhs, const MatrixView::PairIndexedScalar& rhs) {
+Requirement operator==(value_type lhs, const MatrixView::PairIndexedIndex& rhs) {
   return rhs == lhs;
 }
 
 // Define its basic not equals operation
-Requirement MatrixView::PairIndexedScalar::operator !=(value_type rhs) const {
+Requirement MatrixView::PairIndexedIndex::operator !=(value_type rhs) const {
   Requirement result;
 
   size_type height = matrix.height;
@@ -164,7 +164,7 @@ Requirement MatrixView::PairIndexedScalar::operator !=(value_type rhs) const {
 
   return result;
 }
-Requirement operator!=(value_type lhs, const MatrixView::PairIndexedScalar& rhs) {
+Requirement operator!=(value_type lhs, const MatrixView::PairIndexedIndex& rhs) {
   return rhs != lhs;
 }
 

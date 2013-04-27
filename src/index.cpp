@@ -1,21 +1,21 @@
 // -*- Mode:C++ -*-
 //
-// Implementation of the Scalar class
+// Implementation of the Index class
 
 #include <cmath>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
-#include "scalar.h"
+#include "index.h"
 
 using Minisat::Lit;
 using Minisat::mkLit;
 using Minisat::Var;
-typedef Scalar::value_type value_type;
+typedef Index::value_type value_type;
 using namespace std;
 
-// Creates an object representing a scalar.  Does not register requirements.
-Scalar::Scalar(SolverManager& _manager, value_type _min, value_type _max, Var& _startingVar) :
+// Creates an object representing a index.  Does not register requirements.
+Index::Index(SolverManager& _manager, value_type _min, value_type _max, Var& _startingVar) :
   min(_min),
   max(_max),
   manager(_manager),
@@ -28,9 +28,9 @@ Scalar::Scalar(SolverManager& _manager, value_type _min, value_type _max, Var& _
   }
 }
 
-// The corresponding requirement of being a scalar --
+// The corresponding requirement of being a index --
 // must take a value between min and max, and cannot take two values simultaneously.
-Requirement Scalar::typeRequirement() const {
+Requirement Index::typeRequirement() const {
   Requirement result;
 
   // Build the clause requiring at least one value
@@ -50,15 +50,15 @@ Requirement Scalar::typeRequirement() const {
   return result;
 }
 
-// The number of (contiguous) literals required to represent this scalar.
+// The number of (contiguous) literals required to represent this index.
 // Equal to max-min.
-unsigned int Scalar::getNumLiterals() const {
+unsigned int Index::getNumLiterals() const {
   return max-min;
 }
 
 
 // Copy constructor.  Does not register requirements.
-Scalar::Scalar(const Scalar& copy) :
+Index::Index(const Index& copy) :
     manager(copy.manager),
     startingVar(copy.startingVar),
     min(copy.min),
@@ -67,42 +67,42 @@ Scalar::Scalar(const Scalar& copy) :
   ;
 }
 
-void Scalar::checkDomain(const value_type arg) const {
+void Index::checkDomain(const value_type arg) const {
   if ( arg < min || arg >= max ) {
     ostringstream sout;
-    sout << "Incorrect value comparison for Scalar.  This scalar min=" << min << " and max=" << max << " but " << arg << " requested.";
+    sout << "Incorrect value comparison for Index.  This index min=" << min << " and max=" << max << " but " << arg << " requested.";
     throw domain_error(sout.str());
   }
 }
 
-// Addition of a scalar by a constant.  Surprisingly easy to implement, and useful.
-// If scl is a Scalar, then scl+1 returns a scalar that is equal to n+1 iff scl is equal to n.
+// Addition of a index by a constant.  Surprisingly easy to implement, and useful.
+// If idx is a Index, then idx+1 returns a index that is equal to n+1 iff idx is equal to n.
 // Uses no additional literals or requirements.
-Scalar Scalar::operator+(const value_type rhs) const {
+Index Index::operator+(const value_type rhs) const {
   Var var = startingVar;
-  return Scalar(manager, min+rhs, max+rhs, var);
+  return Index(manager, min+rhs, max+rhs, var);
 }
-Scalar Scalar::operator-(const value_type rhs) const {
+Index Index::operator-(const value_type rhs) const {
   return *this + (-rhs);
 }
 
-// Simple literals indicating equality with a specific scalar rhs.  If rhs is out of bounds,
+// Simple literals indicating equality with a specific index rhs.  If rhs is out of bounds,
 // behavior is undefined.
-Minisat::Lit Scalar::operator==(value_type rhs) const {
+Minisat::Lit Index::operator==(value_type rhs) const {
   checkDomain(rhs);
   return mkLit( Var(rhs - min) + startingVar);
 }
-Minisat::Lit Scalar::operator!=(value_type rhs) const {
+Minisat::Lit Index::operator!=(value_type rhs) const {
   checkDomain(rhs);
   return ~(*this == rhs);
 }
 
 // Comparison operators
-Clause Scalar::operator>(value_type rhs) const {
+Clause Index::operator>(value_type rhs) const {
   return *this >= rhs+1;
 }
 
-Clause Scalar::operator>=(value_type rhs) const {
+Clause Index::operator>=(value_type rhs) const {
   Clause result;
   value_type start = rhs < min ? min : rhs;
   for ( value_type i = start; i < max; i++ ) {
@@ -111,7 +111,7 @@ Clause Scalar::operator>=(value_type rhs) const {
   return result;
 }
 
-Clause Scalar::operator<(value_type rhs) const {
+Clause Index::operator<(value_type rhs) const {
   Clause result;
   value_type end = rhs < max ? rhs : max;
   for ( value_type i = min; i < end; i++ ) {
@@ -120,33 +120,33 @@ Clause Scalar::operator<(value_type rhs) const {
   return result;
 }
 
-Clause Scalar::operator<=(value_type rhs) const {
+Clause Index::operator<=(value_type rhs) const {
   return *this < rhs+1;
 }
 
-Clause operator>(value_type lhs, const Scalar& rhs) {
+Clause operator>(value_type lhs, const Index& rhs) {
   return rhs < lhs;
 }
 
-Clause operator>=(value_type lhs, const Scalar& rhs) {
+Clause operator>=(value_type lhs, const Index& rhs) {
   return rhs <= lhs;
 }
 
-Clause operator<(value_type lhs, const Scalar& rhs) {
+Clause operator<(value_type lhs, const Index& rhs) {
   return rhs > lhs;
 }
 
-Clause operator<=(value_type lhs, const Scalar& rhs) {
+Clause operator<=(value_type lhs, const Index& rhs) {
   return rhs >= lhs;
 }
 
 
 // Requirements that two Numbers be equal, whatever values they take.  Requires that both Numbers
-// have the same manager.  Does not require the range for each scalar to be the same, or even
+// have the same manager.  Does not require the range for each index to be the same, or even
 // overlap.
-Requirement Scalar::operator==(const Scalar& rhs) const {
+Requirement Index::operator==(const Index& rhs) const {
   // Treat lhs and rhs symmetrically.
-  const Scalar& lhs = *this;
+  const Index& lhs = *this;
 
   Requirement result;
 
@@ -158,7 +158,7 @@ Requirement Scalar::operator==(const Scalar& rhs) const {
   value_type start = lhs.min < rhs.min ? rhs.min : lhs.min;
   value_type end   = lhs.max > rhs.max ? rhs.max : lhs.max;
 
-  // Run through all possible values that either scalar can take.
+  // Run through all possible values that either index can take.
   for ( value_type val = start; val < end; val++ ) {
     result &= lhs != val | rhs == val;
     result &= lhs == val | rhs != val;
@@ -168,18 +168,18 @@ Requirement Scalar::operator==(const Scalar& rhs) const {
 }
 
 // Requirements that two Numbers be nonequal, whatever values they take.  Requires that both Numbers
-// have the same manager.  Does not require the range for each scalar to be the same, or even
+// have the same manager.  Does not require the range for each index to be the same, or even
 // overlap.
-Requirement Scalar::operator!=(const Scalar& rhs) const {
+Requirement Index::operator!=(const Index& rhs) const {
   // Treat lhs and rhs symmetrically.
-  const Scalar& lhs = *this;
+  const Index& lhs = *this;
 
   Requirement result;
 
   value_type maxMin = lhs.min < rhs.min ? rhs.min : lhs.min;
   value_type minMax = lhs.max > rhs.max ? rhs.max : lhs.max;
 
-  // Run through all values that BOTH scalars can take
+  // Run through all values that BOTH indices can take
   for ( value_type val = maxMin; val < minMax; val++ ) {
     result &= lhs != val | rhs != val;
   }
@@ -187,7 +187,7 @@ Requirement Scalar::operator!=(const Scalar& rhs) const {
   return result;
 }
 // The value assigned in the model, after solving, if a solution is available.
-value_type Scalar::modelValue() const {
+value_type Index::modelValue() const {
   for (value_type value = 0; value < max-min; value++ ) {
     if ( manager.modelValue(Var(value + startingVar) ) == true ) {
       return value+min;
@@ -199,21 +199,21 @@ value_type Scalar::modelValue() const {
 }
 
 // After a solution has been found, a requirement for a different solution
-Lit Scalar::diffSolnReq() const {
+Lit Index::diffSolnReq() const {
   return (*this) != this->modelValue();
 }
-Lit Scalar::currSolnReq() const {
+Lit Index::currSolnReq() const {
   return (*this) == this->modelValue();
 }
 
-Scalar::operator value_type() const {
+Index::operator value_type() const {
   return modelValue();
 }
 
-Lit operator==(value_type lhs, const Scalar& rhs) {
+Lit operator==(value_type lhs, const Index& rhs) {
   return rhs == lhs;
 }
 
-Lit operator!=(value_type lhs, const Scalar& rhs) {
+Lit operator!=(value_type lhs, const Index& rhs) {
   return rhs == lhs;
 }
