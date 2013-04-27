@@ -3,7 +3,7 @@
 // Like a scalar (to be renamed "index" in future versions),
 // represents an unknown integer quantity.  Unlike a scalar, is
 // optimized for order comparisons instead of equality comparisons,
-// but otherwise intended to support the same operations.
+// but nonetheless supports the same operations.
 //
 // In particular, Ordinal::operator< returns a literal,
 // Ordinal::operator== returns a dual clause.  In contrast,
