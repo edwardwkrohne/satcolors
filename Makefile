@@ -47,7 +47,7 @@ ${BIN}/solve: ${OBJS} ${BIN}/test.touch
 
 # Gnuplot file describing the solution
 .PRECIOUS: ${BIN}/plot.gnu
-${BIN}/plot.gnu: ${BIN}/solve input.dat
+${BIN}/plot.gnu: ${BIN}/solve
 	./${BIN}/solve
 
 out.pdf: ${BIN}/plot.gnu

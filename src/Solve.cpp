@@ -16,7 +16,7 @@
 #include "solvermanager.h"
 #include "markerregions.h"
 #include "manipulators.h"
-
+#include "almostlines.h"
 using namespace std;
 
 using Minisat::Var;
@@ -25,9 +25,19 @@ using Minisat::mkLit;
 
 int main (int argc, char** argv) {
   SolverManager manager;
-  vector<Index> testVec;
 
-  testVec.emplace_back(manager, 0, 5, SolverManager::allocateNew);
+  cout << timestamp << " Establishing requirements." << endl;
+
+  AlmostLines lines(manager, 70, 70, 5, 8);
+
+  cout << timestamp << " Requirements established." << endl;
+
+  if ( manager.solve() ) {
+    cout << timestamp << " Satisfiable" << endl;
+    cout << lines;
+  } else {
+    cout << timestamp << " Unsatisfiable" << endl;
+  }
 
   return 0;
 }

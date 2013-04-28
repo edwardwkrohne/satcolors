@@ -108,7 +108,7 @@ Lit Ordinal::operator<(value_type rhs) const {
     throw domain_error(sout.str());
   }
 
-  return mkLit(rhs-min-1+startingVar);
+  return mkLit(rhs-1-min+startingVar);
 }
 
 Lit Ordinal::operator<=(value_type rhs) const {
@@ -205,7 +205,7 @@ Clause operator!=(value_type lhs, const Ordinal& rhs) {
 // The value assigned in the model, after solving, if a solution is available.
 value_type Ordinal::modelValue() const {
   for ( int i = 0; i < max-1-min; i++ ) {
-    if ( manager.modelValue(Var(startingVar + i) ) == false ) {
+    if ( manager.modelValue(Var(startingVar + i) ) == true ) {
       return min + i;
     }
   }
