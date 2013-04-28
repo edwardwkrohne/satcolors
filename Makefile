@@ -50,9 +50,6 @@ ${BIN}/solve: ${OBJS} ${BIN}/test.touch
 ${BIN}/plot.gnu: ${BIN}/solve
 	./${BIN}/solve
 
-out.pdf: ${BIN}/plot.gnu
-	gnuplot ${BIN}/plot.gnu
-
 # Run tests.  Leaves a touchfile to record when tests were run.
 .PHONY: test
 test: ${BIN}/test.touch
@@ -74,9 +71,11 @@ solve: ${BIN}/solve
 
 # Run the solver and plot
 .PHONY: plot
-plot: out.pdf
+plot: ${BIN}/plot.gnu
+	gnuplot -p ${BIN}/plot.gnu
 
 # Eliminate generated files and backups.
 .PHONY: clean
 clean:
 	-rm -rf ${BIN}/* *.pdf */*.o *~ */*~ *.stackdump */*.stackdump
+	-killall gnuplot

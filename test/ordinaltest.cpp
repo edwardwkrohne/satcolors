@@ -53,9 +53,8 @@ void OrdinalTest::testIsOrdinal(void) {
   Requirement result = ordinal.typeRequirement();
   
   Requirement expected;
-  expected &= ordinal <= 0 | ordinal > 0;
-  expected &= ordinal <= 1 | ordinal > 1;
-  expected &= ordinal <= 2 | ordinal > 2;
+  expected &= implication(ordinal <= 0, ordinal <= 1);
+  expected &= implication(ordinal <= 1, ordinal <= 2);
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
 

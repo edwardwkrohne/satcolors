@@ -25,19 +25,18 @@ Gnuplot::Gnuplot(std::ostream& _out) :
   out(_out)
 {
   out <<
-      "set term pdf size 8,10.5\n"
-      "set output \"out.pdf\"\n"
-      "set palette defined ( -1 \"gray\", 0 \"white\", 1 \"black\", 2 \"blue\", 3 \"red\", 4 \"green\")\n"
-      "set cbrange [-1:4]\n"
-      "unset label\n"
-      "unset title\n"
-      "unset key\n"
-      "unset colorbox\n"
-      "set xtics 1 format \"\"\n"
-      "set ytics 1 format \"\"\n"
-      "set grid front lt 1 lc 8\n"
-      "set size ratio -1\n"
-      "set yrange [] reverse\n"
+    "set term wxt size 700,700\n"
+    "set palette gray\n"
+    "set cbrange [0:7]\n"
+    "unset label\n"
+    "unset title\n"
+    "unset key\n"
+    "unset colorbox\n"
+    "set xtics 1 format \"\"\n"
+    "set ytics 1 format \"\"\n"
+    "set grid front lt 1 lc 8\n"
+    "set size ratio -1\n"
+    "set yrange [] reverse\n"
       << flush;
 }
 

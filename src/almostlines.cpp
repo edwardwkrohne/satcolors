@@ -60,30 +60,35 @@ Requirement AlmostLinesImpl::typeRequirement() const {
 
   for ( int row = 0; row < height-1; row++ ) {
     for ( int col = 0; col < width-1; col++ ) {
-      auto minOff = minorOffsets[row][col];
-      auto rMinOff = minorOffsets[row][col+1];
-      auto lrMinOff = minorOffsets[row+1][col+1];
+      auto mnrOff = minorOffsets[row][col];
+      auto rMnrOff = minorOffsets[row][col+1];
+      auto drMnrOff = minorOffsets[row+1][col+1];
 
       // Enforce minimum thickness: no change of majOffset allowed
-      result &= implication(minOff < minThickness, rMinOff == minOff+1);
+      result &= implication(mnrOff < minThickness, rMnrOff == mnrOff+1);
 
       // If greater than minimum thickness, change of majOffset optional
-      result &= implication(minOff < maxThickness-1, rMinOff == minOff+1 | rMinOff == 0);
+      result &= implication(mnrOff < maxThickness-1, rMnrOff == mnrOff+1 | rMnrOff == 0);
       
       // If at maximum thickness, change of majOffset required
-      result &= implication(minOff == maxThickness-1, rMinOff == 0);
+      result &= implication(mnrOff == maxThickness-1, rMnrOff == 0);
 
       // If a change of majOffset occurs, a change occurs nearby on the next level.
-      result &= implication(minOff == 0, lrMinOff <= 2);
+      result &= implication(mnrOff == 0, drMnrOff <= 2);
 
-      auto majOff = majorOffsets[row][col];
+      auto majOff  = majorOffsets[row][col];
       auto rMajOff = majorOffsets[row][col+1];
+      auto lMajOff = majorOffsets[row+1][col];
 
       // only increments by one are allowed
       result &= majOff <= rMajOff & rMajOff <= majOff+1;
 
-      // If an increment actually happens, minimum offset must reset.
-      result &= (majOff >= rMajOff) | rMinOff == 0;
+      // Ensure the next row maintains the same major offset as the current row.
+      result &= implication(mnrOff > 0 & mnrOff < minThickness, lMajOff == majOff);
+
+      // If an increment actually happens, minor offset must reset.
+      result &= implication(rMnrOff == 0, majOff <  rMajOff);
+      result &= implication(rMnrOff != 0, majOff >= rMajOff);
     }
   }
   return result;

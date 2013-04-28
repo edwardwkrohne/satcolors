@@ -35,8 +35,8 @@ Ordinal::Ordinal(SolverManager& _manager, value_type _min, value_type _max, Var&
 // must take a value between min and max, and cannot take two values simultaneously.
 Requirement Ordinal::typeRequirement() const {
   Requirement result;
-  for (int i = min; i < max-1; i++ ) {
-    result &= *this <= i | *this > i;
+  for (int i = min; i < max-2; i++ ) {
+    result &= implication(*this <= i, *this <= i+1);
   }
   return result;
 }

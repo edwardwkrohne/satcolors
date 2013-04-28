@@ -27,6 +27,7 @@ public:
 
   // Register a single requirement
   virtual void require(const Requirement& req);
+  void require(const DualClause& clause) { require(Requirement(clause)); };
   void require(const Clause& clause) { require(Requirement(clause)); };
   void require(Minisat::Lit lit) { require(Requirement(lit)); };
 

@@ -26,15 +26,22 @@ using Minisat::mkLit;
 int main (int argc, char** argv) {
   SolverManager manager;
 
+  ofstream fout("bin/plot.gnu");
+  Gnuplot plot(fout);
+  plot << nogrid;
+
   cout << timestamp << " Establishing requirements." << endl;
 
   AlmostLines lines(manager, 70, 70, 5, 8);
+  manager.require(lines.majorOffsets[0][0] == 0);
+  manager.require(lines.majorOffsets[10][30] == 5);
+  manager.require(lines.majorOffsets[40][40] == 5);
 
   cout << timestamp << " Requirements established." << endl;
 
   if ( manager.solve() ) {
     cout << timestamp << " Satisfiable" << endl;
-    cout << lines;
+    plot << lines;
   } else {
     cout << timestamp << " Unsatisfiable" << endl;
   }
