@@ -69,6 +69,10 @@ Ordinal Ordinal::operator-(const value_type rhs) const {
   return *this + (-rhs);
 }
 
+Ordinal operator+(const value_type lhs, const Ordinal& rhs) {
+  return rhs + lhs;
+}
+
 // Simple literals indicating equality with a specific ordinal rhs.  If rhs is out of bounds,
 // behavior is undefined.
 DualClause Ordinal::operator==(value_type rhs) const {

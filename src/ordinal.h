@@ -97,7 +97,7 @@ public:
 };
 
 // Ordinal arithmetic (by constants)
-Minisat::Lit operator+(const Ordinal::value_type rhs, const Ordinal& lhs);
+Ordinal operator+(const Ordinal::value_type rhs, const Ordinal& lhs);
 
 // Ordering requirements
 Minisat::Lit operator>(Ordinal::value_type lhs, const Ordinal& rhs);
