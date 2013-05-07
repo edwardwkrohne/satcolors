@@ -25,6 +25,10 @@ class OrdinalTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST(testLessEqImpossible);
   CPPUNIT_TEST(testLessEqTrivial);
   CPPUNIT_TEST(testNotEq);
+  CPPUNIT_TEST(testNegation);
+  CPPUNIT_TEST(testNegation2);
+  CPPUNIT_TEST(testSolveBug);
+  CPPUNIT_TEST(testModelValue);
   CPPUNIT_TEST(testSummation);
   CPPUNIT_TEST(testSummationOptimization);
   CPPUNIT_TEST(testSummationImpossibleInequality);
@@ -40,6 +44,10 @@ protected:
   void testLessEqImpossible(void);
   void testLessEqTrivial(void);
   void testNotEq(void);
+  void testNegation(void);
+  void testNegation2(void);
+  void testSolveBug(void);
+  void testModelValue(void);
   void testSummation(void);
   void testSummationOptimization(void);
   void testSummationImpossibleInequality(void);
@@ -225,6 +233,78 @@ void OrdinalTest::testNotEq(void) {
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
   
+}
+
+void OrdinalTest::testNegation(void) {
+  SolverManager& dummyManager = *(SolverManager*)0;
+
+  // Object under test.
+  Var var = 0;
+  Ordinal ord(dummyManager,  0,  5, var);
+  Ordinal negOrd = -ord;
+
+  CPPUNIT_ASSERT_EQUAL(-4, negOrd.min);
+  CPPUNIT_ASSERT_EQUAL( 1, negOrd.max);
+  CPPUNIT_ASSERT_EQUAL(negOrd.getNumLiterals(), ord.getNumLiterals());
+  
+  CPPUNIT_ASSERT_EQUAL(ord <  1, negOrd >  -1); // Literal 0 true
+  CPPUNIT_ASSERT_EQUAL(ord <  2, negOrd >  -2); // Literal 1 true
+  CPPUNIT_ASSERT_EQUAL(ord <  3, negOrd >  -3); // Literal 2 true
+  CPPUNIT_ASSERT_EQUAL(ord <  4, negOrd >  -4); // Literal 3 true
+
+  Ordinal negNegOrd = -negOrd;
+  CPPUNIT_ASSERT_EQUAL(negNegOrd >= 3, ord >= 3);
+}
+
+void OrdinalTest::testNegation2(void) {
+  SolverManager& dummyManager = *(SolverManager*)0;
+
+  // Object under test.
+  Var var = 0;
+  Ordinal ord(dummyManager,  0,  5, var);
+  Ordinal negOrdPlusOne = -ord + 1;
+  
+  CPPUNIT_ASSERT_EQUAL(ord <  1, negOrdPlusOne >  -1+1);
+  CPPUNIT_ASSERT_EQUAL(ord <  2, negOrdPlusOne >  -2+1);
+  CPPUNIT_ASSERT_EQUAL(ord <  3, negOrdPlusOne >  -3+1);
+}
+
+void OrdinalTest::testSolveBug(void) {
+  SolverManager manager;
+
+  Ordinal ord(manager,  0,  5);
+  
+  CPPUNIT_ASSERT(manager.solve(ord == 2));
+}
+
+void OrdinalTest::testModelValue(void) {
+  SolverManager manager;
+
+  Ordinal ord(manager,  0,  5);
+  Ordinal negOrd = -ord;
+
+  Lit lit = mkLit(manager.newVars(1));
+  manager.require(implication(lit, ord == 2));
+
+  CPPUNIT_ASSERT(manager.solve(ord == 0));
+  CPPUNIT_ASSERT_EQUAL( 0, ord.modelValue());
+  CPPUNIT_ASSERT_EQUAL( 0, negOrd.modelValue());
+
+  CPPUNIT_ASSERT(manager.solve(ord == 1));
+  CPPUNIT_ASSERT_EQUAL( 1, ord.modelValue());
+  CPPUNIT_ASSERT_EQUAL(-1, negOrd.modelValue());
+
+  CPPUNIT_ASSERT(manager.solve(ord == 2));
+  CPPUNIT_ASSERT_EQUAL( 2, ord.modelValue());
+  CPPUNIT_ASSERT_EQUAL(-2, negOrd.modelValue());
+
+  CPPUNIT_ASSERT(manager.solve(ord == 3));
+  CPPUNIT_ASSERT_EQUAL( 3, ord.modelValue());
+  CPPUNIT_ASSERT_EQUAL(-3, negOrd.modelValue());
+
+  CPPUNIT_ASSERT(manager.solve(ord == 4));
+  CPPUNIT_ASSERT_EQUAL( 4, ord.modelValue());
+  CPPUNIT_ASSERT_EQUAL(-4, negOrd.modelValue());
 }
 
 void OrdinalTest::testSummation(void) {

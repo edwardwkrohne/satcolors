@@ -69,11 +69,11 @@ bool SolverManager::solve(Lit lit1, Lit lit2, Lit lit3) {
   return successfulRun = solver.solve(lit1, lit2, lit3);
 }
 bool SolverManager::solve(const DualClause& assumptions) {
-  vec<Lit> vecAssump(assumptions.size());
-  for ( auto iter = assumptions.begin(); iter != assumptions.end(); iter++ ) {
-     vecAssump.push(~*iter);
+  vec<Lit> vecAssumps(0);
+  for ( auto assump : assumptions ) {
+     vecAssumps.push(~assump);
   }
-  return successfulRun = solver.solve(vecAssump);
+  return successfulRun = solver.solve(vecAssumps);
 }
 
 

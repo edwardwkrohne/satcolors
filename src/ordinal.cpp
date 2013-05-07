@@ -14,12 +14,13 @@ using Minisat::Var;
 typedef Ordinal::value_type value_type;
 using namespace std;
 
-// Creates an object representing a ordinal.  Does not register requirements.
+// Creates an object representing an ordinal.
 Ordinal::Ordinal(SolverManager& _manager, value_type _min, value_type _max, Var& _startingVar) :
   min(_min),
   max(_max),
   manager(_manager),
-  startingVar(_startingVar == SolverManager::allocateNew ? _manager.newVars(getNumLiterals()) : _startingVar)
+  startingVar(_startingVar == SolverManager::allocateNew ? _manager.newVars(getNumLiterals()) : _startingVar),
+  negated(false)
 {
   if ( _max <= _min ) {
     throw domain_error("Cannot create an ordinal with an empty range of possible values.");
@@ -29,6 +30,19 @@ Ordinal::Ordinal(SolverManager& _manager, value_type _min, value_type _max, Var&
   } else {
     _startingVar += getNumLiterals();
   }
+}
+
+Ordinal::Ordinal(SolverManager& _manager, 
+		 value_type _min, 
+		 value_type _max, 
+		 const Var _startingVar, 
+		 bool _negated) :
+  min(_min),
+  max(_max),
+  manager(_manager),
+  startingVar(_startingVar),
+  negated(_negated)
+{
 }
 
 // The corresponding requirement of being a ordinal --
@@ -47,23 +61,12 @@ unsigned int Ordinal::getNumLiterals() const {
   return max-min-1;
 }
 
-
-// Copy constructor.  Does not register requirements.
-Ordinal::Ordinal(const Ordinal& copy) :
-    manager(copy.manager),
-    startingVar(copy.startingVar),
-    min(copy.min),
-    max(copy.max)
-{
-  ;
-}
-
 // Addition of a ordinal by a constant.  Surprisingly easy to implement, and useful.
 // If scl is a Ordinal, then scl+1 returns a ordinal that is equal to n+1 iff scl is equal to n.
 // Uses no additional literals or requirements.
 Ordinal Ordinal::operator+(const value_type rhs) const {
   Var var = startingVar;
-  return Ordinal(manager, min+rhs, max+rhs, var);
+  return Ordinal(manager, min+rhs, max+rhs, var, negated);
 }
 Ordinal Ordinal::operator-(const value_type rhs) const {
   return *this + (-rhs);
@@ -71,6 +74,14 @@ Ordinal Ordinal::operator-(const value_type rhs) const {
 
 Ordinal operator+(const value_type lhs, const Ordinal& rhs) {
   return rhs + lhs;
+}
+Ordinal operator-(const value_type lhs, const Ordinal& rhs) {
+  return lhs + (-rhs);
+}
+
+// Negation of an ordinal.
+Ordinal Ordinal::operator-() const {
+  return Ordinal(manager, -max+1, -min+1, startingVar, !negated);
 }
 
 // Simple literals indicating equality with a specific ordinal rhs.  If rhs is out of bounds,
@@ -112,7 +123,11 @@ Lit Ordinal::operator<(value_type rhs) const {
     throw domain_error(sout.str());
   }
 
-  return mkLit(rhs-1-min+startingVar);
+  if ( !negated ) {
+    return  mkLit(rhs-1-min+startingVar);
+  } else {
+    return ~mkLit(max-rhs-1+startingVar);
+  }
 }
 
 Lit Ordinal::operator<=(value_type rhs) const {
@@ -208,12 +223,24 @@ Clause operator!=(value_type lhs, const Ordinal& rhs) {
 
 // The value assigned in the model, after solving, if a solution is available.
 value_type Ordinal::modelValue() const {
-  for ( int i = 0; i < max-1-min; i++ ) {
-    if ( manager.modelValue(Var(startingVar + i) ) == true ) {
-      return min + i;
+  if ( !negated ) {
+    for ( int i = 0; i < max-min-1; i++ ) {
+      if ( manager.modelValue(Var(startingVar + i) ) == true ) {
+	return min + i;
+      }
     }
+    return (max-1);
+  } 
+
+  else {
+    for ( int i = 0; i < max-min-1; i++ ) {
+      if ( manager.modelValue(Var(startingVar + i) ) == true ) {
+	return (max-1) - i;
+      }
+    }
+    return min;
   }
-  return max-1;
+
 }
 
 // After a solution has been found, a requirement for a different solution

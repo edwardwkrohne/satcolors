@@ -40,8 +40,11 @@ public:
 	  value_type max, 
 	  Minisat::Var& startingVar = SolverManager::allocateNew);
 
+  // No default constructor
+  Ordinal() = delete;
+
   // Copy constructor.  Does not register requirements.
-  Ordinal(const Ordinal& copy);
+  Ordinal(const Ordinal& copy) = default;
 
   // After a solution has been found, a requirement for the current/a different solution
   Clause     diffSolnReq() const;
@@ -53,6 +56,9 @@ public:
   // additional literals or requirements.
   Ordinal operator+(const value_type rhs) const;
   Ordinal operator-(const value_type rhs) const;
+
+  // Negation of ordinal
+  Ordinal operator-() const;
 
   // Equality requirements
   DualClause operator==(value_type rhs) const;
@@ -94,10 +100,21 @@ public:
   const value_type max;
   SolverManager& manager;
   const Minisat::Var startingVar;
+
+private:
+  bool negated;
+
+  Ordinal(SolverManager& manager,
+	  value_type min, 
+	  value_type max,
+	  const Minisat::Var startingVar,
+	  bool negated);
+
 };
 
 // Ordinal arithmetic (by constants)
 Ordinal operator+(const Ordinal::value_type rhs, const Ordinal& lhs);
+Ordinal operator-(const Ordinal::value_type rhs, const Ordinal& lhs);
 
 // Ordering requirements
 Minisat::Lit operator>(Ordinal::value_type lhs, const Ordinal& rhs);
