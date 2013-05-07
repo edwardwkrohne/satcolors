@@ -14,7 +14,7 @@ using Minisat::Var;
 typedef Index::value_type value_type;
 using namespace std;
 
-// Creates an object representing a index.  Does not register requirements.
+// Creates an object representing a index.
 Index::Index(SolverManager& _manager, value_type _min, value_type _max, Var& _startingVar) :
   min(_min),
   max(_max),
