@@ -3,10 +3,9 @@
 // Wraps a solver, provides an iterator, and helps with managing variables.
 // Also handles interpreting the solver output in a clean, convenient way.
 //
-// Member functions are virtual for eventual mocking purposes.  Also, the way
-// the Makefile is set up, the tests won't link if these functions aren't
-// virtual.
-
+// Member functions are virtual for eventual mocking purposes.  This
+// also makes it possible to avoid linking a particular solver library
+// (like minisat), and still test code that writes requirements.
 
 #ifndef SOLVERMANAGER_H
 #define SOLVERMANAGER_H

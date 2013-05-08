@@ -14,8 +14,8 @@ using Minisat::mkLit;
 using Minisat::Lit;
 using Minisat::Var;
 
-class Ordinaladdexprtest : public CPPUNIT_NS::TestFixture {
-  CPPUNIT_TEST_SUITE(Ordinaladdexprtest);
+class OrdinalAddExprTest : public CPPUNIT_NS::TestFixture {
+  CPPUNIT_TEST_SUITE(OrdinalAddExprTest);
   CPPUNIT_TEST(testSummation);
   CPPUNIT_TEST(testSummationOptimization);
   CPPUNIT_TEST(testSummationImpossibleInequality);
@@ -28,9 +28,9 @@ protected:
   void testSummationTrivialInequality(void);
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( Ordinaladdexprtest );
+CPPUNIT_TEST_SUITE_REGISTRATION( OrdinalAddExprTest );
 
-void Ordinaladdexprtest::testSummation(void) {
+void OrdinalAddExprTest::testSummation(void) {
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
@@ -74,7 +74,7 @@ void Ordinaladdexprtest::testSummation(void) {
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
-void Ordinaladdexprtest::testSummationOptimization(void) {
+void OrdinalAddExprTest::testSummationOptimization(void) {
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
@@ -123,7 +123,7 @@ void Ordinaladdexprtest::testSummationOptimization(void) {
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
-void Ordinaladdexprtest::testSummationImpossibleInequality(void) {
+void OrdinalAddExprTest::testSummationImpossibleInequality(void) {
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
@@ -139,7 +139,7 @@ void Ordinaladdexprtest::testSummationImpossibleInequality(void) {
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
-void Ordinaladdexprtest::testSummationTrivialInequality(void) {
+void OrdinalAddExprTest::testSummationTrivialInequality(void) {
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
