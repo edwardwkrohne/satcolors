@@ -3,8 +3,10 @@
 // Implementation of the OrdinalMinExpr class
 
 #include <algorithm>
+#include <stdexcept>
 #include "ordinalminexpr.h"
 
+using namespace std;
 typedef Ordinal::value_type value_type;
 
 OrdinalMinExpr::OrdinalMinExpr(const Ordinal& ord1, const Ordinal& ord2) :
@@ -19,16 +21,16 @@ OrdinalMinExpr min(const Ordinal& ord1, const Ordinal& ord2) {
 }
 
 Clause OrdinalMinExpr::operator <= (const value_type bound) const {
-  if ( bound < ord1.min && bound < ord2.min ) {
-    return Clause(); // FALSe
+  if ( bound >= ord1.max || bound >= ord2.max ) {
+    throw domain_error("Requested a clause that would always be true, which is impossible to represent.");
   }
 
   Clause result;
-  if ( bound < ord1.max-1 ) {
+  if ( bound >= ord1.min ) {
     result |= ord1 <= bound;
   }
 
-  if ( bound < ord2.max-1 ) {
+  if ( bound >= ord2.min ) {
     result |= ord2 <= bound;
   }
 
