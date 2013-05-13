@@ -21,16 +21,16 @@ OrdinalMinExpr min(const Ordinal& ord1, const Ordinal& ord2) {
 }
 
 Clause OrdinalMinExpr::operator <= (const value_type bound) const {
-  if ( bound >= ord1.max-1 || bound >= ord2.max-1 ) {
+  if ( bound >= ord1.max()-1 || bound >= ord2.max()-1 ) {
     throw domain_error("Requested a clause that would always be true, which is impossible to represent.");
   }
 
   Clause result;
-  if ( bound >= ord1.min ) {
+  if ( bound >= ord1.min() ) {
     result |= ord1 <= bound;
   }
 
-  if ( bound >= ord2.min ) {
+  if ( bound >= ord2.min() ) {
     result |= ord2 <= bound;
   }
 
@@ -74,7 +74,7 @@ Requirement operator == (const value_type equality, const OrdinalMinExpr& expr) 
 }
 
 Requirement OrdinalMinExpr::operator<=(const Ordinal& ord3) const {
-  if (ord3.max <= std::min(ord1.min, ord2.min)) {
+  if (ord3.max() <= std::min(ord1.min(), ord2.min())) {
     return Clause(); // FALSE
   }
 
@@ -84,8 +84,8 @@ Requirement OrdinalMinExpr::operator<=(const Ordinal& ord3) const {
   // ordinalminexprtest.cpp to understand this intricate loop.
 
   // Loop through each legal value x of ord3, except ord3.max-1
-  for ( int x = std::max(ord3.min, std::min(ord2.min, ord1.min)-1);
-	x < ord3.max-1 && x < ord2.max-1 && x < ord1.max-1; 
+  for ( int x = std::max(ord3.min(), std::min(ord2.min(), ord1.min())-1);
+	x < ord3.max()-1 && x < ord2.max()-1 && x < ord1.max()-1; 
 	x++ ) {
     result &= implication(ord3 <= x, *this <= x);
   }
@@ -93,8 +93,8 @@ Requirement OrdinalMinExpr::operator<=(const Ordinal& ord3) const {
   // It is always the case that ord3 <= ord3.max-1, and requesting
   // that literal is illegal.  So the conclusion of that implication
   // (for x=ord3.max-1) should just be required.
-  if ( ord3.max-1 < ord2.max-1 && ord3.max-1 < ord1.max-1) {
-    result &= *this <= ord3.max-1;
+  if ( ord3.max()-1 < ord2.max()-1 && ord3.max()-1 < ord1.max()-1) {
+    result &= *this <= ord3.max()-1;
   }
   
   return result;

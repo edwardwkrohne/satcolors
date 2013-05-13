@@ -27,7 +27,7 @@ Requirement OrdinalAddExpr::operator<=(const Ordinal& ord3) const {
   // ord1 + ord2 <= ord3.  Indeed, if so, we would have 
   // ord1.min + ord2.min <= ord1 + ord2 <= ord3 < ord3.max,
   // whence ord1.min <= ord3.max - ord2.min;
-  if ( ord1.min > ord3.max-ord2.min) {
+  if ( ord1.min() > ord3.max()-ord2.min()) {
     return Clause(); // FALSE
   }
 
@@ -38,13 +38,13 @@ Requirement OrdinalAddExpr::operator<=(const Ordinal& ord3) const {
   // understand this intricate loop.
 
   // Loop through each legal value x of ord1
-  for ( int x = std::max(ord1.min, ord3.min-ord2.max);
-	x     < std::min(ord1.max, ord3.max-ord2.min+1);
+  for ( int x = std::max(ord1.min(), ord3.min()-ord2.max());
+	x     < std::min(ord1.max(), ord3.max()-ord2.min()+1);
 	x++ ) {
 
     // Here, writing ord1.min <= ord1 is trivial, and illegal (no
     // literal corresponds to this).
-    if ( x == ord1.min )      
+    if ( x == ord1.min() )      
       result &=                (x + ord2 <= ord3);
     else                        
       result &= ~(x <= ord1) | (x + ord2 <= ord3);

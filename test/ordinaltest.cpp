@@ -16,6 +16,7 @@ using Minisat::Var;
 
 class OrdinalTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST_SUITE(OrdinalTest);
+  CPPUNIT_TEST(testCopy);
   CPPUNIT_TEST(testIsOrdinal);
   CPPUNIT_TEST(testEmptyConstructorRange);
   CPPUNIT_TEST(testDomainError);
@@ -31,6 +32,7 @@ class OrdinalTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST(testModelValue);
   CPPUNIT_TEST_SUITE_END();
 protected:
+  void testCopy(void);
   void testIsOrdinal(void);
   void testEmptyConstructorRange(void);
   void testDomainError(void);
@@ -48,15 +50,21 @@ protected:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( OrdinalTest );
 
-void OrdinalTest::testIsOrdinal(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
+void OrdinalTest::testCopy(void) {
+  Var var = 0;
+  Ordinal ord(nullptr, 0, 4, var);
+  Ordinal cpy(ord);
+  Ordinal mv(std::move(ord));
 
+  cpy = ord;
+  mv = std::move(ord);
+}
+
+void OrdinalTest::testIsOrdinal(void) {
   // Object under test.
   Var var = 0;
-  Ordinal ordinal(dummyManager, 0, 4, var);
-  CPPUNIT_ASSERT_EQUAL(3u, ordinal.getNumLiterals());
+  Ordinal ordinal(nullptr, 0, 4, var);
+  CPPUNIT_ASSERT_EQUAL(3u, ordinal.numLiterals());
   CPPUNIT_ASSERT_EQUAL(3, var);
 
   Requirement result = ordinal.typeRequirement();
@@ -70,25 +78,17 @@ void OrdinalTest::testIsOrdinal(void) {
 }
 
 void OrdinalTest::testEmptyConstructorRange(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  CPPUNIT_ASSERT_THROW(Ordinal(dummyManager, 2, 2, var), domain_error);
-  CPPUNIT_ASSERT_THROW(Ordinal(dummyManager, 5, 3, var), domain_error);
+  CPPUNIT_ASSERT_THROW(Ordinal(nullptr, 2, 2, var), domain_error);
+  CPPUNIT_ASSERT_THROW(Ordinal(nullptr, 5, 3, var), domain_error);
 }
 
 
 void OrdinalTest::testEquality(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Ordinal ordinal(dummyManager, 1, 5, var);
+  Ordinal ordinal(nullptr, 1, 5, var);
 
   typedef decltype(ordinal == 1) eqType;
 
@@ -97,18 +97,14 @@ void OrdinalTest::testEquality(void) {
   CPPUNIT_ASSERT_EQUAL(ordinal <= 3 & ordinal >= 3, ordinal == 3);
   CPPUNIT_ASSERT_EQUAL((eqType)(ordinal >= 4), ordinal == 4);
 
-  Ordinal smallOrd(dummyManager, 1, 2, var);
+  Ordinal smallOrd(nullptr, 1, 2, var);
   CPPUNIT_ASSERT_EQUAL(eqType(), smallOrd == 1);
 }
 
 void OrdinalTest::testDomainError(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Ordinal ordinal(dummyManager, 1, 4, var);
+  Ordinal ordinal(nullptr, 1, 4, var);
 
   CPPUNIT_ASSERT_THROW(ordinal == 4, domain_error);
   CPPUNIT_ASSERT_THROW(ordinal == 0, domain_error);
@@ -130,14 +126,10 @@ void OrdinalTest::testDomainError(void) {
 }
 
 void OrdinalTest::testLessEq1(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Ordinal ord1(dummyManager, -3, 5, var);
-  Ordinal ord2(dummyManager, -2, 2, var);
+  Ordinal ord1(nullptr, -3, 5, var);
+  Ordinal ord2(nullptr, -2, 2, var);
 
   Requirement result = ord1 <= ord2;
   
@@ -151,14 +143,10 @@ void OrdinalTest::testLessEq1(void) {
 }
 
 void OrdinalTest::testLessEq2(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Ordinal ord1(dummyManager, 3, 7, var);
-  Ordinal ord2(dummyManager, 1, 10, var);
+  Ordinal ord1(nullptr, 3, 7, var);
+  Ordinal ord2(nullptr, 1, 10, var);
 
   Requirement result = ord1 <= ord2;
   
@@ -172,14 +160,10 @@ void OrdinalTest::testLessEq2(void) {
 }
 
 void OrdinalTest::testLessEqImpossible(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Ordinal ord1(dummyManager, 3, 7, var);
-  Ordinal ord2(dummyManager, 0, 3, var);
+  Ordinal ord1(nullptr, 3, 7, var);
+  Ordinal ord2(nullptr, 0, 3, var);
 
   Requirement result = ord1 <= ord2;
   
@@ -190,14 +174,10 @@ void OrdinalTest::testLessEqImpossible(void) {
 }
 
 void OrdinalTest::testLessEqTrivial(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Ordinal ord1(dummyManager, 0, 3, var);
-  Ordinal ord2(dummyManager, 3, 7, var);
+  Ordinal ord1(nullptr, 0, 3, var);
+  Ordinal ord2(nullptr, 3, 7, var);
 
   Requirement result = ord1 <= ord2;
   
@@ -207,14 +187,10 @@ void OrdinalTest::testLessEqTrivial(void) {
 }
 
 void OrdinalTest::testNotEq(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Ordinal ord1(dummyManager, -1, 4, var);
-  Ordinal ord2(dummyManager, 1, 7, var);
+  Ordinal ord1(nullptr, -1, 4, var);
+  Ordinal ord2(nullptr, 1, 7, var);
 
   Requirement result = ord1 != ord2;
   
@@ -228,16 +204,14 @@ void OrdinalTest::testNotEq(void) {
 }
 
 void OrdinalTest::testNegation(void) {
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Ordinal ord(dummyManager,  0,  5, var);
+  Ordinal ord(nullptr,  0,  5, var);
   Ordinal negOrd = -ord;
 
-  CPPUNIT_ASSERT_EQUAL(-4, negOrd.min);
-  CPPUNIT_ASSERT_EQUAL( 1, negOrd.max);
-  CPPUNIT_ASSERT_EQUAL(negOrd.getNumLiterals(), ord.getNumLiterals());
+  CPPUNIT_ASSERT_EQUAL(-4, negOrd.min());
+  CPPUNIT_ASSERT_EQUAL( 1, negOrd.max());
+  CPPUNIT_ASSERT_EQUAL(negOrd.numLiterals(), ord.numLiterals());
   
   CPPUNIT_ASSERT_EQUAL(ord <  1, negOrd >  -1); // Literal 0 true
   CPPUNIT_ASSERT_EQUAL(ord <  2, negOrd >  -2); // Literal 1 true
@@ -249,11 +223,9 @@ void OrdinalTest::testNegation(void) {
 }
 
 void OrdinalTest::testNegation2(void) {
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Ordinal ord(dummyManager,  0,  5, var);
+  Ordinal ord(nullptr,  0,  5, var);
   Ordinal negOrdPlusOne = -ord + 1;
   
   CPPUNIT_ASSERT_EQUAL(ord <  1, negOrdPlusOne >  -1+1);
@@ -264,7 +236,7 @@ void OrdinalTest::testNegation2(void) {
 void OrdinalTest::testSolveBug(void) {
   SolverManager manager;
 
-  Ordinal ord(manager,  0,  5);
+  Ordinal ord(&manager,  0,  5);
   
   CPPUNIT_ASSERT(manager.solve(ord == 2));
 }
@@ -272,7 +244,7 @@ void OrdinalTest::testSolveBug(void) {
 void OrdinalTest::testModelValue(void) {
   SolverManager manager;
 
-  Ordinal ord(manager,  0,  5);
+  Ordinal ord(&manager,  0,  5);
   Ordinal negOrd = -ord;
 
   Lit lit = mkLit(manager.newVars(1));

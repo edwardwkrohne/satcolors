@@ -35,16 +35,16 @@ public:
   // created object with the given startingvar, does not register new
   // requirements, and increments allocateNew by the number of
   // literals used.
-  Ordinal(SolverManager& manager,
+  Ordinal(SolverManager* manager,
 	  value_type min, 
 	  value_type max, 
 	  Minisat::Var& startingVar = SolverManager::allocateNew);
 
-  // No default constructor
   Ordinal() = delete;
-
-  // Copy constructor.  Does not register requirements.
   Ordinal(const Ordinal& copy) = default;
+  Ordinal(Ordinal&& move) = default;
+  Ordinal& operator=(const Ordinal& copy) = default;
+  Ordinal& operator=(Ordinal&& move) = default;
 
   // After a solution has been found, a requirement for the current/a different solution
   Clause     diffSolnReq() const;
@@ -89,22 +89,26 @@ public:
   // The number of (contiguous) literals required to represent this
   // ordinal.  Equal to max-min.
   // TODO make this a constant in all solver objects.
-  unsigned int getNumLiterals() const;
+  unsigned int numLiterals() const;
+
+  // The minimum and maximum allowable values
+  value_type min() const;
+  value_type max() const;
 
   // The value assigned in the model, after solving, if a solution is
   // available.
   value_type modelValue() const;
   operator value_type() const;
 
-  const value_type min;
-  const value_type max;
-  SolverManager& manager;
-  const Minisat::Var startingVar;
-
 private:
-  bool negated;
+  SolverManager* mManager;
+  value_type mMin;
+  value_type mMax;
+  Minisat::Var mStartingVar;
 
-  Ordinal(SolverManager& manager,
+  bool mNegated;
+
+  Ordinal(SolverManager* manager,
 	  value_type min, 
 	  value_type max,
 	  const Minisat::Var startingVar,

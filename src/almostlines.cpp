@@ -32,7 +32,7 @@ AlmostLinesImpl::AlmostLinesImpl(
 		  _height+2, 
 		  _width+2, 
 		  [&](SolverManager& manager, int row, int col, Var& var) {
-		    return Ordinal(manager, -height-2, width+height+4, var);
+		    return Ordinal(&manager, -height-2, width+height+4, var);
 		  },
 		  var),
 
@@ -40,7 +40,7 @@ AlmostLinesImpl::AlmostLinesImpl(
 		  _height+2, 
 		  _width+2, 
 		  [&](SolverManager& manager, int row, int col, Var& var) {
-		    return Ordinal(manager, 0, maxThickness, var);
+		    return Ordinal(&manager, 0, maxThickness, var);
 		  },
 		  var),
 

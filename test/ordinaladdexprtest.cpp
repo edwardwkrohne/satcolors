@@ -31,13 +31,11 @@ protected:
 CPPUNIT_TEST_SUITE_REGISTRATION( OrdinalAddExprTest );
 
 void OrdinalAddExprTest::testSummation(void) {
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Ordinal ord1(dummyManager,  -2,  2, var);
-  Ordinal ord2(dummyManager, -10, 10, var);
-  Ordinal ord3(dummyManager, -10, 10, var);
+  Ordinal ord1(nullptr,  -2,  2, var);
+  Ordinal ord2(nullptr, -10, 10, var);
+  Ordinal ord3(nullptr, -10, 10, var);
 
   Requirement result = (ord1 + ord2 <= ord3);
   
@@ -75,13 +73,11 @@ void OrdinalAddExprTest::testSummation(void) {
 }
 
 void OrdinalAddExprTest::testSummationOptimization(void) {
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Ordinal ord1(dummyManager, -10, 10, var);
-  Ordinal ord2(dummyManager, -1, 3, var);
-  Ordinal ord3(dummyManager, -3, 1, var);
+  Ordinal ord1(nullptr, -10, 10, var);
+  Ordinal ord2(nullptr, -1, 3, var);
+  Ordinal ord3(nullptr, -3, 1, var);
 
   Requirement result = (ord1 + ord2 <= ord3);
 
@@ -124,13 +120,11 @@ void OrdinalAddExprTest::testSummationOptimization(void) {
 }
 
 void OrdinalAddExprTest::testSummationImpossibleInequality(void) {
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Ordinal ord1(dummyManager,   5, 10, var);
-  Ordinal ord2(dummyManager,   5, 10, var);
-  Ordinal ord3(dummyManager, -10, -5, var);
+  Ordinal ord1(nullptr,   5, 10, var);
+  Ordinal ord2(nullptr,   5, 10, var);
+  Ordinal ord3(nullptr, -10, -5, var);
 
   Requirement result = (ord1 + ord2 <= ord3);
   
@@ -140,13 +134,11 @@ void OrdinalAddExprTest::testSummationImpossibleInequality(void) {
 }
 
 void OrdinalAddExprTest::testSummationTrivialInequality(void) {
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Ordinal ord1(dummyManager, -10, -5, var);
-  Ordinal ord2(dummyManager, -10, -5, var);
-  Ordinal ord3(dummyManager,   5, 10, var);
+  Ordinal ord1(nullptr, -10, -5, var);
+  Ordinal ord2(nullptr, -10, -5, var);
+  Ordinal ord3(nullptr,   5, 10, var);
 
   Requirement result = (ord1 + ord2 <= ord3);
   

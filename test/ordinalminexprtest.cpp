@@ -31,11 +31,9 @@ protected:
 CPPUNIT_TEST_SUITE_REGISTRATION( OrdinalMinExprTest );
 
 void OrdinalMinExprTest::testMinLessThanValue(void) {
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   Var var = 0;
-  Ordinal ord1(dummyManager, -3, 2, var);
-  Ordinal ord2(dummyManager, -1, 4, var);
+  Ordinal ord1(nullptr, -3, 2, var);
+  Ordinal ord2(nullptr, -1, 4, var);
 
   Requirement result, expected;
 
@@ -53,12 +51,10 @@ void OrdinalMinExprTest::testMinLessThanValue(void) {
 }
 
 void OrdinalMinExprTest::testMinLessThan(void) {
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   Var var = 0;
-  Ordinal ord1(dummyManager, -10, 10, var);
-  Ordinal ord2(dummyManager, -10, 10, var);
-  Ordinal ord3(dummyManager,  -2,  2, var);
+  Ordinal ord1(nullptr, -10, 10, var);
+  Ordinal ord2(nullptr, -10, 10, var);
+  Ordinal ord3(nullptr,  -2,  2, var);
 
   Requirement result = (min(ord1, ord2) <= ord3);
 
@@ -86,12 +82,10 @@ void OrdinalMinExprTest::testMinLessThan(void) {
 }
 
 void OrdinalMinExprTest::testMinLessThan2(void) {
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   Var var = 0;
-  Ordinal ord1(dummyManager,  -5,  3, var);
-  Ordinal ord2(dummyManager,  -1,  5, var);
-  Ordinal ord3(dummyManager, -10, 10, var);
+  Ordinal ord1(nullptr,  -5,  3, var);
+  Ordinal ord2(nullptr,  -1,  5, var);
+  Ordinal ord3(nullptr, -10, 10, var);
 
   Requirement result = (min(ord1, ord2) <= ord3);
 
@@ -109,12 +103,10 @@ void OrdinalMinExprTest::testMinLessThan2(void) {
 }
 
 void OrdinalMinExprTest::testMinLessThanImpossible(void) {
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   Var var = 0;
-  Ordinal ord1(dummyManager,  2,  5, var);
-  Ordinal ord2(dummyManager,  2,  5, var);
-  Ordinal ord3(dummyManager,  0,  2, var);
+  Ordinal ord1(nullptr,  2,  5, var);
+  Ordinal ord2(nullptr,  2,  5, var);
+  Ordinal ord3(nullptr,  0,  2, var);
 
   Requirement result = (min(ord1, ord2) <= ord3);
 

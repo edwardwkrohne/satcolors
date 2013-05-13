@@ -15,33 +15,33 @@ typedef Ordinal::value_type value_type;
 using namespace std;
 
 // Creates an object representing an ordinal.
-Ordinal::Ordinal(SolverManager& _manager, value_type _min, value_type _max, Var& _startingVar) :
-  min(_min),
-  max(_max),
-  manager(_manager),
-  startingVar(_startingVar == SolverManager::allocateNew ? _manager.newVars(getNumLiterals()) : _startingVar),
-  negated(false)
+Ordinal::Ordinal(SolverManager* _manager, value_type _min, value_type _max, Var& _startingVar) :
+  mMin(_min),
+  mMax(_max),
+  mManager(_manager),
+  mStartingVar(_startingVar == SolverManager::allocateNew ? _manager->newVars(numLiterals()) : _startingVar),
+  mNegated(false)
 {
-  if ( _max <= _min ) {
+  if ( max() <= min() ) {
     throw domain_error("Cannot create an ordinal with an empty range of possible values.");
   }
   if ( _startingVar == SolverManager::allocateNew ) {
-    manager.require(typeRequirement());
+    mManager->require(typeRequirement());
   } else {
-    _startingVar += getNumLiterals();
+    _startingVar += numLiterals();
   }
 }
 
-Ordinal::Ordinal(SolverManager& _manager, 
+Ordinal::Ordinal(SolverManager* _manager, 
 		 value_type _min, 
 		 value_type _max, 
 		 const Var _startingVar, 
 		 bool _negated) :
-  min(_min),
-  max(_max),
-  manager(_manager),
-  startingVar(_startingVar),
-  negated(_negated)
+  mMin(_min),
+  mMax(_max),
+  mManager(_manager),
+  mStartingVar(_startingVar),
+  mNegated(_negated)
 {
 }
 
@@ -49,7 +49,7 @@ Ordinal::Ordinal(SolverManager& _manager,
 // must take a value between min and max, and cannot take two values simultaneously.
 Requirement Ordinal::typeRequirement() const {
   Requirement result;
-  for (int i = min; i < max-2; i++ ) {
+  for (int i = min(); i < max()-2; i++ ) {
     result &= implication(*this <= i, *this <= i+1);
   }
   return result;
@@ -57,16 +57,25 @@ Requirement Ordinal::typeRequirement() const {
 
 // The number of (contiguous) literals required to represent this ordinal.
 // Equal to max-min.
-unsigned int Ordinal::getNumLiterals() const {
-  return max-min-1;
+unsigned int Ordinal::numLiterals() const {
+  return max()-min()-1;
+}
+
+// Min and max
+value_type Ordinal::min() const {
+  return mMin;
+}
+
+value_type Ordinal::max() const {
+  return mMax;
 }
 
 // Addition of a ordinal by a constant.  Surprisingly easy to implement, and useful.
 // If scl is a Ordinal, then scl+1 returns a ordinal that is equal to n+1 iff scl is equal to n.
 // Uses no additional literals or requirements.
 Ordinal Ordinal::operator+(const value_type rhs) const {
-  Var var = startingVar;
-  return Ordinal(manager, min+rhs, max+rhs, var, negated);
+  Var var = mStartingVar;
+  return Ordinal(mManager, min()+rhs, max()+rhs, var, mNegated);
 }
 Ordinal Ordinal::operator-(const value_type rhs) const {
   return *this + (-rhs);
@@ -81,24 +90,24 @@ Ordinal operator-(const value_type lhs, const Ordinal& rhs) {
 
 // Negation of an ordinal.
 Ordinal Ordinal::operator-() const {
-  return Ordinal(manager, -max+1, -min+1, startingVar, !negated);
+  return Ordinal(mManager, -max()+1, -min()+1, mStartingVar, !mNegated);
 }
 
 // Simple literals indicating equality with a specific ordinal rhs.  If rhs is out of bounds,
 // behavior is undefined.
 DualClause Ordinal::operator==(value_type rhs) const {
-  if ( rhs < min || rhs >= max ) {
+  if ( rhs < min() || rhs >= max() ) {
     ostringstream sout;
-    sout << "Incorrect value comparison for Ordinal.  This ordinal min=" << min << " and max=" << max << " but " << rhs << " requested.";
+    sout << "Incorrect value comparison for Ordinal.  This ordinal min=" << min() << " and max=" << max() << " but " << rhs << " requested.";
     throw domain_error(sout.str());
   }
 
   DualClause result;
 
-  if ( rhs > min )
+  if ( rhs > min() )
     result &= *this >= rhs;
 
-  if ( rhs < max-1 )
+  if ( rhs < max()-1 )
     result &= *this <= rhs;
 
   return result;
@@ -117,16 +126,16 @@ Lit Ordinal::operator>=(value_type rhs) const {
 }
 
 Lit Ordinal::operator<(value_type rhs) const {
-  if ( rhs <= min || rhs >= max ) {
+  if ( rhs <= min() || rhs >= max() ) {
     ostringstream sout;
-    sout << "Incorrect value comparison for Ordinal.  This ordinal is in the interval [" << min << ", " << max << ") but less than " << rhs << " requested.";
+    sout << "Incorrect value comparison for Ordinal.  This ordinal is in the interval [" << min() << ", " << max() << ") but less than " << rhs << " requested.";
     throw domain_error(sout.str());
   }
 
-  if ( !negated ) {
-    return  mkLit(rhs-1-min+startingVar);
+  if ( !mNegated ) {
+    return  mkLit(rhs-1-min()+mStartingVar);
   } else {
-    return ~mkLit(max-rhs-1+startingVar);
+    return ~mkLit(max()-rhs-1+mStartingVar);
   }
 }
 
@@ -164,7 +173,7 @@ Requirement Ordinal::operator<(const Ordinal& rhs) const {
 
 Requirement Ordinal::operator<=(const Ordinal& rhs) const {
   const Ordinal& lhs = *this;
-  if ( rhs.max <= lhs.min ) {
+  if ( rhs.max() <= lhs.min() ) {
     // Here we have lhs.min <= lhs <= rhs < rhs.max <= lhs.min,
     // a contradiction
     return Clause(); // FALSE.
@@ -173,19 +182,19 @@ Requirement Ordinal::operator<=(const Ordinal& rhs) const {
   Requirement result;
   
   // lhs.min <= lhs <= rhs
-  if ( lhs.min > rhs.min ) {
-    result &= lhs.min <= rhs;
+  if ( lhs.min() > rhs.min() ) {
+    result &= lhs.min() <= rhs;
   }
 
   // If rhs <= i, then lhs <= rhs <= i.  Do this for all sensical values of i,
   // that is, from max(lhs.min, rhs.min) to min(lhs.max, rhs.max)-1.
-  for ( int i = ::max(lhs.min, rhs.min); i < ::min(lhs.max, rhs.max)-1; i++ ) {
+  for ( int i = ::max(lhs.min(), rhs.min()); i < ::min(lhs.max(), rhs.max())-1; i++ ) {
     result &= implication(rhs <= i, lhs <= i);
   }
 
   // lhs <= rhs < rhs.max
-  if ( lhs.max > rhs.max ) {
-    result &= lhs < rhs.max;
+  if ( lhs.max() > rhs.max() ) {
+    result &= lhs < rhs.max();
   }
 
   return result;
@@ -206,7 +215,7 @@ Requirement Ordinal::operator!=(const Ordinal& rhs) const {
 
   Requirement result;
 
-  for ( int i = ::max(lhs.min, rhs.min); i < ::min(lhs.max, rhs.max); i++ ) {
+  for ( int i = ::max(lhs.min(), rhs.min()); i < ::min(lhs.max(), rhs.max()); i++ ) {
     result &= (lhs != i | rhs != i);
   }
 
@@ -223,22 +232,22 @@ Clause operator!=(value_type lhs, const Ordinal& rhs) {
 
 // The value assigned in the model, after solving, if a solution is available.
 value_type Ordinal::modelValue() const {
-  if ( !negated ) {
-    for ( int i = 0; i < max-min-1; i++ ) {
-      if ( manager.modelValue(Var(startingVar + i) ) == true ) {
-	return min + i;
+  if ( !mNegated ) {
+    for ( int i = 0; i < max()-min()-1; i++ ) {
+      if ( mManager->modelValue(Var(mStartingVar + i) ) == true ) {
+	return min() + i;
       }
     }
-    return (max-1);
+    return (max()-1);
   } 
 
   else {
-    for ( int i = 0; i < max-min-1; i++ ) {
-      if ( manager.modelValue(Var(startingVar + i) ) == true ) {
-	return (max-1) - i;
+    for ( int i = 0; i < max()-min()-1; i++ ) {
+      if ( mManager->modelValue(Var(mStartingVar + i) ) == true ) {
+	return (max()-1) - i;
       }
     }
-    return min;
+    return min();
   }
 
 }
