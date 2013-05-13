@@ -90,7 +90,7 @@ void OrdinalTest::testEquality(void) {
   Var var = 0;
   Ordinal ordinal(dummyManager, 1, 5, var);
 
-  using eqType = decltype(ordinal == 1);
+  typedef decltype(ordinal == 1) eqType;
 
   CPPUNIT_ASSERT_EQUAL((eqType)(ordinal <= 1), ordinal == 1);
   CPPUNIT_ASSERT_EQUAL(ordinal <= 2 & ordinal >= 2, ordinal == 2);

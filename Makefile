@@ -3,7 +3,7 @@ GPP:=g++
 SRC:=src
 TESTSRC:=test
 BIN:=bin
-CPPFLAGS:=-g -std=c++11 -D__STDC_FORMAT_MACROS
+CPPFLAGS:=-g -std=c++0x -D__STDC_FORMAT_MACROS
 LIBCPPUNIT:=-lcppunit -ldl
 LIBMINISAT:=-lminisat
 
