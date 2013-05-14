@@ -10,16 +10,16 @@
 #include "solvermanager.h"
 #include "requirement.h"
 
-template<class T>
+template<typename T>
 class ObjectContainer : public std::vector<T> {
 public:
-  ObjectContainer(SolverManager* manager);
-
-  ObjectContainer() = delete;
+  ObjectContainer() = default;
   ObjectContainer(const ObjectContainer& copy) = default;
   ObjectContainer(ObjectContainer&& move) = default;
   ObjectContainer& operator=(const ObjectContainer& copy) = default;
   ObjectContainer& operator=(ObjectContainer&& move) = default;
+
+  ObjectContainer(std::size_t count) : std::vector<T>(count) {};
 
   unsigned int numLiterals() const;
   DualClause currSolnReq() const;
@@ -29,13 +29,6 @@ public:
 private:
   SolverManager* mManager;
 };
-
-template<class T>
-ObjectContainer<T>::ObjectContainer(SolverManager* manager) :
-  mManager(manager)
-{
-
-}
 
 template<class T>
 unsigned int ObjectContainer<T>::numLiterals() const {

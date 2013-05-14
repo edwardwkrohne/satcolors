@@ -23,10 +23,11 @@ using Minisat::mkLit;
 using Minisat::Var;
 using namespace std;
 
-std::function<IsolatedPattern(SolverManager&, value_type, value_type, Var&)> MarkerRegionsExperiment::createGridBuilder() const {
-  return [this] (SolverManager& manager, value_type row, value_type col, Var& var) {
+std::function<IsolatedPattern(value_type, value_type)> 
+MarkerRegionsExperiment::createGridBuilder(SolverManager* manager, Var& var) const {
+  return [this, manager, &var] (value_type row, value_type col) {
     return IsolatedPattern(
-        manager,
+        *manager,
         brackets.view(row*gridSize, col*gridSize, (row+1)*gridSize, (col+1)*gridSize),
         patternStrings[row][col],
         var);
@@ -41,7 +42,7 @@ MarkerRegionsExperiment::MarkerRegionsExperiment(SolverManager& _manager, size_t
     manager(_manager),
     markerRegions(manager, height*gridSize, width*gridSize, gridSize, var),
     brackets(manager, height*gridSize, width*gridSize, 0, 2, var),
-    grids(manager, height, width, createGridBuilder(), var)
+    grids(&manager, height, width, createGridBuilder(&_manager, var), var)
 {
   if ( var == SolverManager::allocateNew ) {
     for ( size_type i = 0; i < brackets.height; i++ ) {

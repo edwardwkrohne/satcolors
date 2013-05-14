@@ -48,7 +48,8 @@ public:
   List2d<IsolatedPattern> grids;
 
 private:
-  std::function<IsolatedPattern(SolverManager&, value_type, value_type, Minisat::Var&)> createGridBuilder() const;
+  std::function<IsolatedPattern(value_type, value_type)> 
+  createGridBuilder(SolverManager* manager, Minisat::Var& var) const;
 };
 
 // Output operator

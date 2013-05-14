@@ -34,7 +34,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ObjectContainerTest );
 
 void ObjectContainerTest::testConstruction(void) {
   Var var = 0;
-  ObjectContainer<Ordinal> oc(nullptr);
+  ObjectContainer<Ordinal> oc;
   CPPUNIT_ASSERT_EQUAL(0, (int)oc.size());
 
   oc.emplace_back(nullptr, 0, 4, var);
@@ -51,7 +51,7 @@ void ObjectContainerTest::testConstruction(void) {
 
 void ObjectContainerTest::testAllocateNewConstruction(void) {
   SolverManager manager;
-  ObjectContainer<Ordinal> oc(&manager);
+  ObjectContainer<Ordinal> oc;
 
   oc.emplace_back(&manager, 0, 4);
   oc.emplace_back(&manager, 0, 4);
@@ -64,7 +64,7 @@ void ObjectContainerTest::testAllocateNewConstruction(void) {
 
 void ObjectContainerTest::testCopyConstruction(void) {
   Var var = 0;
-  ObjectContainer<Ordinal> oc(nullptr);
+  ObjectContainer<Ordinal> oc;
 
   oc.emplace_back(nullptr, 0, 4, var);
   oc.emplace_back(nullptr, 0, 4, var);
@@ -81,7 +81,7 @@ void ObjectContainerTest::testCopyConstruction(void) {
 
 void ObjectContainerTest::testTypeRequirement(void) {
   Var var = 0;
-  ObjectContainer<Ordinal> oc(nullptr);
+  ObjectContainer<Ordinal> oc;
 
   oc.emplace_back(nullptr, 0, 4, var);
   oc.emplace_back(nullptr, 0, 4, var);
@@ -97,7 +97,7 @@ void ObjectContainerTest::testTypeRequirement(void) {
 
 void ObjectContainerTest::testCurrSolnReq(void) {
   SolverManager manager;
-  ObjectContainer<Ordinal> oc(&manager);
+  ObjectContainer<Ordinal> oc;
 
   oc.emplace_back(&manager, 0, 4);
   oc.emplace_back(&manager, 0, 4);

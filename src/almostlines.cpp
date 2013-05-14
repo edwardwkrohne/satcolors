@@ -28,18 +28,18 @@ AlmostLinesImpl::AlmostLinesImpl(
     minThickness(_minThickness),
     maxThickness(_maxThickness),
 
-    majorOffsets (_manager, 
+    majorOffsets (&_manager, 
 		  _height+2, 
 		  _width+2, 
-		  [&](SolverManager& manager, int row, int col, Var& var) {
+		  [&](int row, int col) {
 		    return Ordinal(&manager, -height-2, width+height+4, var);
 		  },
 		  var),
 
-    minorOffsets (_manager, 
+    minorOffsets (&_manager, 
 		  _height+2, 
 		  _width+2, 
-		  [&](SolverManager& manager, int row, int col, Var& var) {
+		  [&](int row, int col) {
 		    return Ordinal(&manager, 0, maxThickness, var);
 		  },
 		  var),
