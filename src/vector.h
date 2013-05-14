@@ -1,9 +1,9 @@
 // -*- Mode:C++ -*-
 //
-// An vector of indices
+// An vector of cardinals
 //
-// One or more indices confined to the same range.  Overloads the subscript operator
-// to return a corresponding index in a particular location, upon which requirements
+// One or more cardinals confined to the same range.  Overloads the subscript operator
+// to return a corresponding cardinal in a particular location, upon which requirements
 // can be established.
 //
 // The naming is, of course, unfortunate. There exist std::vector, Minisat::vec, and ::Vector, all of
@@ -17,11 +17,11 @@
 #include <minisat/core/SolverTypes.h>
 #include "requirement.h"
 #include "solvermanager.h"
-#include "index.h"
+#include "cardinal.h"
 
 class Vector {
 public:
-  typedef Index::value_type value_type;
+  typedef Cardinal::value_type value_type;
   typedef value_type size_type;
 
   // Creates an object representing a vector.
@@ -43,15 +43,15 @@ public:
   Clause diffSolnReq() const;
   DualClause currSolnReq() const;
 
-  // Return a index representing an element of the vector
-  Index operator[](size_type index) const;
+  // Return a cardinal representing an element of the vector
+  Cardinal operator[](size_type cardinal) const;
 
-  class IndexIndexedIndex;
+  class CardinalIndexedCardinal;
 
-  // Index into the vector using a Index type.  Very powerful, slightly expensive.
-  // Assignments will depend on the ultimate value of the index in the model.
+  // Index into the vector using a Cardinal type.  Very powerful, slightly expensive.
+  // Assignments will depend on the ultimate value of the cardinal in the model.
   // Not yet implemented.
-  IndexIndexedIndex operator[](Index index);
+  CardinalIndexedCardinal operator[](Cardinal index);
 
   const size_type size;
   const value_type min;

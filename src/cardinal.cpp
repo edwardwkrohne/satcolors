@@ -1,21 +1,21 @@
 // -*- Mode:C++ -*-
 //
-// Implementation of the Index class
+// Implementation of the Cardinal class
 
 #include <cmath>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
-#include "index.h"
+#include "cardinal.h"
 
 using Minisat::Lit;
 using Minisat::mkLit;
 using Minisat::Var;
-typedef Index::value_type value_type;
+typedef Cardinal::value_type value_type;
 using namespace std;
 
-// Creates an object representing a index.
-Index::Index(SolverManager& _manager, value_type _min, value_type _max, Var& _startingVar) :
+// Creates an object representing a cardinal.
+Cardinal::Cardinal(SolverManager& _manager, value_type _min, value_type _max, Var& _startingVar) :
   min(_min),
   max(_max),
   manager(_manager),
@@ -28,9 +28,9 @@ Index::Index(SolverManager& _manager, value_type _min, value_type _max, Var& _st
   }
 }
 
-// The corresponding requirement of being a index --
+// The corresponding requirement of being a cardinal --
 // must take a value between min and max, and cannot take two values simultaneously.
-Requirement Index::typeRequirement() const {
+Requirement Cardinal::typeRequirement() const {
   Requirement result;
 
   // Build the clause requiring at least one value
@@ -50,15 +50,15 @@ Requirement Index::typeRequirement() const {
   return result;
 }
 
-// The number of (contiguous) literals required to represent this index.
+// The number of (contiguous) literals required to represent this cardinal.
 // Equal to max-min.
-unsigned int Index::getNumLiterals() const {
+unsigned int Cardinal::getNumLiterals() const {
   return max-min;
 }
 
 
 // Copy constructor.  Does not register requirements.
-Index::Index(const Index& copy) :
+Cardinal::Cardinal(const Cardinal& copy) :
     manager(copy.manager),
     startingVar(copy.startingVar),
     min(copy.min),
@@ -67,42 +67,42 @@ Index::Index(const Index& copy) :
   ;
 }
 
-void Index::checkDomain(const value_type arg) const {
+void Cardinal::checkDomain(const value_type arg) const {
   if ( arg < min || arg >= max ) {
     ostringstream sout;
-    sout << "Incorrect value comparison for Index.  This index min=" << min << " and max=" << max << " but " << arg << " requested.";
+    sout << "Incorrect value comparison for Cardinal.  This cardinal min=" << min << " and max=" << max << " but " << arg << " requested.";
     throw domain_error(sout.str());
   }
 }
 
-// Addition of a index by a constant.  Surprisingly easy to implement, and useful.
-// If idx is a Index, then idx+1 returns a index that is equal to n+1 iff idx is equal to n.
+// Addition of a cardinal by a constant.  Surprisingly easy to implement, and useful.
+// If idx is a Cardinal, then idx+1 returns a cardinal that is equal to n+1 iff idx is equal to n.
 // Uses no additional literals or requirements.
-Index Index::operator+(const value_type rhs) const {
+Cardinal Cardinal::operator+(const value_type rhs) const {
   Var var = startingVar;
-  return Index(manager, min+rhs, max+rhs, var);
+  return Cardinal(manager, min+rhs, max+rhs, var);
 }
-Index Index::operator-(const value_type rhs) const {
+Cardinal Cardinal::operator-(const value_type rhs) const {
   return *this + (-rhs);
 }
 
-// Simple literals indicating equality with a specific index rhs.  If rhs is out of bounds,
+// Simple literals indicating equality with a specific cardinal rhs.  If rhs is out of bounds,
 // behavior is undefined.
-Minisat::Lit Index::operator==(value_type rhs) const {
+Minisat::Lit Cardinal::operator==(value_type rhs) const {
   checkDomain(rhs);
   return mkLit( Var(rhs - min) + startingVar);
 }
-Minisat::Lit Index::operator!=(value_type rhs) const {
+Minisat::Lit Cardinal::operator!=(value_type rhs) const {
   checkDomain(rhs);
   return ~(*this == rhs);
 }
 
 // Comparison operators
-Clause Index::operator>(value_type rhs) const {
+Clause Cardinal::operator>(value_type rhs) const {
   return *this >= rhs+1;
 }
 
-Clause Index::operator>=(value_type rhs) const {
+Clause Cardinal::operator>=(value_type rhs) const {
   Clause result;
   value_type start = rhs < min ? min : rhs;
   for ( value_type i = start; i < max; i++ ) {
@@ -111,7 +111,7 @@ Clause Index::operator>=(value_type rhs) const {
   return result;
 }
 
-Clause Index::operator<(value_type rhs) const {
+Clause Cardinal::operator<(value_type rhs) const {
   Clause result;
   value_type end = rhs < max ? rhs : max;
   for ( value_type i = min; i < end; i++ ) {
@@ -120,33 +120,33 @@ Clause Index::operator<(value_type rhs) const {
   return result;
 }
 
-Clause Index::operator<=(value_type rhs) const {
+Clause Cardinal::operator<=(value_type rhs) const {
   return *this < rhs+1;
 }
 
-Clause operator>(value_type lhs, const Index& rhs) {
+Clause operator>(value_type lhs, const Cardinal& rhs) {
   return rhs < lhs;
 }
 
-Clause operator>=(value_type lhs, const Index& rhs) {
+Clause operator>=(value_type lhs, const Cardinal& rhs) {
   return rhs <= lhs;
 }
 
-Clause operator<(value_type lhs, const Index& rhs) {
+Clause operator<(value_type lhs, const Cardinal& rhs) {
   return rhs > lhs;
 }
 
-Clause operator<=(value_type lhs, const Index& rhs) {
+Clause operator<=(value_type lhs, const Cardinal& rhs) {
   return rhs >= lhs;
 }
 
 
 // Requirements that two Numbers be equal, whatever values they take.  Requires that both Numbers
-// have the same manager.  Does not require the range for each index to be the same, or even
+// have the same manager.  Does not require the range for each cardinal to be the same, or even
 // overlap.
-Requirement Index::operator==(const Index& rhs) const {
+Requirement Cardinal::operator==(const Cardinal& rhs) const {
   // Treat lhs and rhs symmetrically.
-  const Index& lhs = *this;
+  const Cardinal& lhs = *this;
 
   Requirement result;
 
@@ -158,7 +158,7 @@ Requirement Index::operator==(const Index& rhs) const {
   value_type start = lhs.min < rhs.min ? rhs.min : lhs.min;
   value_type end   = lhs.max > rhs.max ? rhs.max : lhs.max;
 
-  // Run through all possible values that either index can take.
+  // Run through all possible values that either cardinal can take.
   for ( value_type val = start; val < end; val++ ) {
     result &= lhs != val | rhs == val;
     result &= lhs == val | rhs != val;
@@ -168,18 +168,18 @@ Requirement Index::operator==(const Index& rhs) const {
 }
 
 // Requirements that two Numbers be nonequal, whatever values they take.  Requires that both Numbers
-// have the same manager.  Does not require the range for each index to be the same, or even
+// have the same manager.  Does not require the range for each cardinal to be the same, or even
 // overlap.
-Requirement Index::operator!=(const Index& rhs) const {
+Requirement Cardinal::operator!=(const Cardinal& rhs) const {
   // Treat lhs and rhs symmetrically.
-  const Index& lhs = *this;
+  const Cardinal& lhs = *this;
 
   Requirement result;
 
   value_type maxMin = lhs.min < rhs.min ? rhs.min : lhs.min;
   value_type minMax = lhs.max > rhs.max ? rhs.max : lhs.max;
 
-  // Run through all values that BOTH indices can take
+  // Run through all values that BOTH cardinals can take
   for ( value_type val = maxMin; val < minMax; val++ ) {
     result &= lhs != val | rhs != val;
   }
@@ -187,7 +187,7 @@ Requirement Index::operator!=(const Index& rhs) const {
   return result;
 }
 // The value assigned in the model, after solving, if a solution is available.
-value_type Index::modelValue() const {
+value_type Cardinal::modelValue() const {
   for (value_type value = 0; value < max-min; value++ ) {
     if ( manager.modelValue(Var(value + startingVar) ) == true ) {
       return value+min;
@@ -199,21 +199,21 @@ value_type Index::modelValue() const {
 }
 
 // After a solution has been found, a requirement for a different solution
-Lit Index::diffSolnReq() const {
+Lit Cardinal::diffSolnReq() const {
   return (*this) != this->modelValue();
 }
-Lit Index::currSolnReq() const {
+Lit Cardinal::currSolnReq() const {
   return (*this) == this->modelValue();
 }
 
-Index::operator value_type() const {
+Cardinal::operator value_type() const {
   return modelValue();
 }
 
-Lit operator==(value_type lhs, const Index& rhs) {
+Lit operator==(value_type lhs, const Cardinal& rhs) {
   return rhs == lhs;
 }
 
-Lit operator!=(value_type lhs, const Index& rhs) {
+Lit operator!=(value_type lhs, const Cardinal& rhs) {
   return rhs == lhs;
 }

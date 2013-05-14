@@ -31,47 +31,47 @@ public:
   // Return a vector representing a row of the matrix.  Can be used to double-index the matrix.
   Vector operator[](size_type index) const;
 
-  class IndexIndexedVector;
-  class PairIndexedIndex;
+  class CardinalIndexedVector;
+  class PairIndexedCardinal;
 
-  // Allows indexing of Indices by Indices.  Thus, the location of the Index indexed can
+  // Allows indexing of Cardinals by Cardinals.  Thus, the location of the Cardinal indexed can
   // depend on constraints.
-  IndexIndexedVector operator[](Index row) const;
+  CardinalIndexedVector operator[](Cardinal row) const;
 
-  // An intermediate class for arriving at a PairIndexedIndex.
+  // An intermediate class for arriving at a PairIndexedCardinal.
   // May be best, at some point, to replace this with a SubscriptWrapper.
-  class IndexIndexedVector {
-    friend IndexIndexedVector MatrixView::operator[](Index row) const;
+  class CardinalIndexedVector {
+    friend CardinalIndexedVector MatrixView::operator[](Cardinal row) const;
   public:
-    // Continue indexing -- we just want to get to the PairIndexedIndex.
-    PairIndexedIndex operator[](Index col) const;
+    // Continue indexing -- we just want to get to the PairIndexedCardinal.
+    PairIndexedCardinal operator[](Cardinal col) const;
 
   private:
-    IndexIndexedVector(const MatrixView& matrix, Index row);
+    CardinalIndexedVector(const MatrixView& matrix, Cardinal row);
 
     const MatrixView& matrix;
-    Index row;
+    Cardinal row;
   };
 
   // A class (intended as a temporary) which can establish restrictions on
-  // indices in situations where the exact location of the index depends
+  // cardinals in situations where the exact location of the index depends
   // on other constraints
-  class PairIndexedIndex {
-    friend PairIndexedIndex MatrixView::IndexIndexedVector::operator[](Index col) const;
+  class PairIndexedCardinal {
+    friend PairIndexedCardinal MatrixView::CardinalIndexedVector::operator[](Cardinal col) const;
   public:
-    // Value requirements on PairIndexedIndices
+    // Value requirements on PairIndexedCardinals
     Requirement operator ==(value_type rhs) const;
     Requirement operator !=(value_type rhs) const;
 
-    Requirement operator == (const Index& rhs) const;
-    Requirement operator != (const Index& rhs) const;
+    Requirement operator == (const Cardinal& rhs) const;
+    Requirement operator != (const Cardinal& rhs) const;
 
   private:
-    PairIndexedIndex(const MatrixView& matrix, Index row, Index col);
+    PairIndexedCardinal(const MatrixView& matrix, Cardinal row, Cardinal col);
 
     const MatrixView& matrix;
-    Index row;
-    Index col;
+    Cardinal row;
+    Cardinal col;
   };
 
   const size_type height;
@@ -92,9 +92,9 @@ protected:
 // Output operator
 std::ostream& operator<<(std::ostream& out, const MatrixView& matrix);
 
-Requirement operator==(MatrixView::value_type lhs, const MatrixView::PairIndexedIndex& rhs);
-Requirement operator!=(MatrixView::value_type lhs, const MatrixView::PairIndexedIndex& rhs);
-Requirement operator==(const Index& lhs, const MatrixView::PairIndexedIndex& rhs);
-Requirement operator!=(const Index& lhs, const MatrixView::PairIndexedIndex& rhs);
+Requirement operator==(MatrixView::value_type lhs, const MatrixView::PairIndexedCardinal& rhs);
+Requirement operator!=(MatrixView::value_type lhs, const MatrixView::PairIndexedCardinal& rhs);
+Requirement operator==(const Cardinal& lhs, const MatrixView::PairIndexedCardinal& rhs);
+Requirement operator!=(const Cardinal& lhs, const MatrixView::PairIndexedCardinal& rhs);
 
 #endif // MATRIXVIEW_H

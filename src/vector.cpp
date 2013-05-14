@@ -42,7 +42,7 @@ Vector::Vector(const Vector& copy) :
 }
 
 // The corresponding requirement of being a vector --
-// each element is a index
+// each element is a cardinal
 Requirement Vector::typeRequirement() const {
   Requirement result;
 
@@ -53,8 +53,8 @@ Requirement Vector::typeRequirement() const {
   return result;
 }
 
-// Index into the index
-Index Vector::operator[](size_type index) const {
+// Index into the vector
+Cardinal Vector::operator[](size_type index) const {
   // Check that the index is in range.
   if ( index < 0 || index >= size ) {
     ostringstream sout;
@@ -63,21 +63,21 @@ Index Vector::operator[](size_type index) const {
   }
 
 
-  // A bit awkward to have to create a dummy index to figure out how many literals, and then do it again,
+  // A bit awkward to have to create a dummy cardinal to figure out how many literals, and then do it again,
   // but these objects are small and we'd be doing basically the same operations even with a more
   // straightforward implementation.
   Var var = 0;
-  Index dummyIndex(manager, min, max, var);
-  var = startingVar + index*dummyIndex.getNumLiterals();
-  return Index(manager, min, max, var);
+  Cardinal dummyCardinal(manager, min, max, var);
+  var = startingVar + index*dummyCardinal.getNumLiterals();
+  return Cardinal(manager, min, max, var);
 }
 
 // The vector of (contiguous) literals required to represent this vector.
 // Equal to size*(max-min).
 unsigned int Vector::getNumLiterals() const {
   Var var = 0;
-  Index dummyIndex(manager, min, max, var);
-  return size*dummyIndex.getNumLiterals();
+  Cardinal dummyCardinal(manager, min, max, var);
+  return size*dummyCardinal.getNumLiterals();
 }
 
 // After a solution has been found, return a clause requiring a different solution

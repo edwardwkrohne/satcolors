@@ -1,6 +1,6 @@
 // -*- Mode:C++ -*-
 //
-// Implementation of the Index class
+// Miscellaneous manipulators, including implementation of the Gnuplot class.
 
 #include <iostream>
 #include <sstream>

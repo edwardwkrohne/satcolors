@@ -1,6 +1,6 @@
 // -*- Mode:C++ -*-
 //
-// Frequently, a compound object must be built out of primitives like indices and matrices,
+// Frequently, a compound object must be built out of primitives like cardinals and matrices,
 //  and other compound objects.  The code for doing so can get rather redundant in some places.
 // This template class can derive from a specially written, compact implementation class that
 // contains only the bare necessities.

@@ -29,7 +29,7 @@ public:
       const Pattern& pattern,
       Minisat::Var& var = SolverManager::allocateNew);
 
-  // Usual access methods.  Behavior similar to that of Index, MatrixView, etc.
+  // Usual access methods.  Behavior similar to that of Cardinal, MatrixView, etc.
   Clause diffSolnReq() const;
   DualClause currSolnReq() const;
   unsigned int getNumLiterals() const;
@@ -46,8 +46,8 @@ public:
   const size_type patternCenterCol;
 
   MatrixView matrix;
-  Index row;
-  Index col;
+  Cardinal row;
+  Cardinal col;
   Matrix centerIndicator;
 
 private:

@@ -6,23 +6,23 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <stdexcept>
-#include "../src/index.h"
+#include "../src/cardinal.h"
 
 using namespace std;
 using Minisat::mkLit;
 using Minisat::Lit;
 using Minisat::Var;
 
-class IndexTest : public CPPUNIT_NS::TestFixture {
-  CPPUNIT_TEST_SUITE(IndexTest);
-  CPPUNIT_TEST(testIsIndex);
+class CardinalTest : public CPPUNIT_NS::TestFixture {
+  CPPUNIT_TEST_SUITE(CardinalTest);
+  CPPUNIT_TEST(testIsCardinal);
   CPPUNIT_TEST(testNonzeroMin);
   CPPUNIT_TEST(testEqualsValue);
-  CPPUNIT_TEST(testEqualsIndex);
-  CPPUNIT_TEST(testEqualsIndex2);
-  CPPUNIT_TEST(testEqualsIndex3);
-  CPPUNIT_TEST(testNotEqualIndex);
-  CPPUNIT_TEST(testNotEqualIndex2);
+  CPPUNIT_TEST(testEqualsCardinal);
+  CPPUNIT_TEST(testEqualsCardinal2);
+  CPPUNIT_TEST(testEqualsCardinal3);
+  CPPUNIT_TEST(testNotEqualCardinal);
+  CPPUNIT_TEST(testNotEqualCardinal2);
   CPPUNIT_TEST(testAddition);
   CPPUNIT_TEST(testGreaterThan);
   CPPUNIT_TEST(testRedundantGreaterThan);
@@ -31,14 +31,14 @@ class IndexTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST(testDomainError);
   CPPUNIT_TEST_SUITE_END();
 protected:
-  void testIsIndex(void);
+  void testIsCardinal(void);
   void testNonzeroMin(void);
   void testEqualsValue(void);
-  void testEqualsIndex(void);
-  void testEqualsIndex2(void);
-  void testEqualsIndex3(void);
-  void testNotEqualIndex(void);
-  void testNotEqualIndex2(void);
+  void testEqualsCardinal(void);
+  void testEqualsCardinal2(void);
+  void testEqualsCardinal3(void);
+  void testNotEqualCardinal(void);
+  void testNotEqualCardinal2(void);
   void testAddition(void);
   void testGreaterThan(void);
   void testRedundantGreaterThan(void);
@@ -47,18 +47,18 @@ protected:
   void testDomainError(void);
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( IndexTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( CardinalTest );
 
 
-void IndexTest::testIsIndex(void) {
+void CardinalTest::testIsCardinal(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
   Var var = 0;
-  Index index(dummyManager, 0, 3, var);
-  Requirement result = index.typeRequirement();
+  Cardinal cardinal(dummyManager, 0, 3, var);
+  Requirement result = cardinal.typeRequirement();
 
   Requirement expected;
   expected &= mkLit(0) | mkLit(1) | mkLit(2);
@@ -69,15 +69,15 @@ void IndexTest::testIsIndex(void) {
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
-void IndexTest::testNonzeroMin(void) {
+void CardinalTest::testNonzeroMin(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
   Var var = 0;
-  Index index(dummyManager, 2, 5, var);
-  Requirement result = index.typeRequirement();
+  Cardinal cardinal(dummyManager, 2, 5, var);
+  Requirement result = cardinal.typeRequirement();
 
   Requirement expected;
   expected &= mkLit(0) | mkLit(1) | mkLit(2);
@@ -88,241 +88,241 @@ void IndexTest::testNonzeroMin(void) {
   CPPUNIT_ASSERT_EQUAL(result, expected);
 }
 
-void IndexTest::testEqualsValue(void) {
+void CardinalTest::testEqualsValue(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
   Var var = 0;
-  Index index(dummyManager, 0, 3, var);
+  Cardinal cardinal(dummyManager, 0, 3, var);
 
-  CPPUNIT_ASSERT_EQUAL(mkLit(0), index == 0);
-  CPPUNIT_ASSERT_EQUAL(mkLit(1), index == 1);
-  CPPUNIT_ASSERT_EQUAL(mkLit(2), index == 2);
+  CPPUNIT_ASSERT_EQUAL(mkLit(0), cardinal == 0);
+  CPPUNIT_ASSERT_EQUAL(mkLit(1), cardinal == 1);
+  CPPUNIT_ASSERT_EQUAL(mkLit(2), cardinal == 2);
 
-  CPPUNIT_ASSERT_EQUAL(~mkLit(0), index != 0);
-  CPPUNIT_ASSERT_EQUAL(~mkLit(1), index != 1);
-  CPPUNIT_ASSERT_EQUAL(~mkLit(2), index != 2);
+  CPPUNIT_ASSERT_EQUAL(~mkLit(0), cardinal != 0);
+  CPPUNIT_ASSERT_EQUAL(~mkLit(1), cardinal != 1);
+  CPPUNIT_ASSERT_EQUAL(~mkLit(2), cardinal != 2);
 }
 
-void IndexTest::testEqualsIndex(void) {
+void CardinalTest::testEqualsCardinal(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
   Var var = 0;
-  Index index1(dummyManager, 0, 3, var);
-  Index index2(dummyManager, 0, 3, var);
+  Cardinal cardinal1(dummyManager, 0, 3, var);
+  Cardinal cardinal2(dummyManager, 0, 3, var);
 
   Requirement expected;
 
   // Range requirements
-  expected &= index1 >= 0;
-  expected &= index1 <  3;
-  expected &= index2 >= 0;
-  expected &= index2 <  3;
+  expected &= cardinal1 >= 0;
+  expected &= cardinal1 <  3;
+  expected &= cardinal2 >= 0;
+  expected &= cardinal2 <  3;
 
-  // index1 == 0 iff index2 == 0
-  expected &= index1 != 0 | index2 == 0;
-  expected &= index1 == 0 | index2 != 0;
+  // cardinal1 == 0 iff cardinal2 == 0
+  expected &= cardinal1 != 0 | cardinal2 == 0;
+  expected &= cardinal1 == 0 | cardinal2 != 0;
 
   // ... == 1
-  expected &= index1 != 1 | index2 == 1;
-  expected &= index1 == 1 | index2 != 1;
+  expected &= cardinal1 != 1 | cardinal2 == 1;
+  expected &= cardinal1 == 1 | cardinal2 != 1;
 
   // ... == 2
-  expected &= index1 != 2 | index2 == 2;
-  expected &= index1 == 2 | index2 != 2;
+  expected &= cardinal1 != 2 | cardinal2 == 2;
+  expected &= cardinal1 == 2 | cardinal2 != 2;
 
-  Requirement result = (index1 == index2);
+  Requirement result = (cardinal1 == cardinal2);
 
   CPPUNIT_ASSERT_EQUAL((size_t)10, result.size());
   CPPUNIT_ASSERT_EQUAL(result, expected);
 }
 
-void IndexTest::testEqualsIndex2(void) {
+void CardinalTest::testEqualsCardinal2(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
   Var var = 0;
-  Index index1(dummyManager, 0, 3, var);
-  Index index2(dummyManager, 1, 4, var);
+  Cardinal cardinal1(dummyManager, 0, 3, var);
+  Cardinal cardinal2(dummyManager, 1, 4, var);
 
   Requirement expected;
   // Range requirements
-  expected &= index1 >= 1;
-  expected &= index1 <  4;
-  expected &= index2 >= 0;
-  expected &= index2 <  3;
+  expected &= cardinal1 >= 1;
+  expected &= cardinal1 <  4;
+  expected &= cardinal2 >= 0;
+  expected &= cardinal2 <  3;
 
-  // index1 == 1 iff index2 == 1
-  expected &= index1 != 1 | index2 == 1;
-  expected &= index1 == 1 | index2 != 1;
+  // cardinal1 == 1 iff cardinal2 == 1
+  expected &= cardinal1 != 1 | cardinal2 == 1;
+  expected &= cardinal1 == 1 | cardinal2 != 1;
 
   // ... == 2
-  expected &= index1 != 2 | index2 == 2;
-  expected &= index1 == 2 | index2 != 2;
+  expected &= cardinal1 != 2 | cardinal2 == 2;
+  expected &= cardinal1 == 2 | cardinal2 != 2;
 
 
-  Requirement result = (index1 == index2);
+  Requirement result = (cardinal1 == cardinal2);
 
   CPPUNIT_ASSERT_EQUAL((size_t)8, result.size());
   CPPUNIT_ASSERT_EQUAL(result, expected);
 }
 
-void IndexTest::testEqualsIndex3(void) {
+void CardinalTest::testEqualsCardinal3(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
   Var var = 0;
-  Index index1(dummyManager, 0, 2, var);
-  Index index2(dummyManager, 3, 5, var);
+  Cardinal cardinal1(dummyManager, 0, 2, var);
+  Cardinal cardinal2(dummyManager, 3, 5, var);
 
   Requirement expected;
   // All values are impossible, resulting in an empty clause.
   expected &= Clause();
 
-  // We also require index1, index2 to take whatever values they want.
-  expected &= index1 >= 0;
-  expected &= index2 <  5;
+  // We also require cardinal1, cardinal2 to take whatever values they want.
+  expected &= cardinal1 >= 0;
+  expected &= cardinal2 <  5;
 
-  Requirement result = (index1 == index2);
+  Requirement result = (cardinal1 == cardinal2);
 
   CPPUNIT_ASSERT_EQUAL((size_t)4, result.size());
   CPPUNIT_ASSERT_EQUAL(result, expected);
 }
 
-void IndexTest::testNotEqualIndex(void) {
+void CardinalTest::testNotEqualCardinal(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
   Var var = 0;
-  Index index1(dummyManager, 0, 3, var);
-  Index index2(dummyManager, 0, 3, var);
+  Cardinal cardinal1(dummyManager, 0, 3, var);
+  Cardinal cardinal2(dummyManager, 0, 3, var);
 
   Requirement expected;
-  expected &= index1 != 0 | index2 != 0;
-  expected &= index1 != 1 | index2 != 1;
-  expected &= index1 != 2 | index2 != 2;
+  expected &= cardinal1 != 0 | cardinal2 != 0;
+  expected &= cardinal1 != 1 | cardinal2 != 1;
+  expected &= cardinal1 != 2 | cardinal2 != 2;
 
-  Requirement result = (index1 != index2);
+  Requirement result = (cardinal1 != cardinal2);
 
   CPPUNIT_ASSERT_EQUAL((size_t)3, result.size());
   CPPUNIT_ASSERT_EQUAL(result, expected);
 }
 
-void IndexTest::testNotEqualIndex2(void) {
+void CardinalTest::testNotEqualCardinal2(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
   Var var = 0;
-  Index index1(dummyManager, 0, 3, var);
-  Index index2(dummyManager, 1, 4, var);
+  Cardinal cardinal1(dummyManager, 0, 3, var);
+  Cardinal cardinal2(dummyManager, 1, 4, var);
 
   Requirement expected;
-  expected &= index1 != 1 | index2 != 1;
-  expected &= index1 != 2 | index2 != 2;
+  expected &= cardinal1 != 1 | cardinal2 != 1;
+  expected &= cardinal1 != 2 | cardinal2 != 2;
 
-  Requirement result = (index1 != index2);
+  Requirement result = (cardinal1 != cardinal2);
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, result.size());
   CPPUNIT_ASSERT_EQUAL(result, expected);
 }
 
-void IndexTest::testAddition(void) {
+void CardinalTest::testAddition(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
   Var var = 0;
-  Index index(dummyManager, 0, 3, var);
+  Cardinal cardinal(dummyManager, 0, 3, var);
 
-  CPPUNIT_ASSERT_EQUAL(index+1 == 2, index == 1);
-  CPPUNIT_ASSERT_EQUAL(index-1 == 0, index == 1);
+  CPPUNIT_ASSERT_EQUAL(cardinal+1 == 2, cardinal == 1);
+  CPPUNIT_ASSERT_EQUAL(cardinal-1 == 0, cardinal == 1);
 }
 
 
-void IndexTest::testGreaterThan(void) {
+void CardinalTest::testGreaterThan(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
   Var var = 0;
-  Index index(dummyManager, 0, 4, var);
+  Cardinal cardinal(dummyManager, 0, 4, var);
 
-  Clause expected = index == 2 | index == 3;
+  Clause expected = cardinal == 2 | cardinal == 3;
 
-  CPPUNIT_ASSERT_EQUAL(index > 1, expected);
+  CPPUNIT_ASSERT_EQUAL(cardinal > 1, expected);
 }
 
-void IndexTest::testRedundantGreaterThan(void) {
+void CardinalTest::testRedundantGreaterThan(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
   Var var = 0;
-  Index index(dummyManager, 0, 4, var);
+  Cardinal cardinal(dummyManager, 0, 4, var);
 
-  Clause expected = index == 0 | index == 1 | index == 2 | index == 3;
+  Clause expected = cardinal == 0 | cardinal == 1 | cardinal == 2 | cardinal == 3;
 
-  CPPUNIT_ASSERT_EQUAL(index >= -10, expected);
+  CPPUNIT_ASSERT_EQUAL(cardinal >= -10, expected);
 }
 
 
-void IndexTest::testLessThan(void) {
+void CardinalTest::testLessThan(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
   Var var = 0;
-  Index index(dummyManager, 0, 4, var);
+  Cardinal cardinal(dummyManager, 0, 4, var);
 
-  Clause expected = index == 0 | index == 1;
+  Clause expected = cardinal == 0 | cardinal == 1;
 
-  CPPUNIT_ASSERT_EQUAL(index <= 1, expected);
+  CPPUNIT_ASSERT_EQUAL(cardinal <= 1, expected);
 }
 
-void IndexTest::testRedundantLessThan(void) {
+void CardinalTest::testRedundantLessThan(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
   Var var = 0;
-  Index index(dummyManager, 0, 4, var);
+  Cardinal cardinal(dummyManager, 0, 4, var);
 
-  Clause expected = index == 0 | index == 1 | index == 2 | index == 3;
+  Clause expected = cardinal == 0 | cardinal == 1 | cardinal == 2 | cardinal == 3;
 
-  CPPUNIT_ASSERT_EQUAL(index < 10, expected);
+  CPPUNIT_ASSERT_EQUAL(cardinal < 10, expected);
 }
 
-void IndexTest::testDomainError(void) {
+void CardinalTest::testDomainError(void) {
   // This exceedingly crude "dummy object" will segfault on any attempted use.
   // I'm ok with that.  Use something more sophisticated if desired.
   SolverManager& dummyManager = *(SolverManager*)0;
 
   // Object under test.
   Var var = 0;
-  Index index(dummyManager, 1, 4, var);
+  Cardinal cardinal(dummyManager, 1, 4, var);
 
-  CPPUNIT_ASSERT_THROW(index == 4, domain_error);
-  CPPUNIT_ASSERT_THROW(index == 0, domain_error);
-  CPPUNIT_ASSERT_THROW(index != 4, domain_error);
-  CPPUNIT_ASSERT_THROW(index != 0, domain_error);
+  CPPUNIT_ASSERT_THROW(cardinal == 4, domain_error);
+  CPPUNIT_ASSERT_THROW(cardinal == 0, domain_error);
+  CPPUNIT_ASSERT_THROW(cardinal != 4, domain_error);
+  CPPUNIT_ASSERT_THROW(cardinal != 0, domain_error);
 
 }
 

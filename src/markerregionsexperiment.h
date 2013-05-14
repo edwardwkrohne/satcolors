@@ -23,7 +23,7 @@ public:
   MarkerRegionsExperiment(SolverManager& manager, value_type gridSize, Array2d<std::string> patternStrings, Minisat::Var& var = SolverManager::allocateNew);
   MarkerRegionsExperiment(const MarkerRegionsExperiment& copy);
 
-  // Usual access methods.  Behavior similar to that of Index, Matrix, etc.
+  // Usual access methods.  Behavior similar to that of Cardinal, Matrix, etc.
   Clause diffSolnReq() const;
   DualClause currSolnReq() const;
   unsigned int getNumLiterals() const;

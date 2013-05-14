@@ -14,20 +14,20 @@
 #include "array2d.h"
 #include "requirement.h"
 #include "solvermanager.h"
-#include "index.h"
+#include "cardinal.h"
 #include "list.h"
 
 // 2d lists are (ultimately) 1d lists.
 template<class obj_type>
 class List2d {
 public:
-  typedef Index::value_type value_type;
+  typedef Cardinal::value_type value_type;
   typedef std::function<obj_type(SolverManager&, value_type, value_type, Minisat::Var&)> builder_type;
 
   List2d(
       SolverManager& manager,
-      Index::value_type height,
-      Index::value_type width,
+      Cardinal::value_type height,
+      Cardinal::value_type width,
       builder_type builder,
       Minisat::Var& startingVar = SolverManager::allocateNew);
 
@@ -38,8 +38,8 @@ public:
   Clause diffSolnReq() const;
   DualClause currSolnReq() const;
 
-  const Index::value_type height;
-  const Index::value_type width;
+  const Cardinal::value_type height;
+  const Cardinal::value_type width;
   List<obj_type> data;
 
 private:
@@ -49,8 +49,8 @@ private:
 template<class obj_type>
 List2d<obj_type>::List2d(
     SolverManager& _manager,
-    Index::value_type _height,
-    Index::value_type _width,
+    Cardinal::value_type _height,
+    Cardinal::value_type _width,
     builder_type _builder,
     Minisat::Var& _startingVar) :
   data(
@@ -70,7 +70,7 @@ List2d<obj_type>::List2d(
 
 // Function to simplify determining the type of a particular list.
 template<class builder_type>
-auto makeList(SolverManager& manager, Index::value_type height, Index::value_type width, builder_type builder, Minisat::Var& startingVar)
+auto makeList(SolverManager& manager, Cardinal::value_type height, Cardinal::value_type width, builder_type builder, Minisat::Var& startingVar)
   -> List2d<decltype(builder(manager, height, width, startingVar))> {
 
   typedef decltype(builder(manager, height, width, startingVar)) obj_type;
@@ -79,8 +79,8 @@ auto makeList(SolverManager& manager, Index::value_type height, Index::value_typ
 
 template<class obj_type>
 typename List<obj_type>::builder_type List2d<obj_type>::getUnderlyingListBuilder(value_type width, builder_type builder) {
-  return [=] (SolverManager& manager, value_type index, Minisat::Var& startingVar) {
-    return builder(manager, index/width, index%width, startingVar);
+  return [=] (SolverManager& manager, value_type cardinal, Minisat::Var& startingVar) {
+    return builder(manager, cardinal/width, cardinal%width, startingVar);
   };
 }
 

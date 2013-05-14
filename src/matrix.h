@@ -1,8 +1,8 @@
 // -*- Mode:C++ -*-
 //
-// An matrix of indices
+// An matrix of Cardinals
 //
-// A 2-dimensional matrix of indices. Overloads the subscript operator
+// A 2-dimensional matrix of Cardinals. Overloads the subscript operator
 // to return a corresponding matrix in a particular location, upon which requirements
 // can be established.
 //

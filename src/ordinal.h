@@ -1,16 +1,15 @@
 // -*- Mode:C++ -*-
 //
-// Like a index (to be renamed "index" in future versions),
-// represents an unknown integer quantity.  Unlike a index, is
-// optimized for order comparisons instead of equality comparisons,
-// but nonetheless supports the same operations.
+// Like a Cardinal represents an unknown integer quantity.  Unlike a
+// Cardinal, is optimized for order comparisons instead of equality
+// comparisons, but nonetheless supports the same operations.
 //
 // In particular, Ordinal::operator< returns a literal,
 // Ordinal::operator== returns a dual clause.  In contrast,
-// Index::operator< returns a clause, and Index::operator== returns
+// Cardinal::operator< returns a clause, and Cardinal::operator== returns
 // a literal.
 //
-// Like index, uses a bound of "min" and "max" (inclusive of min,
+// Like Cardinal, uses a bound of "min" and "max" (inclusive of min,
 // exclusive of max).
 //
 // When the Ordinal is created, it allocates enough literals to

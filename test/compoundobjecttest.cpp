@@ -49,32 +49,32 @@ public:
   Requirement typeRequirement() const;
 
   SolverManager& manager;
-  Index index1;
-  Index index2;
+  Cardinal cardinal1;
+  Cardinal cardinal2;
   Matrix matrix1;
 
-  tuple<Index&, Index&, Matrix&> objTuple;
+  tuple<Cardinal&, Cardinal&, Matrix&> objTuple;
 };
 
 typedef CompoundObject<TestImpl> Test;
 
 TestImpl::TestImpl(SolverManager& _manager, Var& var) :
   manager(_manager),
-  index1(manager, 0, 5, var),
-  index2(manager, 2, 3, var),
+  cardinal1(manager, 0, 5, var),
+  cardinal2(manager, 2, 3, var),
   matrix1(manager, 3, 5, 0, 2, var),
-  objTuple(index1, index2, matrix1)
+  objTuple(cardinal1, cardinal2, matrix1)
 {
 
 }
 
 // Easy to test but basically arbitrary definitions of these functions.
 Clause TestImpl::diffSolnReq() const {
-  return index1.diffSolnReq();
+  return cardinal1.diffSolnReq();
 }
 
 Requirement TestImpl::typeRequirement() const {
-  return index1 == index2;
+  return cardinal1 == cardinal2;
 }
 
 }
@@ -109,7 +109,7 @@ void CompoundObjectTest::testExplicitVarConstruction(void) {
 
   // Require the exact opposite of the requirement that testObj would
   // have required, if we had allowed it to.
-  manager.require(testObj.index1 != testObj.index2);
+  manager.require(testObj.cardinal1 != testObj.cardinal2);
 
   ASSERT_SAT(manager);
 }
@@ -143,7 +143,7 @@ void CompoundObjectTest::testCopyConstruction(void) {
 
   // Require the exact opposite of the requirement that testObj or its copies
   // would have required, if any were allowed to.
-  manager.require(testObj.index1 != testObj.index2);
+  manager.require(testObj.cardinal1 != testObj.cardinal2);
 
   ASSERT_SAT(manager);
 }
@@ -154,7 +154,7 @@ void CompoundObjectTest::testNoVarConstruction(void) {
 
   // Require the exact opposite of the requirement that testObj should
   // have required.
-  manager.require(testObj.index1 != testObj.index2);
+  manager.require(testObj.cardinal1 != testObj.cardinal2);
 
   ASSERT_UNSAT(manager, "");
 }
@@ -166,7 +166,7 @@ void CompoundObjectTest::testAllocateNewConstruction(void) {
 
   // Require the exact opposite of the requirement that testObj should
   // have required
-  manager.require(testObj.index1 != testObj.index2);
+  manager.require(testObj.cardinal1 != testObj.cardinal2);
 
   ASSERT_UNSAT(manager, "");
 }
@@ -177,8 +177,8 @@ void CompoundObjectTest::testGetNumLiterals(void) {
   Test testObj(manager, var);
 
   Matrix::value_type expected =
-      testObj.index1.getNumLiterals() +
-      testObj.index2.getNumLiterals() +
+      testObj.cardinal1.getNumLiterals() +
+      testObj.cardinal2.getNumLiterals() +
       testObj.matrix1.getNumLiterals();
 
 
@@ -191,8 +191,8 @@ void CompoundObjectTest::testTypeRequirement(void) {
   Test testObj(manager, var);
 
   Requirement expected =
-      testObj.index1.typeRequirement() &
-      testObj.index2.typeRequirement() &
+      testObj.cardinal1.typeRequirement() &
+      testObj.cardinal2.typeRequirement() &
       testObj.matrix1.typeRequirement() &
       testObj.TestImpl::typeRequirement();
 

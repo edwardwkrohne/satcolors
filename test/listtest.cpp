@@ -28,10 +28,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ListTest );
 
 namespace {
 
-typedef Index::value_type value_type;
+typedef Cardinal::value_type value_type;
 
-Index builder(SolverManager& manager, value_type index, Var& var) {
-  return Index(manager, 0, 2*index+1, var);
+Cardinal builder(SolverManager& manager, value_type index, Var& var) {
+  return Cardinal(manager, 0, 2*index+1, var);
 }
 }
 

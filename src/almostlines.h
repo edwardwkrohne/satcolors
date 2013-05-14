@@ -17,8 +17,8 @@
 
 class AlmostLinesImpl {
 public:
-  typedef Index::value_type value_type;
-  typedef Index::value_type size_type;
+  typedef Cardinal::value_type value_type;
+  typedef Cardinal::value_type size_type;
 
   // Creates an object representing the marker regions structure.
   AlmostLinesImpl(SolverManager& manager, 

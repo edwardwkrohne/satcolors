@@ -57,7 +57,7 @@ MatrixView MatrixView::view(size_type startRow, size_type startCol, size_type en
   }
 
   Var var = 0;
-  Index dummyIndex(manager, min, max, var);
+  Cardinal dummyCardinal(manager, min, max, var);
   return MatrixView(
       manager,
       endRow-startRow,
@@ -65,7 +65,7 @@ MatrixView MatrixView::view(size_type startRow, size_type startCol, size_type en
       pitch,
       min,
       max,
-      startingVar + (startRow*pitch + startCol)*dummyIndex.getNumLiterals());
+      startingVar + (startRow*pitch + startCol)*dummyCardinal.getNumLiterals());
 }
 
 // Index into the matrix, producing a row vector
@@ -79,28 +79,28 @@ Vector MatrixView::operator[](size_type index) const {
 
 
   Var var = 0;
-  Index dummyIndex(manager, min, max, var);
-  var = startingVar + index*pitch*dummyIndex.getNumLiterals();
+  Cardinal dummyCardinal(manager, min, max, var);
+  var = startingVar + index*pitch*dummyCardinal.getNumLiterals();
   return Vector(manager, width, min, max, var);
 }
 
-// The following four functions access a PairIndexedIndex
-MatrixView::IndexIndexedVector MatrixView::operator[](Index row) const {
-  return IndexIndexedVector(*this, row);
+// The following four functions access a PairIndexedCardinal
+MatrixView::CardinalIndexedVector MatrixView::operator[](Cardinal row) const {
+  return CardinalIndexedVector(*this, row);
 }
 
-MatrixView::IndexIndexedVector::IndexIndexedVector(const MatrixView& _matrix, Index _row) :
+MatrixView::CardinalIndexedVector::CardinalIndexedVector(const MatrixView& _matrix, Cardinal _row) :
     matrix(_matrix),
     row(_row)
 {
   ;
 }
 
-MatrixView::PairIndexedIndex MatrixView::IndexIndexedVector::operator[](Index col) const {
-  return PairIndexedIndex(matrix,row,col);
+MatrixView::PairIndexedCardinal MatrixView::CardinalIndexedVector::operator[](Cardinal col) const {
+  return PairIndexedCardinal(matrix,row,col);
 }
 
-MatrixView::PairIndexedIndex::PairIndexedIndex(const MatrixView& _matrix, Index _row, Index _col) :
+MatrixView::PairIndexedCardinal::PairIndexedCardinal(const MatrixView& _matrix, Cardinal _row, Cardinal _col) :
     matrix(_matrix),
     row(_row),
     col(_col)
@@ -108,8 +108,8 @@ MatrixView::PairIndexedIndex::PairIndexedIndex(const MatrixView& _matrix, Index 
   ;
 }
 
-// Now that we have a PairIndexedIndex, define its basic equals operation
-Requirement MatrixView::PairIndexedIndex::operator ==(value_type rhs) const {
+// Now that we have a PairIndexedCardinal, define its basic equals operation
+Requirement MatrixView::PairIndexedCardinal::operator ==(value_type rhs) const {
   Requirement result;
 
   size_type height = matrix.height;
@@ -134,12 +134,12 @@ Requirement MatrixView::PairIndexedIndex::operator ==(value_type rhs) const {
 
   return result;
 }
-Requirement operator==(value_type lhs, const MatrixView::PairIndexedIndex& rhs) {
+Requirement operator==(value_type lhs, const MatrixView::PairIndexedCardinal& rhs) {
   return rhs == lhs;
 }
 
 // Define its basic not equals operation
-Requirement MatrixView::PairIndexedIndex::operator !=(value_type rhs) const {
+Requirement MatrixView::PairIndexedCardinal::operator !=(value_type rhs) const {
   Requirement result;
 
   size_type height = matrix.height;
@@ -164,7 +164,7 @@ Requirement MatrixView::PairIndexedIndex::operator !=(value_type rhs) const {
 
   return result;
 }
-Requirement operator!=(value_type lhs, const MatrixView::PairIndexedIndex& rhs) {
+Requirement operator!=(value_type lhs, const MatrixView::PairIndexedCardinal& rhs) {
   return rhs != lhs;
 }
 
