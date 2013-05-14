@@ -35,6 +35,7 @@ public:
 
   // The number of (contiguous) literals required to represent this matrix.
   unsigned int getNumLiterals() const;
+  unsigned int numLiterals() const; // Temporary alternate name for getNumLiterals to ease refactoring 
 
   // After a solution has been found, get a requirement for the current/a different solution
   Clause diffSolnReq() const;

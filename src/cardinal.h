@@ -20,14 +20,24 @@ class Cardinal {
 public:
   typedef signed int value_type;
 
-  // Builds a cardinal object with the corresponding parameters.
-  // With the default startingVar, registers requirements and allocates a new object using the next available literals.
-  // With a non-default startingVar, acts as a reference-like object for a already created object with the given
-  //  startingvar, does not register new requirements, and increments allocateNew by the number of literals used.
-  Cardinal(SolverManager& manager, value_type min, value_type max, Minisat::Var& startingVar = SolverManager::allocateNew);
+  // Builds a cardinal object with the corresponding parameters.  With
+  // the default startingVar, registers requirements and allocates a
+  // new object using the next available literals.
+  //
+  // With a non-default startingVar, acts as a reference-like object
+  // for a already created object with the given startingvar, does not
+  // register new requirements, and increments allocateNew by the
+  // number of literals used.
+  Cardinal(SolverManager* manager, 
+	   value_type min, 
+	   value_type max, 
+	   Minisat::Var& startingVar = SolverManager::allocateNew);
 
-  // Copy constructor.  Does not register requirements.
-  Cardinal(const Cardinal& copy);
+  Cardinal() = delete;
+  Cardinal(const Cardinal& copy) = default;
+  Cardinal(Cardinal&& move) = default;
+  Cardinal& operator=(const Cardinal& copy) = default;
+  Cardinal& operator=(Cardinal&& move) = default;
 
   // After a solution has been found, a requirement for the current/a different solution
   Minisat::Lit diffSolnReq() const;
@@ -69,18 +79,22 @@ public:
   // The number of (contiguous) literals required to represent this cardinal.
   // Equal to max-min.
   // TODO make this a constant in all solver objects.
-  unsigned int getNumLiterals() const;
+  unsigned int numLiterals() const;
+
+  // Access basic information
+  value_type min() const;
+  value_type max() const;
+  Minisat::Var startingVar() const;
 
   // The value assigned in the model, after solving, if a solution is available.
   value_type modelValue() const;
   operator value_type() const;
 
-  const value_type min;
-  const value_type max;
-  SolverManager& manager;
-  const Minisat::Var startingVar;
-
 private:
+  SolverManager* mManager;
+  value_type mMin;
+  value_type mMax;
+  Minisat::Var mStartingVar;
 
   void checkDomain(value_type arg) const;
 };

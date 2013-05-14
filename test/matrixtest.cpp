@@ -67,8 +67,8 @@ void MatrixTest::testPairIndexedCardinalEquals(void) {
   // Object under test.
   Var var = 0;
   Matrix matrix(dummyManager, 2, 2, 0, 3, var);
-  Cardinal row(dummyManager, 0, 2, var);
-  Cardinal col(dummyManager, 0, 2, var);
+  Cardinal row(nullptr, 0, 2, var);
+  Cardinal col(nullptr, 0, 2, var);
 
   // Require (row == 0 & col == 0) implies matrix[0][0] == 1, etc.
   Requirement expectedReq;
@@ -92,8 +92,8 @@ void MatrixTest::testPairIndexedCardinalNotEquals(void) {
   // Object under test.
   Var var = 0;
   Matrix matrix(dummyManager, 2, 2, 0, 3, var); // values are in [0,3)
-  Cardinal row(dummyManager, 0, 2, var);
-  Cardinal col(dummyManager, 0, 2, var);
+  Cardinal row(nullptr, 0, 2, var);
+  Cardinal col(nullptr, 0, 2, var);
 
   // Require (row == 0 & col == 0) implies matrix[0][0] == 1, etc.
   Requirement expectedReq;
@@ -117,8 +117,8 @@ void MatrixTest::testPairIndexedCardinalEqualsWithRange(void) {
   // Object under test.
   Var var = 0;
   Matrix matrix(dummyManager, 3, 3, 0, 3, var);
-  Cardinal row(dummyManager,  1, 4, var);
-  Cardinal col(dummyManager, -1, 2, var);
+  Cardinal row(nullptr,  1, 4, var);
+  Cardinal col(nullptr, -1, 2, var);
 
   Requirement expectedReq;
 

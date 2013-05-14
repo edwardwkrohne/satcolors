@@ -31,7 +31,7 @@ namespace {
 typedef Cardinal::value_type value_type;
 
 Cardinal builder(SolverManager& manager, value_type index, Var& var) {
-  return Cardinal(manager, 0, 2*index+1, var);
+  return Cardinal(&manager, 0, 2*index+1, var);
 }
 }
 
@@ -46,16 +46,16 @@ void ListTest::testConstruction(void) {
 
   // Just hit it with a battery of checks.
   CPPUNIT_ASSERT_EQUAL(3, list.size);
-  CPPUNIT_ASSERT_EQUAL(0, list[0].min);
-  CPPUNIT_ASSERT_EQUAL(1, list[0].max);
-  CPPUNIT_ASSERT_EQUAL(0, list[1].min);
-  CPPUNIT_ASSERT_EQUAL(3, list[1].max);
-  CPPUNIT_ASSERT_EQUAL(0, list[2].min);
-  CPPUNIT_ASSERT_EQUAL(5, list[2].max);
+  CPPUNIT_ASSERT_EQUAL(0, list[0].min());
+  CPPUNIT_ASSERT_EQUAL(1, list[0].max());
+  CPPUNIT_ASSERT_EQUAL(0, list[1].min());
+  CPPUNIT_ASSERT_EQUAL(3, list[1].max());
+  CPPUNIT_ASSERT_EQUAL(0, list[2].min());
+  CPPUNIT_ASSERT_EQUAL(5, list[2].max());
 
-  CPPUNIT_ASSERT_EQUAL(list[0].getNumLiterals(),                                                       (unsigned int)list[1].startingVar);
-  CPPUNIT_ASSERT_EQUAL(list[0].getNumLiterals() + list[1].getNumLiterals(),                            (unsigned int)list[2].startingVar);
-  CPPUNIT_ASSERT_EQUAL(list[0].getNumLiterals() + list[1].getNumLiterals() + list[2].getNumLiterals(), list.getNumLiterals());
+  CPPUNIT_ASSERT_EQUAL(list[0].numLiterals(),                                                 (unsigned int)list[1].startingVar());
+  CPPUNIT_ASSERT_EQUAL(list[0].numLiterals() + list[1].numLiterals(),                         (unsigned int)list[2].startingVar());
+  CPPUNIT_ASSERT_EQUAL(list[0].numLiterals() + list[1].numLiterals() + list[2].numLiterals(), list.getNumLiterals());
 
   CPPUNIT_ASSERT_EQUAL(list.getNumLiterals(), (unsigned int)var);
   CPPUNIT_ASSERT_EQUAL(list[0].typeRequirement() & list[1].typeRequirement() & list[2].typeRequirement(), list.typeRequirement());

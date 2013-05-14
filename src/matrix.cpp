@@ -41,10 +41,15 @@ Requirement Matrix::typeRequirement() const {
 
 // The matrix of (contiguous) literals required to represent this matrix.
 // Equal to height*width*(max-min).
-unsigned int Matrix::getNumLiterals() const {
+unsigned int Matrix::numLiterals() const {
   Var var = startingVar;
   Vector underlyingVector(manager, height*width, min, max, var);
   return underlyingVector.getNumLiterals();
+}
+
+// deprecated
+unsigned int Matrix::getNumLiterals() const {
+  return numLiterals();
 }
 
 // After a solution has been found, get a requirement for a different solution

@@ -57,7 +57,7 @@ MatrixView MatrixView::view(size_type startRow, size_type startCol, size_type en
   }
 
   Var var = 0;
-  Cardinal dummyCardinal(manager, min, max, var);
+  Cardinal dummyCardinal(&manager, min, max, var);
   return MatrixView(
       manager,
       endRow-startRow,
@@ -65,7 +65,7 @@ MatrixView MatrixView::view(size_type startRow, size_type startCol, size_type en
       pitch,
       min,
       max,
-      startingVar + (startRow*pitch + startCol)*dummyCardinal.getNumLiterals());
+      startingVar + (startRow*pitch + startCol)*dummyCardinal.numLiterals());
 }
 
 // Index into the matrix, producing a row vector
@@ -79,8 +79,8 @@ Vector MatrixView::operator[](size_type index) const {
 
 
   Var var = 0;
-  Cardinal dummyCardinal(manager, min, max, var);
-  var = startingVar + index*pitch*dummyCardinal.getNumLiterals();
+  Cardinal dummyCardinal(&manager, min, max, var);
+  var = startingVar + index*pitch*dummyCardinal.numLiterals();
   return Vector(manager, width, min, max, var);
 }
 
@@ -119,11 +119,11 @@ Requirement MatrixView::PairIndexedCardinal::operator ==(value_type rhs) const {
   result &= row >= 0 & row < (value_type)height;
   result &= col >= 0 & col < (value_type)width;
 
-  size_type rowStart = row.min <= 0      ? 0      : row.min;
-  size_type rowEnd   = row.max >= height ? height : row.max;
+  size_type rowStart = row.min() <= 0      ? 0      : row.min();
+  size_type rowEnd   = row.max() >= height ? height : row.max();
 
-  size_type colStart = col.min <= 0     ? 0     : col.min;
-  size_type colEnd   = col.max >= width ? width : col.max;
+  size_type colStart = col.min() <= 0     ? 0     : col.min();
+  size_type colEnd   = col.max() >= width ? width : col.max();
 
   for (size_type i = rowStart; i < rowEnd; i++ ) {
     for (size_type j = colStart; j < colEnd; j++ ) {
@@ -149,11 +149,11 @@ Requirement MatrixView::PairIndexedCardinal::operator !=(value_type rhs) const {
   result &= row >= 0 & row < (value_type)height;
   result &= col >= 0 & col < (value_type)width;
 
-  size_type rowStart = row.min <= 0      ? 0      : row.min;
-  size_type rowEnd   = row.max >= height ? height : row.max;
+  size_type rowStart = row.min() <= 0      ? 0      : row.min();
+  size_type rowEnd   = row.max() >= height ? height : row.max();
 
-  size_type colStart = col.min <= 0     ? 0     : col.min;
-  size_type colEnd   = col.max >= width ? width : col.max;
+  size_type colStart = col.min() <= 0     ? 0     : col.min();
+  size_type colEnd   = col.max() >= width ? width : col.max();
 
   for (size_type i = rowStart; i < rowEnd; i++ ) {
     for (size_type j = colStart; j < colEnd; j++ ) {

@@ -73,8 +73,8 @@ void MarkerRegionsTest::testEdgeBug(void) {
   // BoundaryUnderlay is 7x7.
   MarkerRegions mr(manager, 5, 5, 3);
 
-  Cardinal row(manager, 1, 4);
-  Cardinal col(manager, 1, 4);
+  Cardinal row(&manager, 1, 4);
+  Cardinal col(&manager, 1, 4);
 
   // Require something that should be impossible.
   manager.require(mr.boundaryUnderlay[row  ][col  ] != MarkerRegions::BLANK);
@@ -103,8 +103,8 @@ void MarkerRegionsTest::testEdgeBug2(void) {
   // BoundaryUnderlay is 7x7.
   MarkerRegions mr(manager, 5, 5, 3);
 
-  Cardinal row(manager, 1, 4);
-  Cardinal col(manager, 1, 5);
+  Cardinal row(&manager, 1, 4);
+  Cardinal col(&manager, 1, 5);
 
   // Require something that should be impossible.
   manager.require(mr.boundaryUnderlay[row  ][col  ] != MarkerRegions::BLANK);
@@ -133,8 +133,8 @@ void MarkerRegionsTest::testEdgeBug3(void) {
   // BoundaryUnderlay is 7x7.
   MarkerRegions mr(manager, 5, 5, 3);
 
-  Cardinal row(manager, 1, 5);
-  Cardinal col(manager, 1, 4);
+  Cardinal row(&manager, 1, 5);
+  Cardinal col(&manager, 1, 4);
 
   // Require something that should be impossible.
   manager.require(mr.boundaryUnderlay[row  ][col  ] != MarkerRegions::BLANK);
@@ -163,8 +163,8 @@ void MarkerRegionsTest::testEdgeBug4(void) {
   // BoundaryUnderlay is 7x7.
   MarkerRegions mr(manager, 5, 5, 4);
 
-  Cardinal row(manager, 1, 5);
-  Cardinal col(manager, 1, 6);
+  Cardinal row(&manager, 1, 5);
+  Cardinal col(&manager, 1, 6);
 
   // Require something that should be impossible.
   manager.require(mr.vSpacing[row  ][col  ] == 2);
@@ -191,8 +191,8 @@ void MarkerRegionsTest::testEdgeBug5(void) {
   // BoundaryUnderlay is 7x7.
   MarkerRegions mr(manager, 5, 5, 4);
 
-  Cardinal row(manager, 1, 6);
-  Cardinal col(manager, 1, 5);
+  Cardinal row(&manager, 1, 6);
+  Cardinal col(&manager, 1, 5);
 
   // Require something that should be impossible.
   manager.require(mr.hSpacing[row  ][col  ] == 2);

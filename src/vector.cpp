@@ -67,17 +67,17 @@ Cardinal Vector::operator[](size_type index) const {
   // but these objects are small and we'd be doing basically the same operations even with a more
   // straightforward implementation.
   Var var = 0;
-  Cardinal dummyCardinal(manager, min, max, var);
-  var = startingVar + index*dummyCardinal.getNumLiterals();
-  return Cardinal(manager, min, max, var);
+  Cardinal dummyCardinal(&manager, min, max, var);
+  var = startingVar + index*dummyCardinal.numLiterals();
+  return Cardinal(&manager, min, max, var);
 }
 
 // The vector of (contiguous) literals required to represent this vector.
 // Equal to size*(max-min).
 unsigned int Vector::getNumLiterals() const {
   Var var = 0;
-  Cardinal dummyCardinal(manager, min, max, var);
-  return size*dummyCardinal.getNumLiterals();
+  Cardinal dummyCardinal(&manager, min, max, var);
+  return size*dummyCardinal.numLiterals();
 }
 
 // After a solution has been found, return a clause requiring a different solution

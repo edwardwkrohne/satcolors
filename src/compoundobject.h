@@ -155,7 +155,7 @@ template<unsigned I>
 inline typename std::enable_if<(I < CompoundObject<T>::numObjs), Matrix::value_type>::type
 CompoundObject<T>::getNumLiterals() const
 {
-  return std::get<I>(T::objTuple).getNumLiterals() + getNumLiterals<I+1>();
+  return std::get<I>(T::objTuple).numLiterals() + getNumLiterals<I+1>();
 }
 
 template<class T>

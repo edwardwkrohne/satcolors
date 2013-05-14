@@ -57,10 +57,10 @@ void IsolatedPatternTest::testConstruction(void) {
   CPPUNIT_ASSERT_EQUAL(0, isoPat.patternCenterCol);
   CPPUNIT_ASSERT_EQUAL(3, isoPat.patternHeight);
   CPPUNIT_ASSERT_EQUAL(3, isoPat.patternWidth);
-  CPPUNIT_ASSERT_EQUAL(1, isoPat.row.min);
-  CPPUNIT_ASSERT_EQUAL(6, isoPat.row.max);
-  CPPUNIT_ASSERT_EQUAL(0, isoPat.col.min);
-  CPPUNIT_ASSERT_EQUAL(8, isoPat.col.max);
+  CPPUNIT_ASSERT_EQUAL(1, isoPat.row.min());
+  CPPUNIT_ASSERT_EQUAL(6, isoPat.row.max());
+  CPPUNIT_ASSERT_EQUAL(0, isoPat.col.min());
+  CPPUNIT_ASSERT_EQUAL(8, isoPat.col.max());
   CPPUNIT_ASSERT_EQUAL(7, isoPat.matrix.height);
   CPPUNIT_ASSERT_EQUAL(10,isoPat.matrix.width);
 
@@ -114,10 +114,10 @@ void IsolatedPatternTest::testConstruction2(void) {
   CPPUNIT_ASSERT_EQUAL(1,  isoPat.patternCenterCol);
   CPPUNIT_ASSERT_EQUAL(3,  isoPat.patternHeight);
   CPPUNIT_ASSERT_EQUAL(4,  isoPat.patternWidth);
-  CPPUNIT_ASSERT_EQUAL(2,  isoPat.row.min);
-  CPPUNIT_ASSERT_EQUAL(7,  isoPat.row.max);
-  CPPUNIT_ASSERT_EQUAL(1,  isoPat.col.min);
-  CPPUNIT_ASSERT_EQUAL(5,  isoPat.col.max);
+  CPPUNIT_ASSERT_EQUAL(2,  isoPat.row.min());
+  CPPUNIT_ASSERT_EQUAL(7,  isoPat.row.max());
+  CPPUNIT_ASSERT_EQUAL(1,  isoPat.col.min());
+  CPPUNIT_ASSERT_EQUAL(5,  isoPat.col.max());
 }
 
 void IsolatedPatternTest::testBlankSolution(void) {

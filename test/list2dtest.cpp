@@ -31,7 +31,7 @@ namespace {
 typedef Cardinal::value_type value_type;
 
 Cardinal builder2d(SolverManager& manager, value_type row, value_type col, Var& var) {
-  return Cardinal(manager, row, row+2*col+1, var);
+  return Cardinal(&manager, row, row+2*col+1, var);
 }
 
 }
@@ -49,12 +49,12 @@ void List2dTest::testConstruction2d(void) {
   CPPUNIT_ASSERT_EQUAL(3, list.height);
   CPPUNIT_ASSERT_EQUAL(4, list.width);
 
-  CPPUNIT_ASSERT_EQUAL(0, list[0][0].min);
-  CPPUNIT_ASSERT_EQUAL(1, list[0][0].max);
-  CPPUNIT_ASSERT_EQUAL(2, list[2][0].min);
-  CPPUNIT_ASSERT_EQUAL(3, list[2][0].max);
-  CPPUNIT_ASSERT_EQUAL(1, list[1][3].min);
-  CPPUNIT_ASSERT_EQUAL(8, list[1][3].max);
+  CPPUNIT_ASSERT_EQUAL(0, list[0][0].min());
+  CPPUNIT_ASSERT_EQUAL(1, list[0][0].max());
+  CPPUNIT_ASSERT_EQUAL(2, list[2][0].min());
+  CPPUNIT_ASSERT_EQUAL(3, list[2][0].max());
+  CPPUNIT_ASSERT_EQUAL(1, list[1][3].min());
+  CPPUNIT_ASSERT_EQUAL(8, list[1][3].max());
 
   CPPUNIT_ASSERT_EQUAL(list.data.getNumLiterals(), list.getNumLiterals());
   CPPUNIT_ASSERT_EQUAL(list.getNumLiterals(), (unsigned int)var);
