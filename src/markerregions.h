@@ -22,7 +22,7 @@ public:
   typedef value_type size_type;
 
   // Creates an object representing the marker regions structure.
-  MarkerRegionsImpl(SolverManager& manager, size_type height, size_type width, value_type regionSize, Minisat::Var& startingVar = SolverManager::allocateNew);
+  MarkerRegionsImpl(SolverManager* manager, size_type height, size_type width, value_type regionSize, Minisat::Var& startingVar = SolverManager::allocateNew);
 
   // The corresponding requirement of being an object of this type.
   Requirement typeRequirement() const;
@@ -47,7 +47,7 @@ public:
   const value_type regionSize;
   // Note: regions vary between regionSize and regionSize+1 in size
 
-  SolverManager& manager;
+  SolverManager* manager;
 
   Matrix<>     boundaryUnderlay;
   MatrixView<> boundary;

@@ -43,12 +43,12 @@ class TestImpl {
 public:
   // TODO Remove the requirement that the implementation class supply a default argument
   // (not terribly important)
-  TestImpl(SolverManager& manager, Var& var = SolverManager::allocateNew);
+  TestImpl(SolverManager* manager, Var& var = SolverManager::allocateNew);
 
   Clause diffSolnReq() const;
   Requirement typeRequirement() const;
 
-  SolverManager& manager;
+  SolverManager* manager;
   Cardinal cardinal1;
   Cardinal cardinal2;
   Matrix<> matrix1;
@@ -58,11 +58,11 @@ public:
 
 typedef CompoundObject<TestImpl> Test;
 
-TestImpl::TestImpl(SolverManager& _manager, Var& var) :
+TestImpl::TestImpl(SolverManager* _manager, Var& var) :
   manager(_manager),
-  cardinal1(&manager, 0, 5, var),
-  cardinal2(&manager, 2, 3, var),
-  matrix1(&manager, 3, 5, 0, 2, var),
+  cardinal1(manager, 0, 5, var),
+  cardinal2(manager, 2, 3, var),
+  matrix1(manager, 3, 5, 0, 2, var),
   objTuple(cardinal1, cardinal2, matrix1)
 {
 
@@ -105,7 +105,7 @@ void CompoundObjectTest::testLastArg(void) {
 void CompoundObjectTest::testExplicitVarConstruction(void) {
   SolverManager manager;
   Var var = 0;
-  Test testObj(manager, var);
+  Test testObj(&manager, var);
 
   // Require the exact opposite of the requirement that testObj would
   // have required, if we had allowed it to.
@@ -129,17 +129,17 @@ void CompoundObjectTest::testCopyConstruction(void) {
 
   SolverManager manager;
   Var var = 0;
-  Test testObj(manager, var);
+  Test testObj(&manager, var);
   const Test& testObjConst = testObj;
 
   Test testObjCopy(testObj);
-  CPPUNIT_ASSERT_EQUAL(&manager, &testObjCopy.manager);
+  CPPUNIT_ASSERT_EQUAL(&manager, testObjCopy.manager);
 
   Test testObjConstCopy(testObjConst);
-  CPPUNIT_ASSERT_EQUAL(&manager, &testObjConstCopy.manager);
+  CPPUNIT_ASSERT_EQUAL(&manager, testObjConstCopy.manager);
 
   Test testObjMove(move(testObj));
-  CPPUNIT_ASSERT_EQUAL(&manager, &testObjMove.manager);
+  CPPUNIT_ASSERT_EQUAL(&manager, testObjMove.manager);
 
   // Require the exact opposite of the requirement that testObj or its copies
   // would have required, if any were allowed to.
@@ -150,7 +150,7 @@ void CompoundObjectTest::testCopyConstruction(void) {
 
 void CompoundObjectTest::testNoVarConstruction(void) {
   SolverManager manager;
-  Test testObj(manager);
+  Test testObj(&manager);
 
   // Require the exact opposite of the requirement that testObj should
   // have required.
@@ -162,7 +162,7 @@ void CompoundObjectTest::testNoVarConstruction(void) {
 
 void CompoundObjectTest::testAllocateNewConstruction(void) {
   SolverManager manager;
-  Test testObj(manager, SolverManager::allocateNew);
+  Test testObj(&manager, SolverManager::allocateNew);
 
   // Require the exact opposite of the requirement that testObj should
   // have required
@@ -173,8 +173,7 @@ void CompoundObjectTest::testAllocateNewConstruction(void) {
 
 void CompoundObjectTest::testGetNumLiterals(void) {
   Var var = 0;
-  SolverManager& manager = *(SolverManager*)0;
-  Test testObj(manager, var);
+  Test testObj(nullptr, var);
 
   typename Matrix<>::value_type expected =
       testObj.cardinal1.numLiterals() +
@@ -187,8 +186,7 @@ void CompoundObjectTest::testGetNumLiterals(void) {
 
 void CompoundObjectTest::testTypeRequirement(void) {
   Var var = 0;
-  SolverManager& manager = *(SolverManager*)0;
-  Test testObj(manager, var);
+  Test testObj(nullptr, var);
 
   Requirement expected =
       testObj.cardinal1.typeRequirement() &
@@ -201,7 +199,7 @@ void CompoundObjectTest::testTypeRequirement(void) {
 
 void CompoundObjectTest::testCurrSolnReq(void) {
   SolverManager manager;
-  Test testObj(manager);
+  Test testObj(&manager);
 
   ASSERT_SAT(manager);
 

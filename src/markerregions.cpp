@@ -60,7 +60,7 @@ int minRelRow(int w, int r) {
 // Creates an object representing the marker regions structure.  Registers requirements if
 // var is SolverManager::allocateNew
 MarkerRegionsImpl::MarkerRegionsImpl(
-    SolverManager& _manager,
+    SolverManager* _manager,
     size_type _height,
     size_type _width,
     value_type _regionSize,
@@ -71,13 +71,13 @@ MarkerRegionsImpl::MarkerRegionsImpl(
     width     (_width),
     regionSize(_regionSize),
 
-    boundaryUnderlay (&_manager, _height+2, _width+2, 0,        NUM_BOUNDARY,     var),
-    teeTeeNeighbor   (&_manager, _height+2, _width+2, 0,        NUM_NEIGHBOR,     var),
-    teeBlankNeighbor (&_manager, _height+2, _width+2, 0,        NUM_NEIGHBOR,     var),
-    hSpacing         (&_manager, _height+2, _width+2, 0,        _regionSize+1,    var),
-    vSpacing         (&_manager, _height+2, _width+2, 0,        _regionSize+1,    var),
-    actionRowUnderlay(&_manager, _height+2, _width+2, minRelRow(_width,  _regionSize), maxRelRow(_height, _width, _regionSize), var),
-    actionColUnderlay(&_manager, _height+2, _width+2, minRelRow(_height, _regionSize), maxRelRow(_width, _height, _regionSize), var),
+    boundaryUnderlay (_manager, _height+2, _width+2, 0,        NUM_BOUNDARY,     var),
+    teeTeeNeighbor   (_manager, _height+2, _width+2, 0,        NUM_NEIGHBOR,     var),
+    teeBlankNeighbor (_manager, _height+2, _width+2, 0,        NUM_NEIGHBOR,     var),
+    hSpacing         (_manager, _height+2, _width+2, 0,        _regionSize+1,    var),
+    vSpacing         (_manager, _height+2, _width+2, 0,        _regionSize+1,    var),
+    actionRowUnderlay(_manager, _height+2, _width+2, minRelRow(_width,  _regionSize), maxRelRow(_height, _width, _regionSize), var),
+    actionColUnderlay(_manager, _height+2, _width+2, minRelRow(_height, _regionSize), maxRelRow(_width, _height, _regionSize), var),
 
     boundary (boundaryUnderlay.view   (1, 1, _height+1, _width+1)),
     actionRow(actionRowUnderlay.view(1, 1, _height+1, _width+1)),
@@ -204,9 +204,9 @@ function<ostream& (ostream&)> MarkerRegionsImpl::yesNoMaybe(const DualClause& cl
     for ( size_type i = 0; i < height; i++ ) { // Rows
       out << "    ";
       for ( size_type j = 0; j < width; j++ ) { // Columns
-        if        ( !manager.solve(clause & boundary[i][j] != BLANK ) ) {
+        if        ( !manager->solve(clause & boundary[i][j] != BLANK ) ) {
           out << 0 << " ";
-        } else if ( !manager.solve(clause & boundary[i][j] == BLANK ) ) {
+        } else if ( !manager->solve(clause & boundary[i][j] == BLANK ) ) {
           out << 1 << " ";
         } else {
           out << -1 << " ";
@@ -234,13 +234,13 @@ function<ostream& (ostream&)> MarkerRegionsImpl::yesNoMaybeRedBlue(const DualCla
     for ( size_type i = 0; i < height; i++ ) { // Rows
       out << "    ";
       for ( size_type j = 0; j < width; j++ ) { // Columns
-        if        ( !manager.solve(clause & boundary[i][j] != BLANK ) ) {
+        if        ( !manager->solve(clause & boundary[i][j] != BLANK ) ) {
           out << WHITE << " ";
-        } else if ( !manager.solve(clause & boundary[i][j] == BLANK ) ) {
+        } else if ( !manager->solve(clause & boundary[i][j] == BLANK ) ) {
           out << BLACK << " ";
-        } else if ( !manager.solve(clause & redLit  & boundary[i][j] == BLANK ) ) {
+        } else if ( !manager->solve(clause & redLit  & boundary[i][j] == BLANK ) ) {
           out << RED << " ";
-        } else if ( !manager.solve(clause & blueLit & boundary[i][j] == BLANK ) ) {
+        } else if ( !manager->solve(clause & blueLit & boundary[i][j] == BLANK ) ) {
           out << BLUE << " ";
         } else {
           out << GRAY << " ";

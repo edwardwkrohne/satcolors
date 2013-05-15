@@ -36,20 +36,20 @@ MarkerRegionsExperiment::createGridBuilder(SolverManager* manager, Var& var) con
   return builder;
 }
 
-MarkerRegionsExperiment::MarkerRegionsExperiment(SolverManager& _manager, size_type _gridSize, Array2d<string> _patternStrings, Var& var) :
+MarkerRegionsExperiment::MarkerRegionsExperiment(SolverManager* _manager, size_type _gridSize, Array2d<string> _patternStrings, Var& var) :
     patternStrings(_patternStrings),
     gridSize(_gridSize),
     height(_patternStrings.height()),
     width(_patternStrings.width()),
     manager(_manager),
     markerRegions(manager, height*gridSize, width*gridSize, gridSize, var),
-    brackets(&manager, height*gridSize, width*gridSize, 0, 2, var),
-    grids(height, width, createGridBuilder(&manager, var))
+    brackets(manager, height*gridSize, width*gridSize, 0, 2, var),
+    grids(height, width, createGridBuilder(manager, var))
 {
   if ( var == SolverManager::allocateNew ) {
     for ( size_type i = 0; i < brackets.height(); i++ ) {
       for ( size_type j = 0; j < brackets.width(); j++ ) {
-        manager.require(implication(brackets[i][j] == 1, markerRegions.boundary[i][j] != MarkerRegions::BLANK));
+        manager->require(implication(brackets[i][j] == 1, markerRegions.boundary[i][j] != MarkerRegions::BLANK));
       }
     }
   }
@@ -74,11 +74,11 @@ function<ostream& (ostream&)> MarkerRegionsExperiment::yesNoMaybe(const DualClau
 }
 
 void MarkerRegionsExperiment::propagationExperiment(std::function<bool(void)> continueCondition, std::function<void(const DualClause&)> action) const {
-  while ( continueCondition() && manager.solve() ) {
+  while ( continueCondition() && manager->solve() ) {
     auto boundaryScenario = currSolnReq();
     action(boundaryScenario);
 
-    manager.require(~boundaryScenario);
+    manager->require(~boundaryScenario);
   }
 }
 

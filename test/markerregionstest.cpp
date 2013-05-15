@@ -64,7 +64,7 @@ void MarkerRegionsTest::testEdgeBug(void) {
 
   // Object under test.
   // BoundaryUnderlay is 7x7.
-  MarkerRegions mr(manager, 5, 5, 3);
+  MarkerRegions mr(&manager, 5, 5, 3);
 
   Cardinal row(&manager, 1, 4);
   Cardinal col(&manager, 1, 4);
@@ -94,7 +94,7 @@ void MarkerRegionsTest::testEdgeBug2(void) {
 
   // Object under test.
   // BoundaryUnderlay is 7x7.
-  MarkerRegions mr(manager, 5, 5, 3);
+  MarkerRegions mr(&manager, 5, 5, 3);
 
   Cardinal row(&manager, 1, 4);
   Cardinal col(&manager, 1, 5);
@@ -124,7 +124,7 @@ void MarkerRegionsTest::testEdgeBug3(void) {
 
   // Object under test.
   // BoundaryUnderlay is 7x7.
-  MarkerRegions mr(manager, 5, 5, 3);
+  MarkerRegions mr(&manager, 5, 5, 3);
 
   Cardinal row(&manager, 1, 5);
   Cardinal col(&manager, 1, 4);
@@ -154,7 +154,7 @@ void MarkerRegionsTest::testEdgeBug4(void) {
 
   // Object under test.
   // BoundaryUnderlay is 7x7.
-  MarkerRegions mr(manager, 5, 5, 4);
+  MarkerRegions mr(&manager, 5, 5, 4);
 
   Cardinal row(&manager, 1, 5);
   Cardinal col(&manager, 1, 6);
@@ -182,7 +182,7 @@ void MarkerRegionsTest::testEdgeBug5(void) {
 
   // Object under test.
   // BoundaryUnderlay is 7x7.
-  MarkerRegions mr(manager, 5, 5, 4);
+  MarkerRegions mr(&manager, 5, 5, 4);
 
   Cardinal row(&manager, 1, 6);
   Cardinal col(&manager, 1, 5);
@@ -210,7 +210,7 @@ void MarkerRegionsTest::testShortBoxes(void) {
 
   // Object under test.
   // BoundaryUnderlay is 7x7.
-  MarkerRegions mr(manager, 5, 5, 3);
+  MarkerRegions mr(&manager, 5, 5, 3);
 
   // Require something that should be possible.
   manager.require(mr.boundaryUnderlay[1][2] != MarkerRegions::BLANK);
@@ -230,7 +230,7 @@ void MarkerRegionsTest::testTallBoxes(void) {
 
   // Object under test.
   // BoundaryUnderlay is 7x7.
-  MarkerRegions mr(manager, 5, 5, 3);
+  MarkerRegions mr(&manager, 5, 5, 3);
 
   // Require something that should be possible.
   manager.require(mr.boundaryUnderlay[1][2] != MarkerRegions::BLANK);
@@ -249,7 +249,7 @@ void MarkerRegionsTest::testTooTallBoxes(void) {
 
   // Object under test.
   // BoundaryUnderlay is 7x7.
-  MarkerRegions mr(manager, 6, 5, 3);
+  MarkerRegions mr(&manager, 6, 5, 3);
 
   // Require something that should be possible.
   manager.require(mr.boundaryUnderlay[1][2] != MarkerRegions::BLANK);

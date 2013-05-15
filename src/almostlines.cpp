@@ -15,7 +15,7 @@ using Minisat::Lit;
 // Creates an object representing the marker regions structure.  Registers requirements if
 // var is SolverManager::allocateNew
 AlmostLinesImpl::AlmostLinesImpl(
-    SolverManager& _manager,
+    SolverManager* _manager,
     size_type _height,
     size_type _width,
     value_type _minThickness,
@@ -31,13 +31,13 @@ AlmostLinesImpl::AlmostLinesImpl(
     majorOffsets (_height+2, 
 		  _width+2, 
 		  [&](int row, int col) {
-		    return Ordinal(&manager, -height-2, width+height+4, var);
+		    return Ordinal(manager, -height-2, width+height+4, var);
 		  }),
 
     minorOffsets (_height+2, 
 		  _width+2, 
 		  [&](int row, int col) {
-		    return Ordinal(&manager, 0, maxThickness, var);
+		    return Ordinal(manager, 0, maxThickness, var);
 		  }),
 
     objTuple(majorOffsets, minorOffsets)

@@ -21,7 +21,7 @@ public:
   typedef Cardinal::value_type size_type;
 
   // Creates an object representing the marker regions structure.
-  AlmostLinesImpl(SolverManager& manager, 
+  AlmostLinesImpl(SolverManager* manager, 
 		  size_type height, 
 		  size_type width, 
 		  value_type minThickness, 
@@ -38,7 +38,7 @@ public:
   // in the boundary.
   std::function<std::ostream& (std::ostream&)> yesNoMaybeRedBlue(const DualClause& clause, Minisat::Lit redLit, Minisat::Lit blueLit) const;
 
-  SolverManager& manager;
+  SolverManager* manager;
 
   const size_type height;
   const size_type width;
