@@ -25,11 +25,9 @@ public:
   typedef std::function<obj_type(value_type, value_type)> builder_type;
 
   List2d(
-      SolverManager* manager,
       Cardinal::value_type height,
       Cardinal::value_type width,
-      builder_type builder,
-      Minisat::Var& startingVar = SolverManager::allocateNew);
+      builder_type builder);
 
   SubscriptWrapper<obj_type> operator[](value_type row) const;
 
@@ -50,11 +48,9 @@ private:
 
 template<class obj_type>
 List2d<obj_type>::List2d(
-    SolverManager* _manager,
     Cardinal::value_type _height,
     Cardinal::value_type _width,
-    builder_type builder,
-    Minisat::Var& _startingVar) :
+    builder_type builder) :
   mData(),
   mHeight(_height),
   mWidth(_width)
@@ -76,15 +72,13 @@ List2d<obj_type>::List2d(
 
 // Function to simplify determining the type of a particular list.
 template<class builder_type>
-auto makeList(SolverManager& manager, 
-	      Cardinal::value_type height, 
+auto makeList(Cardinal::value_type height, 
 	      Cardinal::value_type width, 
-	      builder_type builder, 
-	      Minisat::Var& startingVar)
+	      builder_type builder)
   -> List2d<decltype(builder(height, width))> {
 
   typedef decltype(builder(height, width)) obj_type;
-  return List2d<obj_type>(&manager, height, width, builder, startingVar);
+  return List2d<obj_type>(height, width, builder);
 }
 
 template<class obj_type>

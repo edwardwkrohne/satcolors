@@ -25,13 +25,15 @@ using namespace std;
 
 std::function<IsolatedPattern(value_type, value_type)> 
 MarkerRegionsExperiment::createGridBuilder(SolverManager* manager, Var& var) const {
-  return [this, manager, &var] (value_type row, value_type col) {
+  auto builder = [this, manager, &var] (value_type row, value_type col) {
     return IsolatedPattern(
         *manager,
         brackets.view(row*gridSize, col*gridSize, (row+1)*gridSize, (col+1)*gridSize),
         patternStrings[row][col],
         var);
   };
+
+  return builder;
 }
 
 MarkerRegionsExperiment::MarkerRegionsExperiment(SolverManager& _manager, size_type _gridSize, Array2d<string> _patternStrings, Var& var) :
@@ -42,7 +44,7 @@ MarkerRegionsExperiment::MarkerRegionsExperiment(SolverManager& _manager, size_t
     manager(_manager),
     markerRegions(manager, height*gridSize, width*gridSize, gridSize, var),
     brackets(manager, height*gridSize, width*gridSize, 0, 2, var),
-    grids(&manager, height, width, createGridBuilder(&_manager, var), var)
+    grids(height, width, createGridBuilder(&_manager, var))
 {
   if ( var == SolverManager::allocateNew ) {
     for ( size_type i = 0; i < brackets.height; i++ ) {

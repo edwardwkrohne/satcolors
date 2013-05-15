@@ -28,21 +28,17 @@ AlmostLinesImpl::AlmostLinesImpl(
     minThickness(_minThickness),
     maxThickness(_maxThickness),
 
-    majorOffsets (&_manager, 
-		  _height+2, 
+    majorOffsets (_height+2, 
 		  _width+2, 
 		  [&](int row, int col) {
 		    return Ordinal(&manager, -height-2, width+height+4, var);
-		  },
-		  var),
+		  }),
 
-    minorOffsets (&_manager, 
-		  _height+2, 
+    minorOffsets (_height+2, 
 		  _width+2, 
 		  [&](int row, int col) {
 		    return Ordinal(&manager, 0, maxThickness, var);
-		  },
-		  var),
+		  }),
 
     objTuple(majorOffsets, minorOffsets)
 {

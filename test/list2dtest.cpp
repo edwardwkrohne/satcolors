@@ -30,9 +30,10 @@ namespace {
 
 typedef Cardinal::value_type value_type;
 
-function<Cardinal(value_type, value_type)> getBuilder(SolverManager& manager, Var& var) {
+function<Cardinal(value_type, value_type)> getBuilder(Var& var) {
+
   auto builder2d = [&](value_type row, value_type col) {
-    return Cardinal(&manager, row, row+2*col+1, var);
+    return Cardinal(nullptr, row, row+2*col+1, var);
   };
 
   return builder2d;
@@ -41,13 +42,10 @@ function<Cardinal(value_type, value_type)> getBuilder(SolverManager& manager, Va
 }
 
 void List2dTest::testConstruction2d(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
   Var var = 0;
-  auto builder2d = getBuilder(dummyManager, var);
+  auto builder2d = getBuilder(var);
 
-  auto list = makeList(dummyManager, 3, 4, builder2d, var);
+  auto list = makeList(3, 4, builder2d);
 
   // Just hit it with a battery of checks.
   CPPUNIT_ASSERT_EQUAL(3u, list.height());
@@ -72,13 +70,10 @@ void List2dTest::testConstruction2d(void) {
 
 
 void List2dTest::testConstructionFailure(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
   Var var = 0;
-  auto builder2d = getBuilder(dummyManager, var);
+  auto builder2d = getBuilder(var);
 
-  CPPUNIT_ASSERT_THROW(auto list = makeList(dummyManager, 4, -1, builder2d, var), invalid_argument);
-  CPPUNIT_ASSERT_THROW(auto list = makeList(dummyManager, -1, 4, builder2d, var), invalid_argument);
-  CPPUNIT_ASSERT_THROW(auto list = makeList(dummyManager, -1, -1, builder2d, var), invalid_argument);
+  CPPUNIT_ASSERT_THROW(auto list = makeList(4, -1, builder2d), invalid_argument);
+  CPPUNIT_ASSERT_THROW(auto list = makeList(-1, 4, builder2d), invalid_argument);
+  CPPUNIT_ASSERT_THROW(auto list = makeList(-1, -1, builder2d), invalid_argument);
 }
