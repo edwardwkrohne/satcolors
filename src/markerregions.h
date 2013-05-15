@@ -12,12 +12,14 @@
 #include "requirement.h"
 #include "solvermanager.h"
 #include "compoundobject.h"
+#include "cardinal.h"
 #include "matrix.h"
+#include "matrixview.h"
 
 class MarkerRegionsImpl {
 public:
-  typedef Matrix::value_type value_type;
-  typedef Matrix::size_type size_type;
+  typedef Cardinal::value_type value_type;
+  typedef value_type size_type;
 
   // Creates an object representing the marker regions structure.
   MarkerRegionsImpl(SolverManager& manager, size_type height, size_type width, value_type regionSize, Minisat::Var& startingVar = SolverManager::allocateNew);
@@ -47,17 +49,17 @@ public:
 
   SolverManager& manager;
 
-  Matrix     boundaryUnderlay;
-  MatrixView boundary;
-  Matrix     teeTeeNeighbor;
-  Matrix     teeBlankNeighbor;
-  Matrix     hSpacing;
-  Matrix     vSpacing;
-  Matrix     actionRowUnderlay;
-  MatrixView actionRow;
-  Matrix     actionColUnderlay;
-  MatrixView actionCol;
-  std::tuple<Matrix&, Matrix&, Matrix&, Matrix&, Matrix&, Matrix&, Matrix&> objTuple;
+  Matrix<>     boundaryUnderlay;
+  MatrixView<> boundary;
+  Matrix<>     teeTeeNeighbor;
+  Matrix<>     teeBlankNeighbor;
+  Matrix<>     hSpacing;
+  Matrix<>     vSpacing;
+  Matrix<>     actionRowUnderlay;
+  MatrixView<> actionRow;
+  Matrix<>     actionColUnderlay;
+  MatrixView<> actionCol;
+  std::tuple<Matrix<>&, Matrix<>&, Matrix<>&, Matrix<>&, Matrix<>&, Matrix<>&, Matrix<>&> objTuple;
 
   // Each element can be a boundary or not.  If not, there are several types of boundary it can take.
   enum Boundary {

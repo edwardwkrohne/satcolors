@@ -15,86 +15,132 @@
 #include <minisat/core/SolverTypes.h>
 #include "requirement.h"
 #include "solvermanager.h"
-#include "vector.h"
+#include "cardinal.h"
+#include "matrix.h"
 
+template<typename Scalar>
+class Matrix;
+
+template<typename Scalar = Cardinal>
 class MatrixView {
 public:
-  typedef Vector::value_type value_type;
-  typedef Vector::size_type size_type;
+  typedef typename Matrix<Scalar>::value_type value_type;
+  typedef typename Matrix<Scalar>::size_type size_type;
 
-  // Copy constructor.  Does not register requirements.
-  MatrixView(const MatrixView& copy);
+  MatrixView(const Matrix<Scalar>& other); 
+  MatrixView(const MatrixView& copy) = default;
+  //  MatrixView(MatrxView&& move) = default;
+  MatrixView& operator=(const MatrixView& copy) = default;
+  MatrixView& operator=(MatrixView&& copy) = default;
+
+  MatrixView(const Matrix<Scalar>* mat, size_type startRow, size_type startCol, size_type endRow, size_type endCol);
 
   // Return a submatrix of the current matrix
   MatrixView view(size_type startRow, size_type startCol, size_type endRow, size_type endCol) const;
 
   // Return a vector representing a row of the matrix.  Can be used to double-index the matrix.
-  Vector operator[](size_type index) const;
+  SubscriptWrapper<Scalar> operator[](size_type index) const;
 
-  class CardinalIndexedVector;
-  class PairIndexedCardinal;
-
-  // Allows indexing of Cardinals by Cardinals.  Thus, the location of the Cardinal indexed can
+  // Allows indexing of Scalars by Scalars.  Thus, the location of the Scalar indexed can
   // depend on constraints.
-  CardinalIndexedVector operator[](Cardinal row) const;
+  SubscriptWrapper<PairIndexedScalar<Scalar>, Scalar> operator[](Scalar row) const;
 
-  // An intermediate class for arriving at a PairIndexedCardinal.
-  // May be best, at some point, to replace this with a SubscriptWrapper.
-  class CardinalIndexedVector {
-    friend CardinalIndexedVector MatrixView::operator[](Cardinal row) const;
-  public:
-    // Continue indexing -- we just want to get to the PairIndexedCardinal.
-    PairIndexedCardinal operator[](Cardinal col) const;
-
-  private:
-    CardinalIndexedVector(const MatrixView& matrix, Cardinal row);
-
-    const MatrixView& matrix;
-    Cardinal row;
-  };
-
-  // A class (intended as a temporary) which can establish restrictions on
-  // cardinals in situations where the exact location of the index depends
-  // on other constraints
-  class PairIndexedCardinal {
-    friend PairIndexedCardinal MatrixView::CardinalIndexedVector::operator[](Cardinal col) const;
-  public:
-    // Value requirements on PairIndexedCardinals
-    Requirement operator ==(value_type rhs) const;
-    Requirement operator !=(value_type rhs) const;
-
-    Requirement operator == (const Cardinal& rhs) const;
-    Requirement operator != (const Cardinal& rhs) const;
-
-  private:
-    PairIndexedCardinal(const MatrixView& matrix, Cardinal row, Cardinal col);
-
-    const MatrixView& matrix;
-    Cardinal row;
-    Cardinal col;
-  };
-
-  const size_type height;
-  const size_type width;
-  const value_type min;
-  const value_type max;
-  const size_type pitch; // Distance between rows
-
-  SolverManager* manager;
-  const Minisat::Var startingVar;
-
-protected:
-  // Creates an object representing a matrix.  Does not register requirements.
-  // Does NOT update startingVar; Matrix can do that.
-  MatrixView(SolverManager* manager, Minisat::Var startingVar, size_type height, size_type width, size_type pitch, value_type min, value_type max);
+  size_type  height() const;
+  size_type  width() const;
+private:
+  const Matrix<Scalar>* baseMatrix;
+  size_type mStartRow;
+  size_type mStartCol;
+  size_type mEndRow;
+  size_type mEndCol;
 };
 
 // Output operator
-std::ostream& operator<<(std::ostream& out, const MatrixView& matrix);
+template<typename Scalar>
+std::ostream& operator<<(std::ostream& out, const MatrixView<Scalar>& matrix) {
+  typedef typename MatrixView<Scalar>::size_type size_type;
+  for ( size_type i = 0; i < matrix.height(); i++) {
+    out << "    ";
+    for ( size_type j = 0; j < matrix.width(); j++ ) {
+      out << matrix[i] << " ";
+    }
+    out << std::endl;
+  }
 
-Requirement operator==(MatrixView::value_type lhs, const MatrixView::PairIndexedCardinal& rhs);
-Requirement operator!=(MatrixView::value_type lhs, const MatrixView::PairIndexedCardinal& rhs);
-Requirement operator==(const Cardinal& lhs, const MatrixView::PairIndexedCardinal& rhs);
-Requirement operator!=(const Cardinal& lhs, const MatrixView::PairIndexedCardinal& rhs);
+  return out;
+}
+
+template<typename Scalar>
+MatrixView<Scalar>::MatrixView(const Matrix<Scalar>* mat, 
+			       size_type startRow, 
+			       size_type startCol, 
+			       size_type endRow, 
+			       size_type endCol) :
+  baseMatrix(mat),
+  mStartRow(startRow),
+  mStartCol(startCol),
+  mEndRow(endRow),
+  mEndCol(endCol)
+{
+  if ( mStartRow > mEndRow || mStartCol > mEndCol ) {
+    throw std::invalid_argument("Degenerate view requested.");
+  }
+
+  if ( mStartRow < 0 || mStartCol < 0 || mEndRow >= mat->height() || mEndCol >= mat->width() ) {
+    throw std::out_of_range("Bad dimensions for matrix view; out of bounds.");
+  }
+
+}
+
+template<typename Scalar>
+MatrixView<Scalar>::MatrixView(const Matrix<Scalar>& mat) :
+  baseMatrix(&mat),
+  mStartRow(0),
+  mStartCol(0),
+  mEndRow(mat.height()),
+  mEndCol(mat.width())  
+{
+
+}
+
+// Return a submatrix of the current matrix
+template<typename Scalar>
+MatrixView<Scalar> MatrixView<Scalar>::view(size_type startRow, 
+					    size_type startCol, 
+					    size_type endRow, 
+					    size_type endCol) const {
+  return MatrixView<Scalar>(baseMatrix, mStartRow+startRow, mStartCol+startCol, mStartRow+endRow, mStartCol+endCol);
+}
+
+// Return a vector representing a row of the matrix.  Can be used to double-index the matrix.
+template<typename Scalar>
+SubscriptWrapper<Scalar> MatrixView<Scalar>::operator[](size_type row) const {
+  auto closure = [=] (size_type col) {      
+    return (*baseMatrix)[row + mStartRow][col + mStartCol];
+  };
+
+  return SubscriptWrapper<Scalar>(closure);
+}
+
+// Allows indexing of Scalars by Scalars.  Thus, the location of the Scalar indexed can
+// depend on constraints.
+template<typename Scalar>
+SubscriptWrapper<PairIndexedScalar<Scalar>, Scalar> MatrixView<Scalar>::operator[](Scalar row) const {
+  auto closure = [=] (Scalar col) {
+    return PairIndexedScalar<Scalar>(baseMatrix, row + mStartRow, col + mStartCol);
+  };
+  
+  return SubscriptWrapper<PairIndexedScalar<Scalar>, Scalar>(closure);
+}
+
+template<typename Scalar>
+typename MatrixView<Scalar>::size_type MatrixView<Scalar>::height() const {
+  return mEndRow - mStartRow;
+}
+
+template<typename Scalar>
+typename MatrixView<Scalar>::size_type MatrixView<Scalar>::width() const {
+  return mEndCol - mStartCol;
+}
 
 #endif // MATRIXVIEW_H

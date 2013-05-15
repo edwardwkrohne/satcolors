@@ -15,8 +15,8 @@
 #include "manipulators.h"
 #include "solvermanager.h"
 
-typedef Matrix::size_type size_type;
-typedef Matrix::value_type value_type;
+typedef typename Matrix<>::size_type size_type;
+typedef typename Matrix<>::value_type value_type;
 
 using Minisat::Lit;
 using Minisat::mkLit;
@@ -47,8 +47,8 @@ MarkerRegionsExperiment::MarkerRegionsExperiment(SolverManager& _manager, size_t
     grids(height, width, createGridBuilder(&manager, var))
 {
   if ( var == SolverManager::allocateNew ) {
-    for ( size_type i = 0; i < brackets.height; i++ ) {
-      for ( size_type j = 0; j < brackets.width; j++ ) {
+    for ( size_type i = 0; i < brackets.height(); i++ ) {
+      for ( size_type j = 0; j < brackets.width(); j++ ) {
         manager.require(implication(brackets[i][j] == 1, markerRegions.boundary[i][j] != MarkerRegions::BLANK));
       }
     }

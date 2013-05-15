@@ -16,18 +16,18 @@
 
 class IsolatedPattern {
 public:
-  typedef Matrix::value_type value_type;
-  typedef Matrix::size_type size_type;
+  typedef Matrix<>::value_type value_type;
+  typedef Matrix<>::size_type size_type;
 
   // Usual constructors
   IsolatedPattern(SolverManager& manager,
-      const MatrixView& matrix,
-      const std::string& pattern,
-      Minisat::Var& var = SolverManager::allocateNew);
+		  const MatrixView<>& matrix,
+		  const std::string& pattern,
+		  Minisat::Var& var = SolverManager::allocateNew);
   IsolatedPattern(SolverManager& manager,
-      const MatrixView& matrix,
-      const Pattern& pattern,
-      Minisat::Var& var = SolverManager::allocateNew);
+		  const MatrixView<>& matrix,
+		  const Pattern& pattern,
+		  Minisat::Var& var = SolverManager::allocateNew);
 
   // Usual access methods.  Behavior similar to that of Cardinal, MatrixView, etc.
   Clause diffSolnReq() const;
@@ -45,10 +45,10 @@ public:
   const size_type patternCenterRow;
   const size_type patternCenterCol;
 
-  MatrixView matrix;
+  MatrixView<> matrix;
   Cardinal row;
   Cardinal col;
-  Matrix centerIndicator;
+  Matrix<> centerIndicator;
 
 private:
   static size_type calcPatternHeight(const std::string& pattern);

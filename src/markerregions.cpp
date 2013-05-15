@@ -4,6 +4,7 @@
 
 #include <iterator>
 #include "markerregions.h"
+#include "pairindexedscalar.h"
 #include "requirementinserter.h"
 #include "manipulators.h"
 
@@ -260,9 +261,9 @@ function<ostream& (ostream&)> MarkerRegionsImpl::yesNoMaybe() const {
 
 // Output operator
 ostream& operator<<(ostream& out, const MarkerRegionsImpl& mr) {
-  for ( MarkerRegionsImpl::size_type i = 0; i < mr.boundary.height; i++) {
+  for ( MarkerRegionsImpl::size_type i = 0; i < mr.boundary.height(); i++) {
     out << "    ";
-    for ( MarkerRegionsImpl::size_type j = 0; j < mr.boundary.width; j++) {
+    for ( MarkerRegionsImpl::size_type j = 0; j < mr.boundary.width(); j++) {
       out << (mr.boundary[i][j].modelValue() == MarkerRegionsImpl::BLANK ? "0 " : "1 ");
     }
     out << newl;

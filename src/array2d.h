@@ -1,9 +1,10 @@
-/*
- * array2d.h
- *
- *  A nice stl-style 2d array.  Automatically deallocates memory when it goes out of scope.
- *  To access, use [] syntax.  For example, array[i][j].
- */
+// -*- Mode:C++ -*-
+// 
+// array2d.h
+//
+//  A nice stl-style 2d array.  Automatically deallocates memory when it goes out of scope.
+//  To access, use [] syntax.  For example, array[i][j].
+//
 
 #ifndef ARRAY2D_H_
 #define ARRAY2D_H_
@@ -15,29 +16,29 @@
 #include <stdexcept>
 #include <initializer_list>
 
-template<class T>
+template<typename return_type, typename index_type = std::vector<int>::size_type>
 class SubscriptWrapper {
 public:
-  typedef typename std::vector<int>::size_type size_type;
-  typedef std::function<T(size_type)> functor_type;
-
+  typedef index_type size_type;
+  typedef std::function<return_type(index_type)> functor_type;
+  
   SubscriptWrapper(const functor_type functor);
 
-  T operator[] (size_type index) const;
+  return_type operator[] (index_type index) const;
 
 private:
   functor_type functor;
 };
 
-template<class T>
-SubscriptWrapper<T>::SubscriptWrapper(const functor_type _functor) :
+template<typename return_type, typename index_type>
+SubscriptWrapper<return_type, index_type>::SubscriptWrapper(const functor_type _functor) :
   functor(_functor)
 {
 
 }
 
-template<class T>
-T SubscriptWrapper<T>::operator[](size_type index) const {
+template<typename return_type, typename index_type>
+return_type SubscriptWrapper<return_type, index_type>::operator[](index_type index) const {
   return functor(index);
 }
 

@@ -51,9 +51,9 @@ public:
   SolverManager& manager;
   Cardinal cardinal1;
   Cardinal cardinal2;
-  Matrix matrix1;
+  Matrix<> matrix1;
 
-  tuple<Cardinal&, Cardinal&, Matrix&> objTuple;
+  tuple<Cardinal&, Cardinal&, Matrix<>&> objTuple;
 };
 
 typedef CompoundObject<TestImpl> Test;
@@ -176,7 +176,7 @@ void CompoundObjectTest::testGetNumLiterals(void) {
   SolverManager& manager = *(SolverManager*)0;
   Test testObj(manager, var);
 
-  Matrix::value_type expected =
+  typename Matrix<>::value_type expected =
       testObj.cardinal1.numLiterals() +
       testObj.cardinal2.numLiterals() +
       testObj.matrix1.numLiterals();

@@ -17,7 +17,7 @@
 
 class MarkerRegionsExperiment {
 public:
-  typedef Matrix::value_type value_type;
+  typedef Matrix<>::value_type value_type;
   // Usual constructors
   MarkerRegionsExperiment(SolverManager& manager, value_type gridSize, Array2d<std::string> patternStrings, Minisat::Var& var = SolverManager::allocateNew);
   MarkerRegionsExperiment(const MarkerRegionsExperiment& copy);
@@ -43,7 +43,7 @@ public:
 
   SolverManager& manager;
   MarkerRegions markerRegions;
-  Matrix brackets;
+  Matrix<> brackets;
   Grid<IsolatedPattern> grids;
 
 private:

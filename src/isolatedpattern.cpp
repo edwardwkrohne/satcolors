@@ -20,8 +20,8 @@ Requirement typeSpecificTypeRequirement(const IsolatedPattern& pat) {
 
   // Much simpler requirements are available if the pattern is blank.
   if ( pat.pattern.isBlank ) {
-    for ( size_type i = 0; i < pat.matrix.height; i++ ) {
-      for ( size_type j = 0; j < pat.matrix.width; j++ ) {
+    for ( size_type i = 0; i < pat.matrix.height(); i++ ) {
+      for ( size_type j = 0; j < pat.matrix.width(); j++ ) {
         result &= pat.matrix[i][j] == 0;
       }
     }
@@ -30,8 +30,8 @@ Requirement typeSpecificTypeRequirement(const IsolatedPattern& pat) {
 
   // centerIndicator[row][col] is the only cell in centerIndicator that is 1.
   // centerIndicator is the indicator function of the center point for the pattern.
-  for ( size_type i = 0; i < pat.centerIndicator.height; i++ ) {
-    for ( size_type j = 0; j < pat.centerIndicator.width; j++ ) {
+  for ( size_type i = 0; i < pat.centerIndicator.height(); i++ ) {
+    for ( size_type j = 0; j < pat.centerIndicator.width(); j++ ) {
       result &= equivalence(
           pat.row == i+pat.patternCenterRow & pat.col == j+pat.patternCenterCol,
           pat.centerIndicator[i][j] == 1);
@@ -39,7 +39,7 @@ Requirement typeSpecificTypeRequirement(const IsolatedPattern& pat) {
   }
 
   // Make a clause for each cell in the matrix
-  Array2d<Clause> clauses(pat.matrix.height, pat.matrix.width);
+  Array2d<Clause> clauses(pat.matrix.height(), pat.matrix.width());
 
   // Loop through the possible values that row and col can take
   for ( size_type i = pat.row.min(); i < pat.row.max(); i++ ) {
@@ -60,8 +60,8 @@ Requirement typeSpecificTypeRequirement(const IsolatedPattern& pat) {
 
   // Now, we have clauses specifying how each cell in the matrix can be one.  Make this an equivalence
   // in each case.
-  for ( size_type i = 0; i < pat.matrix.height; i++ ) {
-    for ( size_type j = 0; j < pat.matrix.width; j++ ) {
+  for ( size_type i = 0; i < pat.matrix.height(); i++ ) {
+    for ( size_type j = 0; j < pat.matrix.width(); j++ ) {
       result &= equivalence(move(clauses[i][j]), pat.matrix[i][j] == 1);
     }
   }
@@ -72,7 +72,7 @@ Requirement typeSpecificTypeRequirement(const IsolatedPattern& pat) {
 
 IsolatedPattern::IsolatedPattern(
   SolverManager& _manager,
-  const MatrixView& _matrix,
+  const MatrixView<>& _matrix,
   const std::string& strPattern,
   Var& var)
 :
@@ -83,9 +83,9 @@ IsolatedPattern::IsolatedPattern(
     patternCenterRow(pattern.centerRow),
     patternCenterCol(pattern.centerCol),
     matrix(_matrix),
-    row(&_manager, patternCenterRow, _matrix.height - (patternHeight - patternCenterRow)+1, var),
-    col(&_manager, patternCenterCol, _matrix.width  - (patternWidth  - patternCenterCol)+1, var),
-    centerIndicator(&_manager, _matrix.height-patternHeight+1, _matrix.width-patternWidth+1, 0, 2, var)
+    row(&_manager, patternCenterRow, _matrix.height() - (patternHeight - patternCenterRow)+1, var),
+    col(&_manager, patternCenterCol, _matrix.width()  - (patternWidth  - patternCenterCol)+1, var),
+    centerIndicator(&_manager, _matrix.height()-patternHeight+1, _matrix.width()-patternWidth+1, 0, 2, var)
 {
   if ( var == SolverManager::allocateNew ) {
     manager.require(typeSpecificTypeRequirement(*this));
@@ -95,7 +95,7 @@ IsolatedPattern::IsolatedPattern(
 
 IsolatedPattern::IsolatedPattern(
   SolverManager& _manager,
-  const MatrixView& _matrix,
+  const MatrixView<>& _matrix,
   const Pattern& _pattern,
   Var& var)
 :
@@ -106,9 +106,9 @@ IsolatedPattern::IsolatedPattern(
     patternCenterRow(pattern.centerRow),
     patternCenterCol(pattern.centerCol),
     matrix(_matrix),
-    row(&_manager, patternCenterRow, _matrix.height - (patternHeight - patternCenterRow)+1, var),
-    col(&_manager, patternCenterCol, _matrix.width  - (patternWidth  - patternCenterCol)+1, var),
-    centerIndicator(&_manager, _matrix.height-patternHeight+1, _matrix.width-patternWidth+1, 0, 2, var)
+    row(&_manager, patternCenterRow, _matrix.height() - (patternHeight - patternCenterRow)+1, var),
+    col(&_manager, patternCenterCol, _matrix.width()  - (patternWidth  - patternCenterCol)+1, var),
+    centerIndicator(&_manager, _matrix.height()-patternHeight+1, _matrix.width()-patternWidth+1, 0, 2, var)
 {
   if ( var == SolverManager::allocateNew ) {
     manager.require(typeSpecificTypeRequirement(*this));
