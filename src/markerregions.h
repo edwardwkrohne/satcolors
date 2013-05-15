@@ -2,6 +2,8 @@
 //
 // Class to house the constraints for marker regions
 //
+// DEPRECATED 5/15/2013
+//
 
 #ifndef MARKERREGIONS_H
 #define MARKERREGIONS_H

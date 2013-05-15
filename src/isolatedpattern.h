@@ -2,6 +2,8 @@
 //
 // Makes two requirements.  First, that a pattern
 //
+// DEPRECATED 5/15/2013
+//
 
 #ifndef ISOLATEDPATTERN_H
 #define ISOLATEDPATTERN_H
