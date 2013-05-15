@@ -13,7 +13,6 @@
 #include "solvermanager.h"
 #include "markerregions.h"
 #include "isolatedpattern.h"
-#include "list.h"
 #include "list2d.h"
 
 class MarkerRegionsExperiment {
