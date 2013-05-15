@@ -181,7 +181,7 @@ void CompoundObjectTest::testGetNumLiterals(void) {
       testObj.matrix1.numLiterals();
 
 
-  CPPUNIT_ASSERT_EQUAL(expected, testObj.getNumLiterals());
+  CPPUNIT_ASSERT_EQUAL(expected, testObj.numLiterals());
 }
 
 void CompoundObjectTest::testTypeRequirement(void) {

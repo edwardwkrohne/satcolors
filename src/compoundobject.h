@@ -66,11 +66,11 @@ public:
 
   template<unsigned I = 0>
   typename std::enable_if<(I == numObjs), Cardinal::value_type>::type
-  getNumLiterals() const;
+  numLiterals() const;
 
   template<unsigned I = 0>
   typename std::enable_if<(I < numObjs), Cardinal::value_type>::type
-  getNumLiterals() const;
+  numLiterals() const;
 
   DualClause currSolnReq() const;
 
@@ -145,7 +145,7 @@ CompoundObject<T>::constructorHelper(ArgsT&&... args)
 template<class T>
 template<unsigned I>
 inline typename std::enable_if<(I == CompoundObject<T>::numObjs), Cardinal::value_type>::type
-CompoundObject<T>::getNumLiterals() const
+CompoundObject<T>::numLiterals() const
 {
   return 0;
 }
@@ -153,9 +153,9 @@ CompoundObject<T>::getNumLiterals() const
 template<class T>
 template<unsigned I>
 inline typename std::enable_if<(I < CompoundObject<T>::numObjs), Cardinal::value_type>::type
-CompoundObject<T>::getNumLiterals() const
+CompoundObject<T>::numLiterals() const
 {
-  return std::get<I>(T::objTuple).numLiterals() + getNumLiterals<I+1>();
+  return std::get<I>(T::objTuple).numLiterals() + numLiterals<I+1>();
 }
 
 template<class T>
