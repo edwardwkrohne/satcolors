@@ -80,13 +80,13 @@ public:
   const value_type max;
   const size_type pitch; // Distance between rows
 
-  SolverManager& manager;
+  SolverManager* manager;
   const Minisat::Var startingVar;
 
 protected:
   // Creates an object representing a matrix.  Does not register requirements.
   // Does NOT update startingVar; Matrix can do that.
-  MatrixView(SolverManager& manager, Minisat::Var startingVar, size_type height, size_type width, size_type pitch, value_type min, value_type max);
+  MatrixView(SolverManager* manager, Minisat::Var startingVar, size_type height, size_type width, size_type pitch, value_type min, value_type max);
 };
 
 // Output operator

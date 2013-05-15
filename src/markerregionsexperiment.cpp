@@ -43,8 +43,8 @@ MarkerRegionsExperiment::MarkerRegionsExperiment(SolverManager& _manager, size_t
     width(_patternStrings.width()),
     manager(_manager),
     markerRegions(manager, height*gridSize, width*gridSize, gridSize, var),
-    brackets(manager, height*gridSize, width*gridSize, 0, 2, var),
-    grids(height, width, createGridBuilder(&_manager, var))
+    brackets(&manager, height*gridSize, width*gridSize, 0, 2, var),
+    grids(height, width, createGridBuilder(&manager, var))
 {
   if ( var == SolverManager::allocateNew ) {
     for ( size_type i = 0; i < brackets.height; i++ ) {

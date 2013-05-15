@@ -85,7 +85,7 @@ IsolatedPattern::IsolatedPattern(
     matrix(_matrix),
     row(&_manager, patternCenterRow, _matrix.height - (patternHeight - patternCenterRow)+1, var),
     col(&_manager, patternCenterCol, _matrix.width  - (patternWidth  - patternCenterCol)+1, var),
-    centerIndicator(_manager, _matrix.height-patternHeight+1, _matrix.width-patternWidth+1, 0, 2, var)
+    centerIndicator(&_manager, _matrix.height-patternHeight+1, _matrix.width-patternWidth+1, 0, 2, var)
 {
   if ( var == SolverManager::allocateNew ) {
     manager.require(typeSpecificTypeRequirement(*this));
@@ -108,7 +108,7 @@ IsolatedPattern::IsolatedPattern(
     matrix(_matrix),
     row(&_manager, patternCenterRow, _matrix.height - (patternHeight - patternCenterRow)+1, var),
     col(&_manager, patternCenterCol, _matrix.width  - (patternWidth  - patternCenterCol)+1, var),
-    centerIndicator(_manager, _matrix.height-patternHeight+1, _matrix.width-patternWidth+1, 0, 2, var)
+    centerIndicator(&_manager, _matrix.height-patternHeight+1, _matrix.width-patternWidth+1, 0, 2, var)
 {
   if ( var == SolverManager::allocateNew ) {
     manager.require(typeSpecificTypeRequirement(*this));

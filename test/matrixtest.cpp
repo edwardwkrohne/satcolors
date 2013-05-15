@@ -42,13 +42,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MatrixTest );
 
 
 void MatrixTest::testIsMatrix(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Matrix matrix(dummyManager, 2, 2, 0, 3, var);
+  Matrix matrix(nullptr, 2, 2, 0, 3, var);
 
   Requirement expected;
   expected &= matrix[0][0].typeRequirement();
@@ -60,13 +56,9 @@ void MatrixTest::testIsMatrix(void) {
 }
 
 void MatrixTest::testPairIndexedCardinalEquals(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Matrix matrix(dummyManager, 2, 2, 0, 3, var);
+  Matrix matrix(nullptr, 2, 2, 0, 3, var);
   Cardinal row(nullptr, 0, 2, var);
   Cardinal col(nullptr, 0, 2, var);
 
@@ -85,13 +77,9 @@ void MatrixTest::testPairIndexedCardinalEquals(void) {
 }
 
 void MatrixTest::testPairIndexedCardinalNotEquals(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Matrix matrix(dummyManager, 2, 2, 0, 3, var); // values are in [0,3)
+  Matrix matrix(nullptr, 2, 2, 0, 3, var); // values are in [0,3)
   Cardinal row(nullptr, 0, 2, var);
   Cardinal col(nullptr, 0, 2, var);
 
@@ -110,13 +98,9 @@ void MatrixTest::testPairIndexedCardinalNotEquals(void) {
 }
 
 void MatrixTest::testPairIndexedCardinalEqualsWithRange(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Matrix matrix(dummyManager, 3, 3, 0, 3, var);
+  Matrix matrix(nullptr, 3, 3, 0, 3, var);
   Cardinal row(nullptr,  1, 4, var);
   Cardinal col(nullptr, -1, 2, var);
 
@@ -141,12 +125,12 @@ void MatrixTest::testIncrementVar(void) {
   SolverManager manager;
 
   // Object under test.
-  Matrix matrix1(manager, 3, 3, 0, 2);
-  Matrix matrix2(manager, 3, 3, 0, 2);
+  Matrix matrix1(&manager, 3, 3, 0, 2);
+  Matrix matrix2(&manager, 3, 3, 0, 2);
 
   // These matrices should be separate, not point to the same values.
   CPPUNIT_ASSERT_EQUAL(0U, (unsigned int)matrix1.startingVar);
-  CPPUNIT_ASSERT_EQUAL(matrix1.startingVar + matrix1.getNumLiterals(), (unsigned int)matrix2.startingVar);
+  CPPUNIT_ASSERT_EQUAL(matrix1.startingVar + matrix1.numLiterals(), (unsigned int)matrix2.startingVar);
 }
 
 
@@ -155,19 +139,15 @@ void MatrixTest::test3x3(void) {
 
   // Object under test.
   Var var = 0;
-  Matrix matrix(manager, 3, 3, 0, 2);
+  Matrix matrix(&manager, 3, 3, 0, 2);
 
   ASSERT_SAT(manager);
 }
 
 void MatrixTest::testView(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 5;
-  Matrix matrix(dummyManager, 4, 6, 0, 3, var);  // values are in [0,3)
+  Matrix matrix(nullptr, 4, 6, 0, 3, var);  // values are in [0,3)
   MatrixView view = matrix.view(1, 2, 3, 4); // Get a 2x2 view corresponding to [1,3)x[2,4).
 
   CPPUNIT_ASSERT_EQUAL(2, view.width);
@@ -179,13 +159,9 @@ void MatrixTest::testView(void) {
 }
 
 void MatrixTest::testOutOfRange(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Matrix matrix(dummyManager, 4, 4, 0, 3, var);
+  Matrix matrix(nullptr, 4, 4, 0, 3, var);
 
   CPPUNIT_ASSERT_THROW(matrix[-1][0], out_of_range);
   CPPUNIT_ASSERT_THROW(matrix[0][-1], out_of_range);
@@ -194,13 +170,9 @@ void MatrixTest::testOutOfRange(void) {
 }
 
 void MatrixTest::testViewErrors(void) {
-  // This exceedingly crude "dummy object" will segfault on any attempted use.
-  // I'm ok with that.  Use something more sophisticated if desired.
-  SolverManager& dummyManager = *(SolverManager*)0;
-
   // Object under test.
   Var var = 0;
-  Matrix matrix(dummyManager, 4, 4, 0, 3, var);
+  Matrix matrix(nullptr, 4, 4, 0, 3, var);
 
   CPPUNIT_ASSERT_THROW(matrix.view(-1, 0, 2, 2), out_of_range);
   CPPUNIT_ASSERT_THROW(matrix.view(0, -1, 2, 2), out_of_range);

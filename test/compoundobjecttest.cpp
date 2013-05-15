@@ -62,7 +62,7 @@ TestImpl::TestImpl(SolverManager& _manager, Var& var) :
   manager(_manager),
   cardinal1(&manager, 0, 5, var),
   cardinal2(&manager, 2, 3, var),
-  matrix1(manager, 3, 5, 0, 2, var),
+  matrix1(&manager, 3, 5, 0, 2, var),
   objTuple(cardinal1, cardinal2, matrix1)
 {
 
@@ -179,7 +179,7 @@ void CompoundObjectTest::testGetNumLiterals(void) {
   Matrix::value_type expected =
       testObj.cardinal1.numLiterals() +
       testObj.cardinal2.numLiterals() +
-      testObj.matrix1.getNumLiterals();
+      testObj.matrix1.numLiterals();
 
 
   CPPUNIT_ASSERT_EQUAL(expected, testObj.getNumLiterals());

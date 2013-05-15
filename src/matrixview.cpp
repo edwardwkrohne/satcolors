@@ -16,7 +16,7 @@ typedef MatrixView::size_type size_type;
 typedef MatrixView::value_type value_type;
 
 // Constructor
-MatrixView::MatrixView(SolverManager& _manager, size_type _height, size_type _width, size_type _pitch, value_type _min, value_type _max, Var _startingVar) :
+MatrixView::MatrixView(SolverManager* _manager, size_type _height, size_type _width, size_type _pitch, value_type _min, value_type _max, Var _startingVar) :
   height(_height),
   width(_width),
   pitch(_pitch),
@@ -57,7 +57,7 @@ MatrixView MatrixView::view(size_type startRow, size_type startCol, size_type en
   }
 
   Var var = 0;
-  Cardinal dummyCardinal(&manager, min, max, var);
+  Cardinal dummyCardinal(manager, min, max, var);
   return MatrixView(
       manager,
       endRow-startRow,
@@ -79,9 +79,9 @@ Vector MatrixView::operator[](size_type index) const {
 
 
   Var var = 0;
-  Cardinal dummyCardinal(&manager, min, max, var);
+  Cardinal dummyCardinal(manager, min, max, var);
   var = startingVar + index*pitch*dummyCardinal.numLiterals();
-  return Vector(manager, width, min, max, var);
+  return Vector(*manager, width, min, max, var);
 }
 
 // The following four functions access a PairIndexedCardinal

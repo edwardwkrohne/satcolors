@@ -25,7 +25,7 @@ public:
   // Creates an object representing a matrix.  Does not register requirements.
   // Updates startingVar by adding getNumLiterals() to it, which makes it easy
   // to construct several objects at once.
-  Matrix(SolverManager& manager, size_type height, size_type width, value_type min, value_type max, Minisat::Var& startingVar = SolverManager::allocateNew);
+  Matrix(SolverManager* manager, size_type height, size_type width, value_type min, value_type max, Minisat::Var& startingVar = SolverManager::allocateNew);
 
   // Copy constructor.  Does not register requirements.
   Matrix(const Matrix& copy);
@@ -34,7 +34,6 @@ public:
   Requirement typeRequirement() const;
 
   // The number of (contiguous) literals required to represent this matrix.
-  unsigned int getNumLiterals() const;
   unsigned int numLiterals() const; // Temporary alternate name for getNumLiterals to ease refactoring 
 
   // After a solution has been found, get a requirement for the current/a different solution
