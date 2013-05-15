@@ -2,8 +2,8 @@
 //
 // A 2d list of objects
 
-#ifndef LIST2D_H
-#define LIST2D_H
+#ifndef GRID_H
+#define GRID_H
 
 #include <iostream>
 #include <sstream>
@@ -19,12 +19,12 @@
 
 // 2d lists are (ultimately) 1d lists.
 template<class obj_type>
-class List2d {
+class Grid {
 public:
   typedef Cardinal::value_type value_type;
   typedef std::function<obj_type(value_type, value_type)> builder_type;
 
-  List2d(
+  Grid(
       Cardinal::value_type height,
       Cardinal::value_type width,
       builder_type builder);
@@ -47,7 +47,7 @@ private:
 };
 
 template<class obj_type>
-List2d<obj_type>::List2d(
+Grid<obj_type>::Grid(
     Cardinal::value_type _height,
     Cardinal::value_type _width,
     builder_type builder) :
@@ -57,7 +57,7 @@ List2d<obj_type>::List2d(
 {
   if ( _height < 0 || _width < 0 ) {
     std::ostringstream sout;
-    sout << "Invalid height or width " << _height << " and " << _width << " for List2d";
+    sout << "Invalid height or width " << _height << " and " << _width << " for Grid";
     throw std::invalid_argument(sout.str());
   }
 
@@ -75,18 +75,18 @@ template<class builder_type>
 auto makeList(Cardinal::value_type height, 
 	      Cardinal::value_type width, 
 	      builder_type builder)
-  -> List2d<decltype(builder(height, width))> {
+  -> Grid<decltype(builder(height, width))> {
 
   typedef decltype(builder(height, width)) obj_type;
-  return List2d<obj_type>(height, width, builder);
+  return Grid<obj_type>(height, width, builder);
 }
 
 template<class obj_type>
-SubscriptWrapper<obj_type> List2d<obj_type>::operator[](value_type row) const {
+SubscriptWrapper<obj_type> Grid<obj_type>::operator[](value_type row) const {
   // Guard against nonsensical rows.
   if ( row < 0 || row >= height() ) {
     std::ostringstream sout;
-    sout << "Invalid row " << row << " for List2d of height " << height();
+    sout << "Invalid row " << row << " for Grid of height " << height();
     throw std::out_of_range(sout.str());
   }
 
@@ -94,7 +94,7 @@ SubscriptWrapper<obj_type> List2d<obj_type>::operator[](value_type row) const {
     // Guard against nonsensical columns.
       if ( col < 0 || col >= this->width() ) {
 	std::ostringstream sout;
-	sout << "Invalid column " << col << " for List2d of width " << this->width();
+	sout << "Invalid column " << col << " for Grid of width " << this->width();
 	throw std::out_of_range(sout.str());
       }
 
@@ -104,38 +104,38 @@ SubscriptWrapper<obj_type> List2d<obj_type>::operator[](value_type row) const {
 }
 
 template<class obj_type>
-unsigned int List2d<obj_type>::height() const  {
+unsigned int Grid<obj_type>::height() const  {
   return mHeight;
 }
 
 template<class obj_type>
-unsigned int List2d<obj_type>::width() const  {
+unsigned int Grid<obj_type>::width() const  {
   return mWidth;
 }
 
 template<class obj_type>
-const ObjectContainer<obj_type>& List2d<obj_type>::data() const  {
+const ObjectContainer<obj_type>& Grid<obj_type>::data() const  {
   return mData;
 }
 
 template<class obj_type>
-Requirement List2d<obj_type>::typeRequirement() const {
+Requirement Grid<obj_type>::typeRequirement() const {
   return data().typeRequirement();
 }
 
 template<class obj_type>
-unsigned int List2d<obj_type>::numLiterals() const {
+unsigned int Grid<obj_type>::numLiterals() const {
   return data().numLiterals();
 }
 
 template<class obj_type>
-Clause List2d<obj_type>::diffSolnReq() const {
+Clause Grid<obj_type>::diffSolnReq() const {
   return data().diffSolnReq();
 }
 
 template<class obj_type>
-DualClause List2d<obj_type>::currSolnReq() const {
+DualClause Grid<obj_type>::currSolnReq() const {
   return data().currSolnReq();
 }
 
-#endif // LIST2D_H
+#endif // GRID_H

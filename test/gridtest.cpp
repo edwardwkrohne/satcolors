@@ -6,7 +6,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <stdexcept>
-#include "../src/list2d.h"
+#include "../src/grid.h"
 #include "../src/testglue.h"
 
 using namespace std;
@@ -14,8 +14,8 @@ using Minisat::mkLit;
 using Minisat::Lit;
 using Minisat::Var;
 
-class List2dTest : public CPPUNIT_NS::TestFixture {
-  CPPUNIT_TEST_SUITE(List2dTest);
+class GridTest : public CPPUNIT_NS::TestFixture {
+  CPPUNIT_TEST_SUITE(GridTest);
   CPPUNIT_TEST(testConstruction2d);
   CPPUNIT_TEST(testConstructionFailure);
   CPPUNIT_TEST_SUITE_END();
@@ -24,7 +24,7 @@ protected:
   void testConstructionFailure(void);
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( List2dTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( GridTest );
 
 namespace {
 
@@ -41,7 +41,7 @@ function<Cardinal(value_type, value_type)> getBuilder(Var& var) {
 
 }
 
-void List2dTest::testConstruction2d(void) {
+void GridTest::testConstruction2d(void) {
   Var var = 0;
   auto builder2d = getBuilder(var);
 
@@ -69,7 +69,7 @@ void List2dTest::testConstruction2d(void) {
 }
 
 
-void List2dTest::testConstructionFailure(void) {
+void GridTest::testConstructionFailure(void) {
   Var var = 0;
   auto builder2d = getBuilder(var);
 

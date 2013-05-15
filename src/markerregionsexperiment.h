@@ -13,7 +13,7 @@
 #include "solvermanager.h"
 #include "markerregions.h"
 #include "isolatedpattern.h"
-#include "list2d.h"
+#include "grid.h"
 
 class MarkerRegionsExperiment {
 public:
@@ -44,7 +44,7 @@ public:
   SolverManager& manager;
   MarkerRegions markerRegions;
   Matrix brackets;
-  List2d<IsolatedPattern> grids;
+  Grid<IsolatedPattern> grids;
 
 private:
   std::function<IsolatedPattern(value_type, value_type)> 

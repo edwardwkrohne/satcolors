@@ -13,7 +13,7 @@
 #include "solvermanager.h"
 #include "compoundobject.h"
 #include "ordinal.h"
-#include "list2d.h"
+#include "grid.h"
 
 class AlmostLinesImpl {
 public:
@@ -45,10 +45,10 @@ public:
   const value_type minThickness;
   const value_type maxThickness;
 
-  List2d<Ordinal>   majorOffsets;
-  List2d<Ordinal>   minorOffsets;
+  Grid<Ordinal>   majorOffsets;
+  Grid<Ordinal>   minorOffsets;
 
-  std::tuple<List2d<Ordinal>&, List2d<Ordinal>&> objTuple;
+  std::tuple<Grid<Ordinal>&, Grid<Ordinal>&> objTuple;
 };
 
 typedef CompoundObject<AlmostLinesImpl> AlmostLines;
