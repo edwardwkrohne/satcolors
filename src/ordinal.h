@@ -97,7 +97,7 @@ public:
   // The value assigned in the model, after solving, if a solution is
   // available.
   value_type modelValue() const;
-  operator value_type() const;
+  explicit operator value_type() const;
 
 private:
   SolverManager* mManager;

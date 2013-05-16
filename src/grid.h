@@ -41,8 +41,8 @@ public:
   const ObjectContainer<obj_type>& data() const;
 
 private:
-  const Cardinal::value_type mHeight;
-  const Cardinal::value_type mWidth;
+  Cardinal::value_type mHeight;
+  Cardinal::value_type mWidth;
   ObjectContainer<obj_type> mData;
 };
 

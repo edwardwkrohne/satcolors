@@ -53,11 +53,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION( OrdinalTest );
 void OrdinalTest::testCopy(void) {
   Var var = 0;
   Ordinal ord(nullptr, 0, 4, var);
+  Var expectedVar = var;
   Ordinal cpy(ord);
   Ordinal mv(std::move(ord));
 
   cpy = ord;
   mv = std::move(ord);
+
+  CPPUNIT_ASSERT_EQUAL(expectedVar, var);
 }
 
 void OrdinalTest::testIsOrdinal(void) {

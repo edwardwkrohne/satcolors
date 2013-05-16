@@ -52,13 +52,14 @@ Requirement operator >  (const Ordinal::value_type bound, const OrdinalAddExpr& 
 Requirement operator <= (const Ordinal::value_type bound, const OrdinalAddExpr& expr);
 Requirement operator >= (const Ordinal::value_type bound, const OrdinalAddExpr& expr);
 
-Requirement operator <  (const Ordinal::value_type& ord3, const OrdinalAddExpr& expr);
-Requirement operator >  (const Ordinal::value_type& ord3, const OrdinalAddExpr& expr);
-Requirement operator <= (const Ordinal::value_type& ord3, const OrdinalAddExpr& expr);
-Requirement operator >= (const Ordinal::value_type& ord3, const OrdinalAddExpr& expr);
-
-Requirement operator == (const Ordinal::value_type bound, const OrdinalAddExpr& expr);
 Requirement operator == (const Ordinal::value_type equality, const OrdinalAddExpr& expr);
+
+Requirement operator <  (const Ordinal& ord3, const OrdinalAddExpr& expr);
+Requirement operator >  (const Ordinal& ord3, const OrdinalAddExpr& expr);
+Requirement operator <= (const Ordinal& ord3, const OrdinalAddExpr& expr);
+Requirement operator >= (const Ordinal& ord3, const OrdinalAddExpr& expr);
+
+Requirement operator == (const Ordinal& equality, const OrdinalAddExpr& expr);
 
 OrdinalAddExpr operator+(const Ordinal& ord1, const Ordinal& ord2);
 OrdinalAddExpr operator-(const Ordinal& ord1, const Ordinal& ord2);

@@ -47,14 +47,13 @@ DualClause  operator <  (const Ordinal::value_type bound, const OrdinalMinExpr& 
 Clause      operator >  (const Ordinal::value_type bound, const OrdinalMinExpr& expr);
 DualClause  operator <= (const Ordinal::value_type bound, const OrdinalMinExpr& expr);
 Clause      operator >= (const Ordinal::value_type bound, const OrdinalMinExpr& expr);
-
-Requirement operator <  (const Ordinal::value_type& ord3, const OrdinalMinExpr& expr);
-Requirement operator >  (const Ordinal::value_type& ord3, const OrdinalMinExpr& expr);
-Requirement operator <= (const Ordinal::value_type& ord3, const OrdinalMinExpr& expr);
-Requirement operator >= (const Ordinal::value_type& ord3, const OrdinalMinExpr& expr);
-
-Requirement operator == (const Ordinal::value_type bound, const OrdinalMinExpr& expr);
 Requirement operator == (const Ordinal::value_type equality, const OrdinalMinExpr& expr);
+
+Requirement operator <  (const Ordinal& ord3, const OrdinalMinExpr& expr);
+Requirement operator >  (const Ordinal& ord3, const OrdinalMinExpr& expr);
+Requirement operator <= (const Ordinal& ord3, const OrdinalMinExpr& expr);
+Requirement operator >= (const Ordinal& ord3, const OrdinalMinExpr& expr);
+Requirement operator == (const Ordinal& ord3, const OrdinalMinExpr& expr);
 
 OrdinalMinExpr min(const Ordinal& ord1, const Ordinal& ord2);
 OrdinalMinExpr max(const Ordinal& ord1, const Ordinal& ord2);
