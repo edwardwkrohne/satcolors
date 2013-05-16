@@ -79,50 +79,54 @@ Requirement isShortestPathsMatrix(const Matrix<Ordinal>& mat) {
 int main (int argc, char** argv) {
   SolverManager manager;
 
-  Matrix<Ordinal>  mat  (&manager, 4, 4, -1, 2);
-  Matrix<Ordinal>  mat2 (&manager, 4, 4, -20, 21);
-  Ordinal          gamma(&manager, -3, 4); // The updated value
+  const unsigned dim = 14;
+
+  Matrix<Ordinal>  mat  (&manager, dim, dim, -1, 2);
+  Matrix<Ordinal>  mat2 (&manager, dim, dim, -20, 21);
+  Ordinal          gamma(&manager, -20, 21); // The updated value
 
   // mat should be an all-pairs shortest paths matrix already.  This
   // is easier to require directly than to use Floyd-Warshall
   manager.require(isShortestPathsMatrix(mat));
 
-  // Gamma must strictly refine both mat_01 and mat_23.
-  manager.require(gamma < mat[0][1] & gamma >= -mat[1][0]);
-  manager.require(gamma < mat[2][3] & gamma >= -mat[3][2]);
+  // Gamma must strictly refine mat_01, mat_23, etc.
+  for ( int i = 0; i < dim/2; i++ ) {
+    manager.require(gamma < mat[i][i+1] & gamma >= -mat[i+1][i]);
+  }
 
-  // The two matrices must be equal, except for gamma
-  for ( int i = 0; i < 4; i++ ) {
-    for ( int j = 0; j < 4; j++ ) {
-      if      ( i == 0 && j == 1 )
-	manager.require(mat2[i][j] == gamma);
-      else if ( i == 2 && j == 3 ) {
+  // The two matrices must be equal, except for the gamma entries
+  for ( int i = 0; i < dim; i++ ) {
+    for ( int j = 0; j < dim; j++ ) {
+      // Every pair like (0,1), (2,3), (4,5) should be set to gamma.
+      if ( i%2 == 0 && j == i+1 ) {
 	manager.require(mat2[i][j] == gamma);
       } else {
 	manager.require(mat2[i][j] == mat[i][j]);
       }      
     }
   }
-
+  
   // Compute a new all pairs shortest paths on mat2, and call that fw.
   auto fw = floydWarshall(&manager, mat2);
 
   // Require further that the addition of gamma in both places
   // introduces a negative cycle; do this by detecting nonzero
   // diagonal entries on the shortest-path matrix.
-  manager.require(fw[0][0] < 0 |
-		  fw[1][1] < 0 |
-		  fw[2][2] < 0 |
-		  fw[3][3] < 0);
+  Clause hasNegativeCycles;
+  for ( int i = 0; i < dim; i++ ) {
+    hasNegativeCycles |= fw[i][i] < 0;
+  }
+  manager.require(hasNegativeCycles);
+
+  cout << timestamp << " Constraints established." << endl;
 
   int count = 0;
-  while ( manager.solve()) {
+  while ( manager.solve() && count < 1000) {
     cout << timestamp << " Satisfiable" << endl;
     cout << "Solution number " << count++ << endl;
     cout << "Gamma: " << gamma.modelValue() << endl;
     cout << endl;
     cout << mat << endl;
-    cout << fw << endl;
     cout << "-----------------------------------------------------" << endl;
     manager.require(mat.diffSolnReq());
   }
