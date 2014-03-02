@@ -318,10 +318,9 @@ void printGraph(SolverManager* manager, const T& graph) {
 int main (int argc, char** argv) {
   SolverManager manager;
 
-
   const int twistedTorusWidth = 5;
-  const int stages = 12;
-  const int cycleLength = 13;
+  const int cycleLength = 11;
+  const int stages = 6;
 
   cout << timestamp << " Creating objects." << endl;
 
@@ -352,7 +351,7 @@ int main (int argc, char** argv) {
   while ( manager.solve () ) {
     // Print the solution
     for (int i = 0; i < morphism.height(); i++ ) {
-      cout << setw(2) << morphism[i][0] << " ";
+      cout << setw(2) << int(morphism[i][0]) << " ";
       if ( i % cycleLength == (cycleLength-1) ) { 
 	cout << endl;
       }
@@ -361,5 +360,5 @@ int main (int argc, char** argv) {
 
     manager.require(morphism.diffSolnReq());
   }
-  cout << "UNSATISFIABLE" << endl;
+  cout << timestamp << " UNSATISFIABLE" << endl;
 }
