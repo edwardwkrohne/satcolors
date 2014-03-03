@@ -22,11 +22,18 @@ public:
   typedef Matrix<>::size_type size_type;
 
   // Usual constructors
-  IsolatedPattern(SolverManager& manager,
+  IsolatedPattern() = delete;
+  IsolatedPattern(const IsolatedPattern& copy) = default;
+  IsolatedPattern(IsolatedPattern&& move) = default;
+  
+  IsolatedPattern& operator=(const IsolatedPattern& copy) = default;
+  IsolatedPattern& operator=(IsolatedPattern&& move) = default;
+
+  IsolatedPattern(SolverManager* manager,
 		  const MatrixView<>& matrix,
 		  const std::string& pattern,
 		  Minisat::Var& var = SolverManager::allocateNew);
-  IsolatedPattern(SolverManager& manager,
+  IsolatedPattern(SolverManager* manager,
 		  const MatrixView<>& matrix,
 		  const Pattern& pattern,
 		  Minisat::Var& var = SolverManager::allocateNew);
@@ -39,13 +46,13 @@ public:
 
   // Note: the order of declaration is relevant here.
   // See the constructor.
-  SolverManager& manager;
+  SolverManager* manager;
   Pattern pattern;
 
-  const size_type patternHeight;
-  const size_type patternWidth;
-  const size_type patternCenterRow;
-  const size_type patternCenterCol;
+  size_type patternHeight;
+  size_type patternWidth;
+  size_type patternCenterRow;
+  size_type patternCenterCol;
 
   MatrixView<> matrix;
   Cardinal row;

@@ -26,8 +26,9 @@ using namespace std;
 std::function<IsolatedPattern(value_type, value_type)> 
 MarkerRegionsExperiment::createGridBuilder(SolverManager* manager, Var& var) const {
   auto builder = [this, manager, &var] (value_type row, value_type col) {
-    return IsolatedPattern(
-        *manager,
+    return IsolatedPattern
+    (
+        manager,
         brackets.view(row*gridSize, col*gridSize, (row+1)*gridSize, (col+1)*gridSize),
         patternStrings[row][col],
         var);

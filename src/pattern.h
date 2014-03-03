@@ -15,11 +15,16 @@
 
 class Pattern {
 public:
+  Pattern() = delete;
+  Pattern(const Pattern& copy) = default;
+  Pattern(Pattern&& move) = default;
+
+  Pattern& operator=(const Pattern& copy) = default;
+  Pattern& operator=(Pattern&& move) = default;
 
   Pattern(const std::string& pattern);
   Pattern(std::istream&& in);
   Pattern(std::istream& in);
-  Pattern(const Pattern& copy);
 
   int height;
   int width;

@@ -46,7 +46,7 @@ void IsolatedPatternTest::testConstruction(void) {
   Matrix<> matrix(&manager, 7, 10, 0, 2);
   // This pattern will exist somewhere in the matrix.  Also,
   // the entire REST of the matrix will consist of zeroes.
-  IsolatedPattern isoPat(manager,
+  IsolatedPattern isoPat(&manager,
       matrix,
       " .  x  .    ; "
       "(x) x  x    ; "
@@ -103,7 +103,7 @@ void IsolatedPatternTest::testConstruction2(void) {
   SolverManager manager;
 
   Matrix<> matrix(&manager, 7, 7, 0, 2);
-  IsolatedPattern isoPat(manager,
+  IsolatedPattern isoPat(&manager,
       matrix,
       " .  x        ; "
       " .  x x .    ; "
@@ -126,7 +126,7 @@ void IsolatedPatternTest::testBlankSolution(void) {
   unsigned int height = 7;
   unsigned int width = 7;
   Matrix<> matrix(&manager, height, width, 0, 2);
-  IsolatedPattern pattern(manager, matrix,
+  IsolatedPattern pattern(&manager, matrix,
       "(x) x   ;"
       " x  .   ;");
 
@@ -147,7 +147,7 @@ void IsolatedPatternTest::testFullExtent(void) {
   unsigned int height = 7;
   unsigned int width = 7;
   Matrix<> matrix(&manager, height, width, 0, 2);
-  IsolatedPattern pattern(manager, matrix,
+  IsolatedPattern pattern(&manager, matrix,
       "(x) x   ;"
       " x  .   ;");
 
@@ -159,7 +159,7 @@ void IsolatedPatternTest::testWeirdPattern(void) {
   SolverManager manager;
 
   Matrix<> matrix(&manager, 5, 5, 0, 2);
-  IsolatedPattern pattern(manager, matrix,
+  IsolatedPattern pattern(&manager, matrix,
       " . x . x  x  ;"
       " . . . x (.) ;");
 
@@ -172,7 +172,7 @@ void IsolatedPatternTest::testTooWide(void) {
   SolverManager manager;
 
   Matrix<> matrix(&manager, 5, 5, 0, 2);
-  IsolatedPattern pattern(manager, matrix,
+  IsolatedPattern pattern(&manager, matrix,
       " . x . x  x      ;"
       " . . . x (.) x   ;");
 
@@ -184,7 +184,7 @@ void IsolatedPatternTest::testTooTall(void) {
   SolverManager manager;
 
   Matrix<> matrix(&manager, 5, 5, 0, 2);
-  IsolatedPattern pattern(manager, matrix,
+  IsolatedPattern pattern(&manager, matrix,
       " x   .  ;"
       " .   x  ;"
       " x   .  ;"
@@ -200,7 +200,7 @@ void IsolatedPatternTest::testOnView(void) {
   SolverManager manager;
 
   Matrix<> matrix(&manager, 18, 27, 0, 2);
-  IsolatedPattern pattern(manager, matrix.view(0, 0, 9, 9),
+  IsolatedPattern pattern(&manager, matrix.view(0, 0, 9, 9),
       " .  x  .    ;"
       " x (x) x    ;");
 
@@ -214,7 +214,7 @@ void IsolatedPatternTest::testSeparateSolutions(void) {
   Matrix<> matrix(&manager, 7, 10, 0, 2);
   // This pattern will exist somewhere in the matrix.  Also,
   // the entire REST of the matrix will consist of zeroes.
-  IsolatedPattern pattern(manager,
+  IsolatedPattern pattern(&manager,
       matrix,
       " .  x  .    ; "
       "(x) x  x    ; "
@@ -233,7 +233,7 @@ void IsolatedPatternTest::testEmptyPattern(void) {
   SolverManager manager;
 
   Matrix<> matrix(&manager, 5, 7, 0, 2);
-  IsolatedPattern pattern(manager, matrix,
+  IsolatedPattern pattern(&manager, matrix,
       " (.) . . . . ;"
       "  .  . . . . ;"
       "  .  . . . . ;"

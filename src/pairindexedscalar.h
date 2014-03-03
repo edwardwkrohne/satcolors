@@ -30,8 +30,8 @@ public:
   Requirement operator == (Scalar rhs) const;
   Requirement operator != (Scalar rhs) const;
 
-  friend Matrix<Scalar>;
-  friend MatrixView<Scalar>;
+  friend class Matrix<Scalar>;
+  friend class MatrixView<Scalar>;
 private:
   PairIndexedScalar(const Matrix<Scalar>* matrix, Scalar row, Scalar col);
 
