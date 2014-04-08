@@ -27,6 +27,68 @@ using Minisat::mkLit;
 
 /////////////////////////////////////////////////////////////////////
 //
+//  A graph based on a given incidence matrix, specified in a stream
+//
+//  This class is inefficient except for some possible (bizarre) edge
+//  cases.  I wrote it before I realized this, so it's not
+//  well-tested.  The inefficiency comes from the fact that it creates
+//  a large number of literals and specifies the values exactly; the
+//  only way to use this information is to imply these literals are
+//  true or false in certain scenarios, which will create a (probably)
+//  ridiculous amount of unnecessary unit propagation.
+//
+class StreamGraph: public Grid<Lit> {
+public:
+  StreamGraph() = delete;
+  StreamGraph(SolverManager* manager, istream& in, Var& startingVar = SolverManager::allocateNew);
+
+  int order() const;
+
+private:
+  // Helper method to make it easier to compute the grid inside of the
+  // constructor initialier list.
+  static Grid createGrid(SolverManager* manager, istream& in, Var& startingVar);
+};
+
+Grid<Lit> StreamGraph::createGrid(SolverManager* manager, istream& in, Var& startingVar) {
+  value_type order;
+  in >> order;
+  return Grid(order, order,
+	      [&](int src, int dst) {
+		Lit lit;
+		if ( startingVar == SolverManager::allocateNew) {
+		  lit = mkLit(manager->newVars(1));
+		} else {
+		  lit = mkLit(startingVar++);
+		}
+
+		if ( !in ) {
+		  throw std::runtime_error("Error reading incidence matrix from stream. "
+					   "Corrupted file? "
+					   "Incorrect dimension specification? "
+					   "Non-integer values?");
+		}
+		int elem;
+		in >> elem;
+
+		auto req = (elem == 0) ? ~lit : lit;
+		manager->require(req);
+		return lit;
+	      });
+}
+
+StreamGraph::StreamGraph(SolverManager* manager, istream& in, Var& startingVar) :
+  Grid(createGrid(manager, in, startingVar))
+{
+  ; // This function has no body, just an initializer list.
+}
+
+int StreamGraph::order() const {
+  return height();
+}
+
+/////////////////////////////////////////////////////////////////////
+//
 //  A complete graph (K_n)
 //
 class CompleteGraph: public Grid<Lit> {
@@ -318,30 +380,67 @@ void printGraph(SolverManager* manager, const T& graph) {
 int main (int argc, char** argv) {
   SolverManager manager;
 
-  const int twistedTorusWidth = 5;
-  const int cycleLength = 11;
-  const int stages = 6;
+  // Read the incidence matrix
+  cout << timestamp << " Reading incidence matrix" << endl;
+  ifstream in("python/Gamma3.mtx");
+  int order;
+  in >> order;
+  cout << "Order is " << order << endl;
+  bool incidences[order][order];
+  for ( int row = 0; row < order; row++ ) {
+    for ( int col = 0; col < order; col++ ) {
+      if ( !in ) {
+	throw std::runtime_error("Error reading incidence matrix from stream. "
+				 "Corrupted file? "
+				 "Incorrect dimension specification? "
+				 "Non-integer values?");
+      }
+      in >> incidences[row][col];
+    }
+  }
 
-  cout << timestamp << " Creating objects." << endl;
-
-  OrientationReversalGraph  domainGraph(&manager, cycleLength, stages);
-  TwistedTorusGraph         codomainGraph(&manager, twistedTorusWidth);
-
-  Matrix<Cardinal> morphism(&manager, domainGraph.order(), 1, 0, codomainGraph.order());
-
+  // Establish the constraints
   cout << timestamp << " Establishing morphism constraints." << endl;
-  // Require the morphism preserves adjacency.
-  for ( int dNode1 = 0; dNode1 < domainGraph.order(); dNode1++ ) {
-    for ( int dNode2 = 0; dNode2 < domainGraph.order(); dNode2++ ) {
-      for ( int cNode1 = 0; cNode1 < codomainGraph.order(); cNode1++ ) {
-	for ( int cNode2 = 0; cNode2 < codomainGraph.order(); cNode2++ ) {
-	  auto hypothesis = 
-	    morphism[dNode1][0] == cNode1 &
-	    morphism[dNode2][0] == cNode2 &
-	    domainGraph[dNode1][dNode2];
-	  auto conclusion = codomainGraph[cNode1][cNode2];
-	  manager.require(implication(hypothesis, conclusion));
+  const int width = 50;
+  const int height = 50;
+  Matrix<Cardinal> morphism(&manager, height, width, 0, order);
+
+  cout << timestamp << " Basic morphism constraints established." << endl;
+
+  // Establish horizontally oriented constraints
+  for ( int row = 0; row < height; row++ ) {
+    cout << row << endl;
+    for ( int col = 0; col < width-1; col++ ) {
+      for ( int thisColor = 0; thisColor < order; thisColor++ ) {
+	Clause rightClause;
+	Clause leftClause;
+	for ( int otherColor = 0; otherColor < order; otherColor++ ) {
+	  if ( incidences[thisColor][otherColor] ) {
+	    rightClause |= morphism[row][col+1] == otherColor;
+	    leftClause  |= morphism[row][col]   == otherColor;
+	  }
 	}
+	manager.require(implication(morphism[row][col]   == thisColor, rightClause));
+	manager.require(implication(morphism[row][col+1] == thisColor, leftClause));
+      }
+    }
+  }
+
+  // Establish vertically oriented constraints
+  for ( int row = 0; row < height-1; row++ ) {
+    cout << row << endl;
+    for ( int col = 0; col < width; col++ ) {
+      for ( int thisColor = 0; thisColor < order; thisColor++ ) {
+	Clause downClause;
+	Clause upClause;
+	for ( int otherColor = 0; otherColor < order; otherColor++ ) {
+	  if ( incidences[thisColor][otherColor] ) {
+	    downClause |= morphism[row+1][col] == otherColor;
+	    upClause   |= morphism[row]  [col] == otherColor;
+	  }
+	}
+	manager.require(implication(morphism[row]  [col] == thisColor, downClause));
+	manager.require(implication(morphism[row+1][col] == thisColor, upClause));
       }
     }
   }
@@ -350,14 +449,7 @@ int main (int argc, char** argv) {
 
   while ( manager.solve () ) {
     // Print the solution
-    for (int i = 0; i < morphism.height(); i++ ) {
-      cout << setw(2) << int(morphism[i][0]) << " ";
-      if ( i % cycleLength == (cycleLength-1) ) { 
-	cout << endl;
-      }
-    }
-    cout << endl << endl;
-
+    cout << morphism << endl;
     manager.require(morphism.diffSolnReq());
   }
   cout << timestamp << " UNSATISFIABLE" << endl;
