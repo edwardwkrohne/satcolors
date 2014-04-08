@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 from xml.dom import minidom
+import numpy as np
 
 dom = minidom.parse(open('Gamma3.graphml','r'))
 root = dom.getElementsByTagName("graphml")[0]
 graph = root.getElementsByTagName("graph")[0]
 
 eqKeyId=None
-defaultEq="0" # The "equivalence" is absent if zero, so I have to keep track of that.
-
+eqDefault=None
 for key in root.getElementsByTagName("key"):
     if not key.hasAttribute('attr.name') or key.attributes['attr.name'].value != 'Equivalence':
         continue
@@ -20,39 +20,72 @@ for key in root.getElementsByTagName("key"):
         continue
 
     eqKeyId = key.attributes['id'].value
-    defaultEq = key.getElementsByTagName("default")[0].childNodes[0].nodeValue
-
-    print defaultEq
+    eqDefault = key.getElementsByTagName('default')[0].childNodes[0].nodeValue
     break
 
-print eqKeyId
-
-class PseudoNode:
-    def __init__(self):
-        self.nodes = []
-        self.adjNodes = []
-        self.color = "#000000"
-        self.equiv = None
-
-# Build a table of all the nodes and their equivalence classes
-pseudoNodes = {}
-for node in graph.getElementsByTagName('node'):
+def getEqKey(node):
+    # Find the "equivalence" data, or, if not found, go with the default equivalence.
+    eq = None
     for datum in node.getElementsByTagName('data'):
         if datum.attributes['key'].value == eqKeyId:
-            equivalence = int(datum.childNodes[0].nodeValue)
-            if equivalence >= 0:
-                if not equivalence in pseudoNodes:
-                    pseudoNodes[equivalence] = PseudoNode()
-                pseudoNodes[equivalence].nodes.append(node)
-            else:
-                pn = PseudoNode()
-                pn.nodes.append(node)
-                pseudoNodes[node.attributes['id'].value] = pn
-            continue
+            basicEq = datum.childNodes[0].nodeValue            
+            eq = datum.childNodes[0].nodeValue
+            break
+    else:
+        eq = eqDefault
 
-# Note: misses node zero because the file is weird; 
-# it doesn't redundantly specify unnecessary elements.
+    # Now find if this is a real equivalence, or one of the catch-all
+    # equivalences.
+    if ( int(eq) < 0 ):
+        eq = node.attributes['id'].value
 
-for pn in pseudoNodes.keys():
-    print (str(pn)+": "+str(pseudoNodes[pn].nodes))
+    return eq    
 
+# Build a table of all the nodes and their equivalence classes
+idToEqMap = {}
+for node in graph.getElementsByTagName('node'):
+    idToEqMap[node.attributes['id'].value] = getEqKey(node)
+
+# Build a table of all equivalence classes and an index suitable for
+# using as a matrix row/column number
+eqToIndexMap = {}
+i = 0
+for eq in sorted(set(idToEqMap.values())):
+    eqToIndexMap[eq] = i
+    i+=1
+
+# Build a table mapping node ids to their equivalence index
+idToIndexMap = {}
+for id in idToEqMap.keys():
+    idToIndexMap[id] = eqToIndexMap[idToEqMap[id]]
+
+# Run through the pseudonodes, build the matrix.
+incidences = np.zeros((len(eqToIndexMap),len(eqToIndexMap)))
+
+for edge in graph.getElementsByTagName('edge'): 
+    sourceId=edge.attributes['source'].value
+    sourceIndex=idToIndexMap[sourceId]
+
+    targetId=edge.attributes['target'].value
+    targetIndex=idToIndexMap[targetId]
+
+    incidences[sourceIndex][targetIndex] = 1
+    incidences[targetIndex][sourceIndex] = 1
+
+print len(eqToIndexMap)
+
+for i in range(0,len(eqToIndexMap)):
+    for j in range(0, len(eqToIndexMap)):
+        print int(incidences[i][j]),
+    print ""
+
+# Determine which color is associated with each matrix index (to
+# visualize the output)
+indexToColorMap = {}
+for node in graph.getElementsByTagName('node'):
+    fill = node.getElementsByTagName('y:Fill')[0]
+    id = node.attributes['id'].value
+    indexToColorMap[idToIndexMap[id]] = fill.attributes['color'].value
+    
+for index in sorted(indexToColorMap.keys()):
+    print index, indexToColorMap[index]
