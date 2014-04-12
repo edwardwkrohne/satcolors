@@ -381,11 +381,11 @@ int main (int argc, char** argv) {
   SolverManager manager;
 
   // Read the incidence matrix
-  cout << timestamp << " Reading incidence matrix" << endl;
+  //cout << timestamp << " Reading incidence matrix" << endl;
   ifstream in("python/Gamma3.mtx");
   int order;
   in >> order;
-  cout << "Order is " << order << endl;
+  //cout << "Order is " << order << endl;
   bool incidences[order][order];
   for ( int row = 0; row < order; row++ ) {
     for ( int col = 0; col < order; col++ ) {
@@ -400,16 +400,15 @@ int main (int argc, char** argv) {
   }
 
   // Establish the constraints
-  cout << timestamp << " Establishing morphism constraints." << endl;
-  const int width = 50;
-  const int height = 50;
+  //cout << timestamp << " Establishing morphism constraints." << endl;
+  const int width = 20;
+  const int height = 20;
   Matrix<Cardinal> morphism(&manager, height, width, 0, order);
 
-  cout << timestamp << " Basic morphism constraints established." << endl;
+  //cout << timestamp << " Basic morphism constraints established." << endl;
 
   // Establish horizontally oriented constraints
   for ( int row = 0; row < height; row++ ) {
-    cout << row << endl;
     for ( int col = 0; col < width-1; col++ ) {
       for ( int thisColor = 0; thisColor < order; thisColor++ ) {
 	Clause rightClause;
@@ -428,7 +427,6 @@ int main (int argc, char** argv) {
 
   // Establish vertically oriented constraints
   for ( int row = 0; row < height-1; row++ ) {
-    cout << row << endl;
     for ( int col = 0; col < width; col++ ) {
       for ( int thisColor = 0; thisColor < order; thisColor++ ) {
 	Clause downClause;
@@ -445,12 +443,22 @@ int main (int argc, char** argv) {
     }
   }
 
-  cout << timestamp << " Done establishing constraints.  Solving" << endl;
+  // Get some periodicity on the sides to make it more interesting.
+  for ( int row = 0; row < height-5; row++ ) {
+    manager.require(morphism[row][0] == morphism[row+5][0]);
+  }
+  for ( int row = 0; row < height-7; row++ ) {
+    manager.require(morphism[row][width-1] == morphism[row+7][width-1]);
+  }
+
+  //cout << timestamp << " Done establishing constraints.  Solving" << endl;
 
   while ( manager.solve () ) {
     // Print the solution
+    cout << height << " " << width << endl;
     cout << morphism << endl;
     manager.require(morphism.diffSolnReq());
+    break;
   }
-  cout << timestamp << " UNSATISFIABLE" << endl;
+  //cout << timestamp << " UNSATISFIABLE" << endl;
 }

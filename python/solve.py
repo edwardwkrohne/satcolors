@@ -2,8 +2,16 @@
 
 from xml.dom import minidom
 import numpy as np
+import sys
+from PyQt4 import QtCore, QtGui
+from PyQt4.QtGui import QMainWindow, QApplication
+from PyQt4.QtCore import QTimer, QObject
 
-dom = minidom.parse(open('Gamma3.graphml','r'))
+if ( len(sys.argv) < 2 ):
+    print "No file to process provided.  Exiting."
+    sys.exit()
+
+dom = minidom.parse(open(sys.argv[1],'r'))
 root = dom.getElementsByTagName("graphml")[0]
 graph = root.getElementsByTagName("graph")[0]
 
@@ -89,3 +97,56 @@ for node in graph.getElementsByTagName('node'):
     
 for index in sorted(indexToColorMap.keys()):
     print index, indexToColorMap[index]
+
+##########################################################################
+##
+##  FIXME: Put code to actually find the solution here!!
+##
+##########################################################################
+
+# For the moment (FIXME this is totally ridiculous, I know), just grab
+# the precooked output from output.dat.
+
+# Interpret the solution
+
+def outputData():
+    f = open("outputdata", "r")
+    for line in f:
+        for datum in line.strip().split():
+            yield int(datum)
+
+data = outputData()
+height = data.next()
+width = data.next()
+
+# This is the output the solver came up with
+#output = []
+
+print height, width
+
+#for i in range(0,height):
+#    output.append([])
+#    for j in range(0,width):
+#        output[i].append(data.next())
+
+#print output
+
+app = QApplication(sys.argv)
+
+scene = QtGui.QGraphicsScene()
+scene.setSceneRect(0,0,20*height,20*width)
+
+for i in range(0,height):
+    #output.append([])
+    for j in range(0,width):
+        index = data.next()
+        rect = QtGui.QGraphicsRectItem(j*20,i*20,20,20,scene=scene)
+        colorStr = indexToColorMap[index]
+        # FIXME check to make sure this is a valid color string!
+        color = QtGui.QColor.fromRgb(int(colorStr[1:], 16))
+        rect.setBrush(QtGui.QBrush(color))
+
+view = QtGui.QGraphicsView()
+view.setScene(scene)
+view.show()
+sys.exit(app.exec_())
