@@ -134,7 +134,7 @@ print height, width
 app = QApplication(sys.argv)
 
 scene = QtGui.QGraphicsScene()
-scene.setSceneRect(0,0,20*height,20*width)
+scene.setSceneRect(0,0,20*width,20*height)
 
 for i in range(0,height):
     #output.append([])
