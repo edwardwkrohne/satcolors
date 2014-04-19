@@ -378,34 +378,43 @@ void printGraph(SolverManager* manager, const T& graph) {
 //  main
 //
 int main (int argc, char** argv) {
+  // Get arguments
+  if ( argc < 3 ) {
+    cerr << "Insufficient arguments." << endl;
+    cerr << argv[0] << " <inputfile.mtx> <outputfile.sltn>" << endl;
+    exit(1);
+  }
+  ifstream fin(argv[1]);
+  ofstream fout(argv[2]);
+
   SolverManager manager;
 
   // Read the incidence matrix
-  //cout << timestamp << " Reading incidence matrix" << endl;
-  ifstream in("python/Gamma3.mtx");
+  cout << timestamp << " Reading incidence matrix" << endl;
   int order;
-  in >> order;
-  //cout << "Order is " << order << endl;
+  fin >> order;
+  cout << "Order is " << order << endl;
   bool incidences[order][order];
   for ( int row = 0; row < order; row++ ) {
     for ( int col = 0; col < order; col++ ) {
-      if ( !in ) {
+      if ( !fin ) {
 	throw std::runtime_error("Error reading incidence matrix from stream. "
 				 "Corrupted file? "
 				 "Incorrect dimension specification? "
 				 "Non-integer values?");
       }
-      in >> incidences[row][col];
+      fin >> incidences[row][col];
     }
   }
 
   // Establish the constraints
-  //cout << timestamp << " Establishing morphism constraints." << endl;
-  const int width = 20;
-  const int height = 20;
+  cout << timestamp << " Establishing basic morphism constraints." << endl;
+  const int width = 30;
+  const int height = 71;
   Matrix<Cardinal> morphism(&manager, height, width, 0, order);
 
-  //cout << timestamp << " Basic morphism constraints established." << endl;
+  cout << timestamp << " Basic morphism constraints established." << endl;
+  cout << timestamp << " Establishing graph coloring constraints." << endl;
 
   // Establish horizontally oriented constraints
   for ( int row = 0; row < height; row++ ) {
@@ -443,7 +452,7 @@ int main (int argc, char** argv) {
     }
   }
 
-  // Get some periodicity on the sides to make it more interesting.
+  // Get some coprime periodicities on the sides to make it more interesting.
   for ( int row = 0; row < height-5; row++ ) {
     manager.require(morphism[row][0] == morphism[row+5][0]);
   }
@@ -451,14 +460,25 @@ int main (int argc, char** argv) {
     manager.require(morphism[row][width-1] == morphism[row+7][width-1]);
   }
 
-  //cout << timestamp << " Done establishing constraints.  Solving" << endl;
+  for ( int col = 0; col < width; col++ ) {
+    manager.require(morphism[0][col] == morphism[height-1][col]);
+  }
 
-  while ( manager.solve () ) {
+  cout << timestamp << " Graph-coloring constraints established.  Solving." << endl;
+  
+
+  for (int run = 0; run < width; run+=5 ) {
+    if ( !manager.solve() ) {
+      cout << timestamp << "UNSATISFIABLE" << endl;
+      break;
+    }
+
     // Print the solution
-    cout << height << " " << width << endl;
-    cout << morphism << endl;
-    manager.require(morphism.diffSolnReq());
+    cout << timestamp << " Solution found for column " << run << endl;
+    fout << height << " " << width << endl;
+    fout << morphism << endl;
     break;
   }
-  //cout << timestamp << " UNSATISFIABLE" << endl;
+
+  return 0;
 }

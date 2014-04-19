@@ -2,14 +2,16 @@
 
 from xml.dom import minidom
 import numpy as np
+import re
 import sys
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QMainWindow, QApplication
 from PyQt4.QtCore import QTimer, QObject
 
-if ( len(sys.argv) < 2 ):
-    print "No file to process provided.  Exiting."
-    sys.exit()
+if ( len(sys.argv) < 4 ):
+    print "Insufficient arguments."
+    print "python", sys.argv[0], "<graphml file> <incidence matrix file> <palette file>"
+    sys.exit(2)
 
 dom = minidom.parse(open(sys.argv[1],'r'))
 root = dom.getElementsByTagName("graphml")[0]
@@ -47,7 +49,22 @@ def getEqKey(node):
     if ( int(eq) < 0 ):
         eq = node.attributes['id'].value
 
-    return eq    
+    # Modify the key for sort order.  I want to ensure that "n2" comes
+    # before "n10", and "ab5cd2" comes before "ab5cd10".  My solution
+    # is to break the key into alternating string and integer parts,
+    # and let that be the key.  Thus "ab5cd10" -> ("ab", 5, "cd", 10)
+    key = re.split(r"([0-9]*)", eq)
+
+    # Strip out any empty strings
+    key = [elem for elem in key if elem != ""]
+
+    # Convert integer strings to bona fide integers
+    key = [(int(elem) if elem.isdigit() else elem) for elem in key]
+    
+    # Make hashable
+    key = tuple(key)
+    
+    return key
 
 # Build a table of all the nodes and their equivalence classes
 idToEqMap = {}
@@ -80,12 +97,15 @@ for edge in graph.getElementsByTagName('edge'):
     incidences[sourceIndex][targetIndex] = 1
     incidences[targetIndex][sourceIndex] = 1
 
-print len(eqToIndexMap)
+# Write the matrix to the file
+matrixFile = open(sys.argv[2], "w")
+matrixFile.write(str(len(eqToIndexMap)) + "\n")
 
 for i in range(0,len(eqToIndexMap)):
     for j in range(0, len(eqToIndexMap)):
-        print int(incidences[i][j]),
-    print ""
+        matrixFile.write(str(int(incidences[i][j])) + " "),
+    matrixFile.write("\n")
+matrixFile.close()
 
 # Determine which color is associated with each matrix index (to
 # visualize the output)
@@ -93,60 +113,9 @@ indexToColorMap = {}
 for node in graph.getElementsByTagName('node'):
     fill = node.getElementsByTagName('y:Fill')[0]
     id = node.attributes['id'].value
-    indexToColorMap[idToIndexMap[id]] = fill.attributes['color'].value
+    color = fill.attributes['color'].value
+    indexToColorMap[idToIndexMap[id]] = "0x" + color.strip("#")
     
+paletteFile = open(sys.argv[3], "w")
 for index in sorted(indexToColorMap.keys()):
-    print index, indexToColorMap[index]
-
-##########################################################################
-##
-##  FIXME: Put code to actually find the solution here!!
-##
-##########################################################################
-
-# For the moment (FIXME this is totally ridiculous, I know), just grab
-# the precooked output from output.dat.
-
-# Interpret the solution
-
-def outputData():
-    f = open("outputdata", "r")
-    for line in f:
-        for datum in line.strip().split():
-            yield int(datum)
-
-data = outputData()
-height = data.next()
-width = data.next()
-
-# This is the output the solver came up with
-#output = []
-
-print height, width
-
-#for i in range(0,height):
-#    output.append([])
-#    for j in range(0,width):
-#        output[i].append(data.next())
-
-#print output
-
-app = QApplication(sys.argv)
-
-scene = QtGui.QGraphicsScene()
-scene.setSceneRect(0,0,20*width,20*height)
-
-for i in range(0,height):
-    #output.append([])
-    for j in range(0,width):
-        index = data.next()
-        rect = QtGui.QGraphicsRectItem(j*20,i*20,20,20,scene=scene)
-        colorStr = indexToColorMap[index]
-        # FIXME check to make sure this is a valid color string!
-        color = QtGui.QColor.fromRgb(int(colorStr[1:], 16))
-        rect.setBrush(QtGui.QBrush(color))
-
-view = QtGui.QGraphicsView()
-view.setScene(scene)
-view.show()
-sys.exit(app.exec_())
+    paletteFile.write(str(index) + " " + indexToColorMap[index] + "\n")

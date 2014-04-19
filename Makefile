@@ -1,8 +1,11 @@
 # Directories and options
 GPP:=g++
+PYTHON=python
 SRC:=src
 TESTSRC:=test
 BIN:=bin
+DATA:=data
+PYTHONDIR:=python
 CPPFLAGS:=-g -std=c++0x -D__STDC_FORMAT_MACROS
 LIBCPPUNIT:=-lcppunit -ldl
 LIBMINISAT:=-lminisat
@@ -41,15 +44,6 @@ ${TESTSRC}/runtests.o: ${TESTSRC}/runtests.cpp
 ${BIN}/runtests: ${TEST_OBJS}
 	${GPP} $^ -o $@ ${LIBCPPUNIT} ${LIBMINISAT}
 
-# The solver.  This program does the work and is the point of compiling.
-${BIN}/solve: ${OBJS} ${BIN}/test.touch
-	${GPP} ${OBJS} ${LIBMINISAT} -o $@
-
-# Gnuplot file describing the solution
-.PRECIOUS: ${BIN}/plot.gnu
-${BIN}/plot.gnu: ${BIN}/solve
-	./${BIN}/solve
-
 # Run tests.  Leaves a touchfile to record when tests were run.
 .PHONY: test
 test: ${BIN}/test.touch
@@ -58,24 +52,30 @@ ${BIN}/test.touch: ${BIN}/runtests
 	./${BIN}/runtests
 	touch ${BIN}/test.touch
 
+# The solver.  This program does the work and is the point of compiling.
+${BIN}/solve: ${OBJS} ${BIN}/test.touch
+	${GPP} ${OBJS} ${LIBMINISAT} -o $@
+
+.PRECIOUS: ${DATA}/%.mtx ${DATA}/%.palette
+${DATA}/%.mtx ${DATA}/%.palette: ${DATA}/%.graphml ${PYTHONDIR}/parsegraphml.py
+	${PYTHON} ${PYTHONDIR}/parsegraphml.py ${DATA}/$*.graphml ${DATA}/$*.mtx ${DATA}/$*.palette
+
+${DATA}/%.sltn: ${DATA}/%.mtx ${DATA}/%.palette ${BIN}/solve
+	${BIN}/solve ${DATA}/$*.mtx ${DATA}/$*.sltn
+
+.PHONY: plot
+plot: ${PYTHONDIR}/visualize.py
+	for file in ${DATA}/*.sltn; do \
+		${PYTHON} ${PYTHONDIR}/visualize.py $${file} $${file%%.*}.palette; \
+	done;
+
 # Debugging for this makefile
 .PHONY: makefile-debug
 makefile-debug:
 	echo OBJS: ${OBJS}
 	echo TEST_OBJS: ${TEST_OBJS}
 
-# Run the solver
-.PHONY: solve
-solve: ${BIN}/solve
-	./${BIN}/solve
-
-# Run the solver and plot
-.PHONY: plot
-plot: ${BIN}/plot.gnu
-	gnuplot -p ${BIN}/plot.gnu
-
 # Eliminate generated files and backups.
 .PHONY: clean
 clean:
-	-rm -rf ${BIN}/* *.pdf */*.o *~ */*~ *.stackdump */*.stackdump
-	-killall gnuplot
+	-rm -rf ${BIN}/* ${DATA}/*.mtx ${DATA}/*.palette ${DATA}/*.sltn *.pdf */*.o *~ */*~ *.stackdump */*.stackdump
