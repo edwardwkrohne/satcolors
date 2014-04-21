@@ -43,8 +43,8 @@ int main (int argc, char** argv) {
 
   SolverManager manager;
 
-  const int width = 30; // 30
-  const int height = 71; // 71
+  const int width = 30; // room to work
+  const int height = 4*5+7+5+7+1; // bbbbcbc
 
   // Read the incidence matrix
   cout << timestamp << " Reading incidence matrix" << endl;
@@ -107,12 +107,33 @@ int main (int argc, char** argv) {
     }
   }
 
-  // Get some coprime periodicities on the sides to make it more interesting.
-  for ( int row = 0; row < height-5; row++ ) {
-    manager.require(morphism[row][0] == morphism[row+5][0]);
+  int row = 0;
+  for ( int i = 0; i < 4; i++ ) {
+    for ( int j = 0; j < 5; j++ ) {
+      manager.require(morphism[row++][0] == j);
+    }
   }
-  for ( int row = 0; row < height-7; row++ ) {
-    manager.require(morphism[row][width-1] == morphism[row+7][width-1]);
+  for ( int j = 0; j < 7; j++ ) {
+    manager.require(morphism[row++][0] == (j==0 ? j : j+4));
+  }
+  for ( int j = 0; j < 5; j++ ) {
+    manager.require(morphism[row++][0] == j);
+  }
+  for ( int j = 0; j < 7; j++ ) {
+    manager.require(morphism[row++][0] == (j==0 ? j : j+4));
+  }
+
+  row = 0;
+
+  for ( int i = 0; i < 5; i++ ) {
+    for ( int j = 0; j < 5; j++ ) {
+      manager.require(morphism[row++][width-1] == j);
+    }
+  }
+  for ( int i = 0; i < 2; i++ ) {
+    for ( int j = 0; j < 7; j++ ) {
+      manager.require(morphism[row++][width-1] == (j==0 ? j : j+4));
+    }
   }
 
   for ( int col = 0; col < width; col++ ) {
@@ -124,6 +145,7 @@ int main (int argc, char** argv) {
   // See if the problem is solvable at all
   if ( !manager.solve() ) {
     cout << timestamp << " UNSATISFIABLE" << endl;
+    return 0;
   }
 
   cout << timestamp << " initial solution found.  Optimizing." << endl;
