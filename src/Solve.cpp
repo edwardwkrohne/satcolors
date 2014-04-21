@@ -134,27 +134,37 @@ int main (int argc, char** argv) {
   manager.require(morphism[reqRow][reqCol] <= 10);
 
   cout << timestamp << " Optimization constraints established.  Beginning solve loop." << endl;
+  fout << height << " " << width << endl;
+  fout << morphism << endl << endl;
 
   // Now try and force specific cells to be at most 10
-  do {
-    cout << timestamp << " Solution found" << endl;
-    fout << height << " " << width << endl;
-    fout << morphism << endl << endl;
-
+  while ( true ) {
     // Also make sure that some new cell must be at most ten.
     for ( int row = 0; row < height; row++ ) {
       for ( int col = 0; col < width; col++ ) {
 	auto val = morphism[row][col].modelValue();
 	if ( val <= 10 ) {
-	  // Any cell that's already at most ten, lock it in.
-	  manager.require(morphism[row][col] == val);
+	  // Cut down on teh size of the search space
+	  if ( val == 0 ) {
+	    manager.require(morphism[row][col] == 0);
+	  } else {
+	    manager.require(morphism[row][col] <= 10);
+	  }
 
 	  // Also make sure that some new cell must be at most ten.
 	  manager.require(reqRow != row | reqCol != col);
 	}
       }
     }
-  } while ( manager.solve() );
+
+    if ( !manager.solve() ) {
+      break;
+    }
+
+    cout << timestamp << " Solution found" << endl;
+    fout << height << " " << width << endl;
+    fout << morphism << endl << endl;
+  }
 
   return 0;
 }
