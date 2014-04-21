@@ -27,6 +27,11 @@ public:
   Requirement operator ==(value_type rhs) const;
   Requirement operator !=(value_type rhs) const;
 
+  Requirement operator <=(value_type rhs) const;
+  Requirement operator <(value_type rhs)  const;  // Not Yet Implemented
+  Requirement operator >=(value_type rhs) const;  // Not Yet Implemented
+  Requirement operator >(value_type rhs)  const;  // Not Yet Implemented
+
   Requirement operator == (Scalar rhs) const;
   Requirement operator != (Scalar rhs) const;
 
@@ -49,6 +54,34 @@ PairIndexedScalar<Scalar>::PairIndexedScalar(const Matrix<Scalar>* matrix,
   col(_col)
 {
   
+}
+
+template<class Scalar>
+Requirement PairIndexedScalar<Scalar>::operator <= (value_type rhs) const {
+  Requirement result;
+
+  size_type height = matrix->height();
+  size_type width = matrix->width();
+
+  // Range requirements
+  result &= row >= 0 & row < (value_type)height;
+  result &= col >= 0 & col < (value_type)width;
+
+  size_type rowStart = std::max(row.min(), 0);	
+  size_type rowEnd   = std::min(row.max(), height);
+
+  size_type colStart = std::max(col.min(), 0);	
+  size_type colEnd   = std::min(col.max(), width);
+
+  for (size_type i = rowStart; i < rowEnd; i++ ) {
+    for (size_type j = colStart; j < colEnd; j++ ) {
+      Scalar element = (*matrix)[i][j];
+      result &= implication(row == (value_type)i & col == (value_type)j,
+			    element <= rhs);
+    }
+  }
+
+  return result;
 }
 
 template<class Scalar>
@@ -106,6 +139,8 @@ Requirement PairIndexedScalar<Scalar>::operator != (value_type rhs) const {
   return result;
 }
 
+// I don't know why these are commented out; EK April 2014
+// Not currently implemented?
 // template<class Scalar>
 // Requirement PairIndexedScalar<Scalar>::operator == (const Scalar& rhs) const {
 // }
@@ -124,6 +159,8 @@ Requirement operator!=(Scalar lhs, const PairIndexedScalar<Scalar>& rhs) {
   return rhs != lhs;
 }
 
+// I don't know why these are commented out; EK April 2014
+// Not currently implemented?
 // template<class Scalar>
 // Requirement operator==(typename Matrix<Scalar>::value_type lhs, const PairIndexedScalar<Scalar>& rhs) {
 //   return rhs == lhs;

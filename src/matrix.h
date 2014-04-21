@@ -20,7 +20,7 @@
 template<class Scalar>
 class MatrixView;
 
-template<class Scalar>
+template<class Scalar> // Are these needed now?
 class PairIndexedScalar;
 
 template<typename Scalar = Cardinal>
