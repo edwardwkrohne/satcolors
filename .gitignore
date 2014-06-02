@@ -5,3 +5,6 @@ bin/*
 */.#*
 *.gif
 *.xcf
+data/*.sltn
+data/*.palette
+data/*.mtx

@@ -43,8 +43,10 @@ int main (int argc, char** argv) {
 
   SolverManager manager;
 
-  const int width = 30; // room to work
-  const int height = 4*5+7+5+7+1; // bbbbcbc
+  const int cycles = 16;
+  const int split = 5;
+  const int width = 16; // room to work
+  const int height = cycles*5+2*7+1;
 
   // Read the incidence matrix
   cout << timestamp << " Reading incidence matrix" << endl;
@@ -108,7 +110,7 @@ int main (int argc, char** argv) {
   }
 
   int row = 0;
-  for ( int i = 0; i < 4; i++ ) {
+  for ( int i = 0; i < cycles-split; i++ ) {
     for ( int j = 0; j < 5; j++ ) {
       manager.require(morphism[row++][0] == j);
     }
@@ -116,8 +118,10 @@ int main (int argc, char** argv) {
   for ( int j = 0; j < 7; j++ ) {
     manager.require(morphism[row++][0] == (j==0 ? j : j+4));
   }
-  for ( int j = 0; j < 5; j++ ) {
-    manager.require(morphism[row++][0] == j);
+  for ( int i = 0; i < split; i++ ) {
+    for ( int j = 0; j < 5; j++ ) {
+      manager.require(morphism[row++][0] == j);
+    }
   }
   for ( int j = 0; j < 7; j++ ) {
     manager.require(morphism[row++][0] == (j==0 ? j : j+4));
@@ -125,14 +129,14 @@ int main (int argc, char** argv) {
 
   row = 0;
 
-  for ( int i = 0; i < 5; i++ ) {
-    for ( int j = 0; j < 5; j++ ) {
-      manager.require(morphism[row++][width-1] == j);
-    }
-  }
   for ( int i = 0; i < 2; i++ ) {
     for ( int j = 0; j < 7; j++ ) {
       manager.require(morphism[row++][width-1] == (j==0 ? j : j+4));
+    }
+  }
+  for ( int i = 0; i < cycles; i++ ) {
+    for ( int j = 0; j < 5; j++ ) {
+      manager.require(morphism[row++][width-1] == j);
     }
   }
 
@@ -161,7 +165,6 @@ int main (int argc, char** argv) {
 
   // Now try and force specific cells to be at most 10
   while ( true ) {
-    // Also make sure that some new cell must be at most ten.
     for ( int row = 0; row < height; row++ ) {
       for ( int col = 0; col < width; col++ ) {
 	auto val = morphism[row][col].modelValue();

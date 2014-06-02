@@ -62,6 +62,10 @@ ${DATA}/%.mtx ${DATA}/%.palette: ${DATA}/%.graphml ${PYTHONDIR}/parsegraphml.py
 
 ${DATA}/%.sltn: ${DATA}/%.mtx ${DATA}/%.palette ${BIN}/solve
 	${BIN}/solve ${DATA}/$*.mtx ${DATA}/$*.sltn
+	mkdir tempdir
+	cp ${DATA}/$*.sltn ${DATA}/$*.palette ${DATA}/$*.mtx ${DATA}/$*.graphml ${SRC}/Solve.cpp tempdir
+	mv tempdir archive/`date +'%Y-%m-%d_%H-%M-%S'`
+
 
 .PHONY: plot
 plot: ${PYTHONDIR}/visualize.py
