@@ -32,20 +32,6 @@ using Minisat::mkLit;
 //  main
 //
 int main (int argc, char** argv) {
-  SolverManager mgr;
-
-  Ordinal a(&mgr, 0, 10);
-  Ordinal b(&mgr, 0, 10);
-
-  mgr.require( (b+1 < a) & (a <= b+3) );
-
-  if ( !mgr.solve() ) return 0;
-
-  cout << "a: " << a.modelValue() << endl
-       << "b: " << b.modelValue() << endl;
-
-  return 0;
-
   // Get arguments
   if ( argc < 3 ) {
     cerr << "Insufficient arguments." << endl;
@@ -59,7 +45,7 @@ int main (int argc, char** argv) {
 
   const int topPeriod = 3;
   const int bottomPeriod = 7;
-  const int width = 150;
+  const int width = 65;
   const int height = 20;
   const int highColor = 1; // used when the code tries to "simplify" the image
 
@@ -142,8 +128,8 @@ int main (int argc, char** argv) {
   }
 
   for ( int col = 0; col < width; col++ ) {
-    for ( int row = height/2-1; row < height/2+1; row++ ) {
-      manager.require(morphism[row][col] <= 1);
+    for ( int row = 2; row < height-2; row++ ) {
+      manager.require(morphism[row][col] <= highColor);
     }
   }
 
@@ -164,6 +150,8 @@ int main (int argc, char** argv) {
   fout << morphism << endl << endl;
 
   cout << timestamp << " initial solution found.  Optimizing." << endl;
+
+  return 0;
 
   // Location of a  cell that must be at most highColor.
   Cardinal reqRow(&manager, 1, height-1);

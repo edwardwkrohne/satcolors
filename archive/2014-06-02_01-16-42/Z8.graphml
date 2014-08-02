@@ -18,7 +18,7 @@
   <graph edgedefault="directed" id="G">
     <data key="d8"/>
     <node id="n0">
-      <data key="d4">2</data>
+      <data key="d4">3</data>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="45.0" width="45.0" x="427.5" y="187.5"/>
@@ -36,7 +36,7 @@
       </data>
     </node>
     <node id="n1">
-      <data key="d4">2</data>
+      <data key="d4">3</data>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="45.0" width="45.0" x="607.5" y="187.5"/>
@@ -54,7 +54,7 @@
       </data>
     </node>
     <node id="n2">
-      <data key="d4">2</data>
+      <data key="d4">3</data>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="45.0" width="45.0" x="307.5" y="247.5"/>
@@ -252,7 +252,7 @@
       </data>
     </node>
     <node id="n13">
-      <data key="d4">2</data>
+      <data key="d4">3</data>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="45.0" width="45.0" x="667.5" y="307.5"/>
@@ -360,7 +360,7 @@
       </data>
     </node>
     <node id="n19">
-      <data key="d4">2</data>
+      <data key="d4">3</data>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="45.0" width="45.0" x="307.5" y="427.5"/>
@@ -558,7 +558,7 @@
       </data>
     </node>
     <node id="n30">
-      <data key="d4">2</data>
+      <data key="d4">3</data>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="45.0" width="45.0" x="667.5" y="487.5"/>
@@ -576,7 +576,7 @@
       </data>
     </node>
     <node id="n31">
-      <data key="d4">2</data>
+      <data key="d4">3</data>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="45.0" width="45.0" x="367.5" y="547.5"/>
@@ -611,7 +611,7 @@
       </data>
     </node>
     <node id="n33">
-      <data key="d4">2</data>
+      <data key="d4">3</data>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="45.0" width="45.0" x="547.5" y="547.5"/>
@@ -629,7 +629,7 @@
       </data>
     </node>
     <node id="n34">
-      <data key="d4">1</data>
+      <data key="d4">2</data>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="45.0" width="45.0" x="367.5" y="187.5"/>
@@ -647,7 +647,7 @@
       </data>
     </node>
     <node id="n35">
-      <data key="d4">1</data>
+      <data key="d4">2</data>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="45.0" width="45.0" x="547.5" y="187.5"/>
@@ -665,7 +665,7 @@
       </data>
     </node>
     <node id="n36">
-      <data key="d4">1</data>
+      <data key="d4">2</data>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="45.0" width="45.0" x="667.5" y="247.5"/>
@@ -683,7 +683,7 @@
       </data>
     </node>
     <node id="n37">
-      <data key="d4">1</data>
+      <data key="d4">2</data>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="45.0" width="45.0" x="307.5" y="307.5"/>
@@ -701,7 +701,7 @@
       </data>
     </node>
     <node id="n38">
-      <data key="d4">1</data>
+      <data key="d4">2</data>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="45.0" width="45.0" x="667.5" y="427.5"/>
@@ -719,7 +719,7 @@
       </data>
     </node>
     <node id="n39">
-      <data key="d4">1</data>
+      <data key="d4">2</data>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="45.0" width="45.0" x="307.5" y="487.5"/>
@@ -737,7 +737,7 @@
       </data>
     </node>
     <node id="n40">
-      <data key="d4">1</data>
+      <data key="d4">2</data>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="45.0" width="45.0" x="427.5" y="547.5"/>
@@ -755,7 +755,7 @@
       </data>
     </node>
     <node id="n41">
-      <data key="d4">1</data>
+      <data key="d4">2</data>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="45.0" width="45.0" x="607.5" y="547.5"/>

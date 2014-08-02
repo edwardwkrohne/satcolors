@@ -32,20 +32,6 @@ using Minisat::mkLit;
 //  main
 //
 int main (int argc, char** argv) {
-  SolverManager mgr;
-
-  Ordinal a(&mgr, 0, 10);
-  Ordinal b(&mgr, 0, 10);
-
-  mgr.require( (b+1 < a) & (a <= b+3) );
-
-  if ( !mgr.solve() ) return 0;
-
-  cout << "a: " << a.modelValue() << endl
-       << "b: " << b.modelValue() << endl;
-
-  return 0;
-
   // Get arguments
   if ( argc < 3 ) {
     cerr << "Insufficient arguments." << endl;
@@ -57,11 +43,10 @@ int main (int argc, char** argv) {
 
   SolverManager manager;
 
-  const int topPeriod = 3;
-  const int bottomPeriod = 7;
-  const int width = 150;
+  const int period = 3;
+  const int numPeriods=8;
+  const int width = period*numPeriods+1;
   const int height = 20;
-  const int highColor = 1; // used when the code tries to "simplify" the image
 
   // Read the incidence matrix
   cout << timestamp << " Reading incidence matrix" << endl;
@@ -124,35 +109,16 @@ int main (int argc, char** argv) {
     }
   }
 
-  // // Make the grid periodic horizontally.
-  // for ( int row = 0; row < height; row++ ) {
-  //   for ( int col = 0; col < width; col++ ) {
-  //     manager.require(morphism[row][col] == morphism[row][col+width]);
-  //   }
-  // }
-
-  // Make the top and bottom of the grids periodic with a much tighter period
-  for ( int col = 0; col < width-topPeriod; col++ ) {
-    manager.require(morphism[0][col] == morphism[0][col+topPeriod]);
+  // Make the grid periodic horizontally.
+  for ( int row = 0; row < height; row++ ) {
+    manager.require(morphism[row][0] == morphism[row][width-1]);
   }
 
   // Make the top and bottom of the grids periodic with a much tighter period
-  for ( int col = 0; col < width-bottomPeriod; col++ ) {
-    manager.require(morphism[height-1][col] == morphism[height-1][col+bottomPeriod]);
+  for ( int col = 0; col < period*(numPeriods-1); col++ ) {
+    manager.require(morphism[0]       [col] == morphism[0]       [col+period]);
+    manager.require(morphism[height-1][col] == morphism[height-1][col+period]);
   }
-
-  for ( int col = 0; col < width; col++ ) {
-    for ( int row = height/2-1; row < height/2+1; row++ ) {
-      manager.require(morphism[row][col] <= 1);
-    }
-  }
-
-  for ( int col = 0; col < width; col++ ) {
-    manager.require(morphism[0][col] <= 2);
-    manager.require(morphism[height-1][col] <= 2);
-  }
-
-  cout << timestamp << " constraints established.  Solving." << endl;
 
   // See if the problem is solvable at all
   if ( !manager.solve() ) {
@@ -160,41 +126,44 @@ int main (int argc, char** argv) {
     return 0;
   }
 
-  fout << height << " " << width << endl;
-  fout << morphism << endl << endl;
+  // cout << timestamp << " initial solution found.  Optimizing." << endl;
+  
+  // // Location of a  cell that must be at most 10.
+  // Cardinal reqRow(&manager, 0, height);
+  // Cardinal reqCol(&manager, 0, width);
+  // manager.require(morphism[reqRow][reqCol] <= 10);
 
-  cout << timestamp << " initial solution found.  Optimizing." << endl;
+  // cout << timestamp << " Optimization constraints established.  Beginning solve loop." << endl;
+  // fout << height << " " << width << endl;
+  // fout << morphism << endl << endl;
 
-  // Location of a  cell that must be at most highColor.
-  Cardinal reqRow(&manager, 1, height-1);
-  Cardinal reqCol(&manager, 0, width);
-  manager.require(morphism[reqRow][reqCol] <= highColor);
+  // // Now try and force specific cells to be at most 10
+  // while ( true ) {
+  //   for ( int row = 0; row < height; row++ ) {
+  //     for ( int col = 0; col < width; col++ ) {
+  // 	auto val = morphism[row][col].modelValue();
+  // 	if ( val <= 10 ) {
+  // 	  // Cut down on teh size of the search space
+  // 	  if ( val == 0 ) {
+  // 	    manager.require(morphism[row][col] == 0);
+  // 	  } else {
+  // 	    manager.require(morphism[row][col] <= 10);
+  // 	  }
 
-  cout << timestamp << " Optimization constraints established.  Beginning solve loop." << endl;
-  // Now try and force specific cells to be at most highColor
-  while ( true ) {
-    for ( int row = 1; row < height-1; row++ ) {
-      for ( int col = 0; col < width; col++ ) {
-  	auto val = morphism[row][col].modelValue();
-  	if ( val <= highColor ) {
-	  manager.require(morphism[row][col] <= highColor);
+  // 	  // Also make sure that some new cell must be at most ten.
+  // 	  manager.require(reqRow != row | reqCol != col);
+  // 	}
+  //     }
+  //   }
 
-  	  // Also make sure that some new cell must be at most highcolor.
-  	  manager.require(reqRow != row | reqCol != col);
-  	}
-      }
-    }
+  //   if ( !manager.solve() ) {
+  //     break;
+  //   }
 
-    if ( !manager.solve() ) {
-      break;
-    }
-
-    cout << timestamp << " Solution found" << endl;
-    fout << height << " " << width << endl;
-    fout << morphism << endl << endl;
-  }
-
-  cout << timestamp << " All solutions found." << endl;
+  //   cout << timestamp << " Solution found" << endl;
+  //   fout << height << " " << width << endl;
+  //   fout << morphism << endl << endl;
+  // }
 
   return 0;
 }

@@ -32,20 +32,6 @@ using Minisat::mkLit;
 //  main
 //
 int main (int argc, char** argv) {
-  SolverManager mgr;
-
-  Ordinal a(&mgr, 0, 10);
-  Ordinal b(&mgr, 0, 10);
-
-  mgr.require( (b+1 < a) & (a <= b+3) );
-
-  if ( !mgr.solve() ) return 0;
-
-  cout << "a: " << a.modelValue() << endl
-       << "b: " << b.modelValue() << endl;
-
-  return 0;
-
   // Get arguments
   if ( argc < 3 ) {
     cerr << "Insufficient arguments." << endl;

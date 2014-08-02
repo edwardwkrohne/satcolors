@@ -1,0 +1,11 @@
+SolverManager mgr;
+
+Ordinal a(0, 10, &mgr);
+Ordinal b(0, 10, &mgr);
+
+mgr.require( (b+1 < a) & (a <= b+3) );
+
+if ( !mgr.solve() ) return 0;
+
+cout << "a: " << a << endl
+     << "b: " << b << endl;
