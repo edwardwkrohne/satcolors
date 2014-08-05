@@ -52,6 +52,11 @@ ${BIN}/test.touch: ${BIN}/runtests
 	./${BIN}/runtests
 	touch ${BIN}/test.touch
 
+solve/%: ${OBJS} ${BIN}/test.touch scenarios/%/*
+	mkdir -p solve
+	${MAKE} -C scenarios/$(@F) solve
+	touch $@
+
 # The solver.  This program does the work and is the point of compiling.
 ${BIN}/solve: ${OBJS} ${BIN}/test.touch
 	${GPP} ${OBJS} ${LIBMINISAT} -o $@
@@ -82,4 +87,4 @@ makefile-debug:
 # Eliminate generated files and backups.
 .PHONY: clean
 clean:
-	-rm -rf ${BIN}/* ${DATA}/*.mtx ${DATA}/*.palette ${DATA}/*.sltn *.pdf */*.o *~ */*~ *.stackdump */*.stackdump
+	-rm -rf ${BIN}/* ${DATA}/*.mtx ${DATA}/*.palette ${DATA}/*.sltn *.pdf */*.o *~ */*~ *.stackdump */*.stackdump solve/
