@@ -6,15 +6,12 @@ TESTSRC:=test
 BIN:=bin
 DATA:=data
 PYTHONDIR:=python
-CPPFLAGS:=-g -std=c++0x -D__STDC_FORMAT_MACROS
+CPPFLAGS:=-g -std=c++0x -D__STDC_FORMAT_MACROS -MMD -MP
 LIBCPPUNIT:=-lcppunit -ldl
 LIBMINISAT:=-lminisat
 
 # Needed to run from eclipse
 PATH:=${PATH}:${CPPUNIT}/src/cppunit/.libs
-
-# Header files and headers used by tests
-HEADERS:=$(wildcard ${SRC}/*.h)
 
 # Sources and sources involving tests.
 SOURCES:=$(wildcard ${SRC}/*.cpp)
@@ -30,11 +27,11 @@ all: ${BIN}/solve
 build: all
 
 # Compile regular source files (crudely assume all sources depend on all headers)
-${SRC}/%.o: ${SRC}/%.cpp ${HEADERS}
+${SRC}/%.o: ${SRC}/%.cpp
 	${GPP} $< -c ${CPPFLAGS} -o ${SRC}/$*.o
 
 # Compile test files
-${TESTSRC}/%.o: ${TESTSRC}/%.cpp ${HEADERS}
+${TESTSRC}/%.o: ${TESTSRC}/%.cpp
 	${GPP} $< -c ${CPPFLAGS} -o ${TESTSRC}/$*.o
 
 # The test runner is a special source file not depending on headers.
@@ -52,6 +49,9 @@ ${BIN}/test.touch: ${BIN}/runtests
 	./${BIN}/runtests
 	touch ${BIN}/test.touch
 
+# TODO: archive the results, clean up variables and variable
+# inheritance (add exports?) and make sure this code handles files of
+# arbitrary depth below scenarios/% (possibly with find?)
 solve/%: ${OBJS} ${BIN}/test.touch scenarios/%/*
 	mkdir -p solve
 	${MAKE} -C scenarios/$(@F) solve
@@ -87,4 +87,7 @@ makefile-debug:
 # Eliminate generated files and backups.
 .PHONY: clean
 clean:
-	-rm -rf ${BIN}/* ${DATA}/*.mtx ${DATA}/*.palette ${DATA}/*.sltn *.pdf */*.o *~ */*~ *.stackdump */*.stackdump solve/
+	-rm -rf ${BIN}/* ${DATA}/*.mtx ${DATA}/*.palette ${DATA}/*.sltn *.pdf */*.o */*.d *~ */*~ *.stackdump */*.stackdump solve/
+
+# Bring in the dependencies
+-include $(TEST_SOURCES:.cpp=.d)

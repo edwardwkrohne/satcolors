@@ -9,3 +9,4 @@ data/*.sltn
 data/*.palette
 data/*.mtx
 solve/
+*/*.d
