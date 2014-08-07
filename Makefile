@@ -14,26 +14,36 @@ SOLUTIONS:=solutions
 
 # Sources and sources involving tests.
 SOURCES:=$(wildcard ${SRC}/*.cpp)
-TEST_SOURCES:=$(filter-out ${SRC}/Solve.cpp,${SOURCES}) $(wildcard ${TESTSRC}/*test.cpp) ${TESTSRC}/runtests.cpp
+TEST_SOURCES:=${SOURCES} $(wildcard ${TESTSRC}/*test.cpp) ${TESTSRC}/runtests.cpp
 
 # Corresponding object lists
 OBJS:=$(SOURCES:.cpp=.o)
 TEST_OBJS:=$(TEST_SOURCES:.cpp=.o)
 
-# Include the targets from the Makefiles for the scenarios.  Take care
-# to define a special variable telling each Makefile what it needs to
-# do, as well as some boilerplate.
-define SCENARIO_INCLUDE_TEMPLATE
-.PHONY: solve-$(1)
+# Include the targets from the Makefiles for the scenarios.  To help
+# the writability of each Makefile, replace the ${SCENNAME} variable
+# with the actual name of the scenario before including.
 
+define SCENARIO_INCLUDE_TEMPLATE
 # Include a version of the scenario-specific makefile, but with
 # ${SCENNAME} replaced with the actual name of the scenario.  This
 # improves writability.
 include ${SCENARIOS}/$(1)/Makefile.gen.$(1)
 ${SCENARIOS}/$(1)/Makefile.gen.$(1): ${SCENARIOS}/$(1)/Makefile
 	cat $$< | sed 's/$$$${SCENNAME}/$(1)/g' > $$@ || rm $$@
-endef
-### SCENARIO_INCLUDE_TEMPLATE
+
+.PHONY: solve-$(1)
+solve-$(1): $${DEPENDENCIES-$(1)} archive/archive-up-to-date-$(1).touch
+
+archive/archive-up-to-date-$(1).touch: $${DEPENDENCIES-$(1)}
+	mkdir tempdir
+	cp -R ${SCENARIOS}/$(1) tempdir/scenario
+	cp -R ${SOLUTIONS}/$(1) tempdir/solution
+	cp -R ${DATA} tempdir/data
+	mv tempdir archive/`date '+%Y-%m-%d_%H-%M-%S'`_$(1)
+	touch $$@
+
+endef ### SCENARIO_INCLUDE_TEMPLATE
 
 SCENARIO_LIST:=$(notdir $(wildcard ${SCENARIOS}/*))
 $(foreach scen, ${SCENARIO_LIST}, $(eval $(call SCENARIO_INCLUDE_TEMPLATE,$(scen))))
@@ -70,27 +80,10 @@ ${BIN}/test.touch: ${BIN}/runtests
 	./${BIN}/runtests
 	touch ${BIN}/test.touch
 
-# The solver.  This program does the work and is the point of compiling.
-${BIN}/solve: ${OBJS} ${BIN}/test.touch
-	${GPP} ${OBJS} ${LIBMINISAT} -o $@
-
+# Generate incidence matrices (and palettes) from graphs in the data folder.
 .PRECIOUS: ${DATA}/%.mtx ${DATA}/%.palette
 ${DATA}/%.mtx ${DATA}/%.palette: ${DATA}/%.graphml ${PYTHONDIR}/parsegraphml.py
 	${PYTHON} ${PYTHONDIR}/parsegraphml.py ${DATA}/$*.graphml ${DATA}/$*.mtx ${DATA}/$*.palette
-
-${DATA}/%.sltn: ${DATA}/%.mtx ${DATA}/%.palette ${BIN}/solve
-	${BIN}/solve ${DATA}/$*.mtx ${DATA}/$*.sltn
-	mkdir tempdir
-	cp ${DATA}/$*.sltn ${DATA}/$*.palette ${DATA}/$*.mtx ${DATA}/$*.graphml ${SRC}/Solve.cpp tempdir
-	mv tempdir archive/`date +'%Y-%m-%d_%H-%M-%S'`
-
-
-.PHONY: plot
-plot: ${PYTHONDIR}/visualize.py
-	for file in ${DATA}/*.sltn; do \
-		${PYTHON} ${PYTHONDIR}/visualize.py $${file} $${file%%.*}.palette; \
-	done;
-
 
 .PHONY: makefile-debug
 makefile-debug:
