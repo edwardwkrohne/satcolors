@@ -9,9 +9,8 @@ PYTHONDIR:=python
 CPPFLAGS:=-g -std=c++0x -D__STDC_FORMAT_MACROS -MMD -MP
 LIBCPPUNIT:=-lcppunit -ldl
 LIBMINISAT:=-lminisat
-
-# Needed to run from eclipse
-PATH:=${PATH}:${CPPUNIT}/src/cppunit/.libs
+SCENARIOS:=scenarios
+SOLUTIONS:=solutions
 
 # Sources and sources involving tests.
 SOURCES:=$(wildcard ${SRC}/*.cpp)
@@ -21,12 +20,33 @@ TEST_SOURCES:=$(filter-out ${SRC}/Solve.cpp,${SOURCES}) $(wildcard ${TESTSRC}/*t
 OBJS:=$(SOURCES:.cpp=.o)
 TEST_OBJS:=$(TEST_SOURCES:.cpp=.o)
 
+# Include the targets from the Makefiles for the scenarios.  Take care
+# to define a special variable telling each Makefile what it needs to
+# do, as well as some boilerplate.
+define SCENARIO_INCLUDE_TEMPLATE
+.PHONY: solve-$(1)
+
+# Include a version of the scenario-specific makefile, but with
+# ${SCENNAME} replaced with the actual name of the scenario.  This
+# improves writability.
+include ${SCENARIOS}/$(1)/Makefile.gen.$(1)
+${SCENARIOS}/$(1)/Makefile.gen.$(1): ${SCENARIOS}/$(1)/Makefile
+	cat $$< | sed 's/$$$${SCENNAME}/$(1)/g' > $$@ || rm $$@
+endef
+### SCENARIO_INCLUDE_TEMPLATE
+
+SCENARIO_LIST:=$(notdir $(wildcard ${SCENARIOS}/*))
+$(foreach scen, ${SCENARIO_LIST}, $(eval $(call SCENARIO_INCLUDE_TEMPLATE,$(scen))))
+
 # Default target
 all: ${BIN}/solve
 .PHONY: build
 build: all
 
-# Compile regular source files (crudely assume all sources depend on all headers)
+.PHONY: all-scenarios
+all-scenarios: $(addprefix solve-,${SCENARIO_LIST})
+
+# Compile regular source files
 ${SRC}/%.o: ${SRC}/%.cpp
 	${GPP} $< -c ${CPPFLAGS} -o ${SRC}/$*.o
 
@@ -35,6 +55,7 @@ ${TESTSRC}/%.o: ${TESTSRC}/%.cpp
 	${GPP} $< -c ${CPPFLAGS} -o ${TESTSRC}/$*.o
 
 # The test runner is a special source file not depending on headers.
+# TODO: stop treating this specially?
 ${TESTSRC}/runtests.o: ${TESTSRC}/runtests.cpp
 	${GPP} $< -c ${CPPFLAGS} -o ${TESTSRC}/runtests.o
 
@@ -48,14 +69,6 @@ test: ${BIN}/test.touch
 ${BIN}/test.touch: ${BIN}/runtests
 	./${BIN}/runtests
 	touch ${BIN}/test.touch
-
-# TODO: archive the results, clean up variables and variable
-# inheritance (add exports?) and make sure this code handles files of
-# arbitrary depth below scenarios/% (possibly with find?)
-solve/%: ${OBJS} ${BIN}/test.touch scenarios/%/*
-	mkdir -p solve
-	${MAKE} -C scenarios/$(@F) solve
-	touch $@
 
 # The solver.  This program does the work and is the point of compiling.
 ${BIN}/solve: ${OBJS} ${BIN}/test.touch
@@ -78,16 +91,29 @@ plot: ${PYTHONDIR}/visualize.py
 		${PYTHON} ${PYTHONDIR}/visualize.py $${file} $${file%%.*}.palette; \
 	done;
 
-# Debugging for this makefile
+
 .PHONY: makefile-debug
 makefile-debug:
-	echo OBJS: ${OBJS}
-	echo TEST_OBJS: ${TEST_OBJS}
+	true
 
 # Eliminate generated files and backups.
 .PHONY: clean
 clean:
-	-rm -rf ${BIN}/* ${DATA}/*.mtx ${DATA}/*.palette ${DATA}/*.sltn *.pdf */*.o */*.d *~ */*~ *.stackdump */*.stackdump solve/
+	-rm -rf \
+	${BIN}/* \
+	${DATA}/*.mtx \
+	${DATA}/*.palette \
+	${DATA}/*.sltn \
+	*.pdf \
+	*/*.o \
+	*/*.d \
+	*~ \
+	*/*~ \
+	*/*/*~ \
+	*.stackdump \
+	*/*.stackdump \
+	${SCENARIOS}/*/Makefile.gen.* \
+	${SOLUTIONS}
 
 # Bring in the dependencies
 -include $(TEST_SOURCES:.cpp=.d)

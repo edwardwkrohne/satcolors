@@ -1,6 +1,7 @@
 */*.o
 *~
 */*~
+*/*/*~
 bin/*
 */.#*
 *.gif
@@ -10,3 +11,5 @@ data/*.palette
 data/*.mtx
 solve/
 */*.d
+scenarios/*/Makefile.gen.*
+solutions
