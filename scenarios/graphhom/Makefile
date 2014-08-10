@@ -43,7 +43,7 @@ ${SOLUTIONS}/${SCENNAME}/solve: ${SCENARIOS}/${SCENNAME}/solve.cpp ${OBJS} ${BIN
 ${SOLUTIONS}/${SCENNAME}/${GRAPHNAME}.sltn: ${SOLUTIONS}/${SCENNAME}/solve ${DATA}/${GRAPHNAME}.mtx
 	$^ $@
 
-.PHONY: plot
+.PHONY: plot-${SCENNAME}
 plot-${SCENNAME}: ${PYTHONDIR}/visualize.py ${SOLUTIONS}/${SCENNAME}/${GRAPHNAME}.sltn ${DATA}/${GRAPHNAME}.palette
 	${PYTHON} $^
 
