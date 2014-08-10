@@ -29,7 +29,7 @@ MarkerRegionsExperiment::createGridBuilder(SolverManager* manager, Var& var) con
     return IsolatedPattern
     (
         manager,
-        brackets.view(row*gridSize, col*gridSize, (row+1)*gridSize, (col+1)*gridSize),
+        brackets.restrict(row*gridSize, col*gridSize, (row+1)*gridSize, (col+1)*gridSize),
         patternStrings[row][col],
         var);
   };

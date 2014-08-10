@@ -42,7 +42,7 @@ public:
   Matrix& operator=(const Matrix& copy) = default;
   Matrix& operator=(Matrix&& move) = default;
 
-  MatrixView<Scalar> view(size_type startRow, size_type startCol, size_type endRow, size_type endCol) const;
+  MatrixView<Scalar> restrict(size_type startRow, size_type startCol, size_type endRow, size_type endCol) const;
 
   using Grid<Scalar>::operator[];
   SubscriptWrapper<PairIndexedScalar<Scalar>, Scalar> operator[](Scalar row) const;
@@ -67,10 +67,10 @@ Matrix<Scalar>::Matrix(SolverManager* _manager,
 }
 
 template<typename Scalar>
-MatrixView<Scalar> Matrix<Scalar>::view(size_type startRow, 
-					size_type startCol, 
-					size_type endRow, 
-					size_type endCol) const {
+MatrixView<Scalar> Matrix<Scalar>::restrict(size_type startRow, 
+					    size_type startCol, 
+					    size_type endRow, 
+					    size_type endCol) const {
   return MatrixView<Scalar>(this, startRow, startCol, endRow, endCol);
 }
 

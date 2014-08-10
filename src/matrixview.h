@@ -36,7 +36,7 @@ public:
   MatrixView(const Matrix<Scalar>* mat, size_type startRow, size_type startCol, size_type endRow, size_type endCol);
 
   // Return a submatrix of the current matrix
-  MatrixView view(size_type startRow, size_type startCol, size_type endRow, size_type endCol) const;
+  MatrixView restrict(size_type startRow, size_type startCol, size_type endRow, size_type endCol) const;
 
   // Return a vector representing a row of the matrix.  Can be used to double-index the matrix.
   SubscriptWrapper<Scalar> operator[](size_type index) const;
@@ -105,10 +105,10 @@ MatrixView<Scalar>::MatrixView(const Matrix<Scalar>& mat) :
 
 // Return a submatrix of the current matrix
 template<typename Scalar>
-MatrixView<Scalar> MatrixView<Scalar>::view(size_type startRow, 
-					    size_type startCol, 
-					    size_type endRow, 
-					    size_type endCol) const {
+MatrixView<Scalar> MatrixView<Scalar>::restrict(size_type startRow, 
+						size_type startCol, 
+						size_type endRow, 
+						size_type endCol) const {
   return MatrixView<Scalar>(baseMatrix, mStartRow+startRow, mStartCol+startCol, mStartRow+endRow, mStartCol+endCol);
 }
 

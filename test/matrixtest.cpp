@@ -135,7 +135,7 @@ void MatrixTest::testView(void) {
   // Object under test.
   Var var = 5;
   Matrix<> matrix(nullptr, 4, 6, 0, 3, var);  // values are in [0,3)
-  MatrixView<> view = matrix.view(1, 2, 3, 4); // Get a 2x2 view corresponding to [1,3)x[2,4).
+  MatrixView<> view = matrix.restrict(1, 2, 3, 4); // Get a 2x2 view corresponding to [1,3)x[2,4).
 
   CPPUNIT_ASSERT_EQUAL(2, view.width());
   CPPUNIT_ASSERT_EQUAL(2, view.height());
@@ -161,11 +161,11 @@ void MatrixTest::testViewErrors(void) {
   Var var = 0;
   Matrix<> matrix(nullptr, 4, 4, 0, 3, var);
 
-  CPPUNIT_ASSERT_THROW(matrix.view(-1, 0, 2, 2), out_of_range);
-  CPPUNIT_ASSERT_THROW(matrix.view(0, -1, 2, 2), out_of_range);
-  CPPUNIT_ASSERT_THROW(matrix.view(0, 0, 5, 2), out_of_range);
-  CPPUNIT_ASSERT_THROW(matrix.view(0, 0, 2, 5), out_of_range);
+  CPPUNIT_ASSERT_THROW(matrix.restrict(-1, 0, 2, 2), out_of_range);
+  CPPUNIT_ASSERT_THROW(matrix.restrict(0, -1, 2, 2), out_of_range);
+  CPPUNIT_ASSERT_THROW(matrix.restrict(0, 0, 5, 2), out_of_range);
+  CPPUNIT_ASSERT_THROW(matrix.restrict(0, 0, 2, 5), out_of_range);
 
-  CPPUNIT_ASSERT_THROW(matrix.view(2, 0, 1, 4), invalid_argument);
-  CPPUNIT_ASSERT_THROW(matrix.view(0, 2, 4, 1), invalid_argument);
+  CPPUNIT_ASSERT_THROW(matrix.restrict(2, 0, 1, 4), invalid_argument);
+  CPPUNIT_ASSERT_THROW(matrix.restrict(0, 2, 4, 1), invalid_argument);
 }

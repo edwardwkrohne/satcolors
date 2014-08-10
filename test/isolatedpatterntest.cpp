@@ -200,7 +200,7 @@ void IsolatedPatternTest::testOnView(void) {
   SolverManager manager;
 
   Matrix<> matrix(&manager, 18, 27, 0, 2);
-  IsolatedPattern pattern(&manager, matrix.view(0, 0, 9, 9),
+  IsolatedPattern pattern(&manager, matrix.restrict(0, 0, 9, 9),
       " .  x  .    ;"
       " x (x) x    ;");
 

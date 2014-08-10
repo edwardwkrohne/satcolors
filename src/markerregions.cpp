@@ -79,9 +79,9 @@ MarkerRegionsImpl::MarkerRegionsImpl(
     actionRowUnderlay(_manager, _height+2, _width+2, minRelRow(_width,  _regionSize), maxRelRow(_height, _width, _regionSize), var),
     actionColUnderlay(_manager, _height+2, _width+2, minRelRow(_height, _regionSize), maxRelRow(_width, _height, _regionSize), var),
 
-    boundary (boundaryUnderlay.view   (1, 1, _height+1, _width+1)),
-    actionRow(actionRowUnderlay.view(1, 1, _height+1, _width+1)),
-    actionCol(actionColUnderlay.view(1, 1, _height+1, _width+1)),
+    boundary (boundaryUnderlay.restrict  (1, 1, _height+1, _width+1)),
+    actionRow(actionRowUnderlay.restrict (1, 1, _height+1, _width+1)),
+    actionCol(actionColUnderlay.restrict (1, 1, _height+1, _width+1)),
 
     objTuple(
         boundaryUnderlay,
