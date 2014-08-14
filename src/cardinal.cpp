@@ -19,6 +19,7 @@ Cardinal::Cardinal(SolverManager* _manager, value_type _min, value_type _max, Va
   mManager(_manager),
   mMin(_min),
   mMax(_max),
+  inverted(false),
   mStartingVar(_startingVar == SolverManager::allocateNew ? _manager->newVars(numLiterals()) : _startingVar)
 {
   if ( _startingVar == SolverManager::allocateNew ) {
@@ -76,12 +77,34 @@ void Cardinal::checkDomain(const value_type arg) const {
   }
 }
 
+// Negation. If idx is a Cardinal, then -idx returns a cardinal that is
+// equal to n iff idx is equal to -n.
+Cardinal Cardinal::operator-() const {
+  Cardinal retVal(*this);
+  retVal.inverted = !retVal.inverted;
+  std::swap(retVal.mMin, retVal.mMax);
+  retVal.mMin = -retVal.mMin + 1;
+  retVal.mMax = -retVal.mMax + 1;
+
+  return retVal; 
+}
+
+Cardinal operator+(const Cardinal::value_type rhs, const Cardinal& lhs) {
+  return lhs + rhs;
+}
+
+Cardinal operator-(const Cardinal::value_type rhs, const Cardinal& lhs) {
+  return (-lhs) + rhs;
+}
+
 // Addition of a cardinal by a constant.  Surprisingly easy to implement, and useful.
 // If idx is a Cardinal, then idx+1 returns a cardinal that is equal to n+1 iff idx is equal to n.
 // Uses no additional literals or requirements.
 Cardinal Cardinal::operator+(const value_type rhs) const {
-  Var var = mStartingVar;
-  return Cardinal(mManager, min()+rhs, max()+rhs, var);
+  Cardinal retVal(*this);
+  retVal.mMin += rhs;
+  retVal.mMax += rhs;
+  return retVal;
 }
 Cardinal Cardinal::operator-(const value_type rhs) const {
   return *this + (-rhs);
@@ -91,7 +114,11 @@ Cardinal Cardinal::operator-(const value_type rhs) const {
 // behavior is undefined.
 Minisat::Lit Cardinal::operator==(value_type rhs) const {
   checkDomain(rhs);
-  return mkLit( Var(rhs - min()) + mStartingVar);
+  if ( !inverted ) {
+    return mkLit( Var(rhs - min()) + mStartingVar);
+  } else {
+    return mkLit( Var(max()-1-rhs) + mStartingVar);
+  }
 }
 Minisat::Lit Cardinal::operator!=(value_type rhs) const {
   checkDomain(rhs);
@@ -142,7 +169,7 @@ Clause operator<=(value_type lhs, const Cardinal& rhs) {
 }
 
 
-// Requirements that two Numbers be equal, whatever values they take.  Requires that both Numbers
+// Requirements that two Cardinals be equal, whatever values they take.  Requires that both Cardinals
 // have the same manager.  Does not require the range for each cardinal to be the same, or even
 // overlap.
 Requirement Cardinal::operator==(const Cardinal& rhs) const {
@@ -168,7 +195,7 @@ Requirement Cardinal::operator==(const Cardinal& rhs) const {
   return result;
 }
 
-// Requirements that two Numbers be nonequal, whatever values they take.  Requires that both Numbers
+// Requirements that two Cardinals be nonequal, whatever values they take.  Requires that both Cardinals
 // have the same manager.  Does not require the range for each cardinal to be the same, or even
 // overlap.
 Requirement Cardinal::operator!=(const Cardinal& rhs) const {

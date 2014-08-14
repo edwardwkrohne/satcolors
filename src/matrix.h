@@ -42,7 +42,13 @@ public:
   Matrix& operator=(const Matrix& copy) = default;
   Matrix& operator=(Matrix&& move) = default;
 
+  // Return various views on the matrix
   MatrixView<Scalar> restrict(size_type startRow, size_type startCol, size_type endRow, size_type endCol) const;
+  MatrixView<Scalar> rotCCW() const;
+  MatrixView<Scalar> rotCW() const;
+  MatrixView<Scalar> reflectH() const;
+  MatrixView<Scalar> reflectV() const;
+  MatrixView<Scalar> transpose() const;
 
   using Grid<Scalar>::operator[];
   SubscriptWrapper<PairIndexedScalar<Scalar>, Scalar> operator[](Scalar row) const;
@@ -71,8 +77,34 @@ MatrixView<Scalar> Matrix<Scalar>::restrict(size_type startRow,
 					    size_type startCol, 
 					    size_type endRow, 
 					    size_type endCol) const {
-  return MatrixView<Scalar>(this, startRow, startCol, endRow, endCol);
+  return MatrixView<Scalar>(*this).restrict(startRow, startCol, endRow, endCol);
 }
+
+template<typename Scalar>
+MatrixView<Scalar> Matrix<Scalar>::rotCCW() const {
+  return MatrixView<Scalar>(*this).rotCCW();
+}
+
+template<typename Scalar>
+MatrixView<Scalar> Matrix<Scalar>::rotCW() const {
+  return MatrixView<Scalar>(*this).rotCW();
+}
+
+template<typename Scalar>
+MatrixView<Scalar> Matrix<Scalar>::reflectH() const {
+  return MatrixView<Scalar>(*this).reflectH();
+}
+
+template<typename Scalar>
+MatrixView<Scalar> Matrix<Scalar>::reflectV() const {
+  return MatrixView<Scalar>(*this).reflectV();
+}
+
+template<typename Scalar>
+MatrixView<Scalar> Matrix<Scalar>::transpose() const {
+  return MatrixView<Scalar>(*this).transpose();
+}
+
 
 template<typename Scalar>
 SubscriptWrapper<PairIndexedScalar<Scalar>, Scalar> Matrix<Scalar>::operator[](Scalar row) const {

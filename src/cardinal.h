@@ -49,6 +49,9 @@ public:
   Cardinal operator+(const value_type rhs) const;
   Cardinal operator-(const value_type rhs) const;
 
+  // Additive inversion
+  Cardinal operator-() const;
+  
   // Simple literals indicating equality with a specific cardinal rhs.  If rhs is out of bounds,
   // behavior is undefined.
   Minisat::Lit operator==(value_type rhs) const;
@@ -91,6 +94,7 @@ public:
   operator value_type() const;
 
 private:
+  bool inverted;
   SolverManager* mManager;
   value_type mMin;
   value_type mMax;
@@ -101,6 +105,7 @@ private:
 
 // Arithmetic (by constants)
 Cardinal operator+(const Cardinal::value_type rhs, const Cardinal& lhs);
+Cardinal operator-(const Cardinal::value_type rhs, const Cardinal& lhs);
 
 // Ordering requirements
 Clause operator>(Cardinal::value_type lhs, const Cardinal& rhs);

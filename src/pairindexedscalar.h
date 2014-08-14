@@ -139,7 +139,7 @@ Requirement PairIndexedScalar<Scalar>::operator != (value_type rhs) const {
   return result;
 }
 
-// I don't know why these are commented out; EK April 2014
+// TODO: FIXME: I don't know why these are commented out; EK April 2014
 // Not currently implemented?
 // template<class Scalar>
 // Requirement PairIndexedScalar<Scalar>::operator == (const Scalar& rhs) const {
@@ -159,7 +159,7 @@ Requirement operator!=(Scalar lhs, const PairIndexedScalar<Scalar>& rhs) {
   return rhs != lhs;
 }
 
-// I don't know why these are commented out; EK April 2014
+// TODO: FIXME: I don't know why these are commented out; EK April 2014
 // Not currently implemented?
 // template<class Scalar>
 // Requirement operator==(typename Matrix<Scalar>::value_type lhs, const PairIndexedScalar<Scalar>& rhs) {

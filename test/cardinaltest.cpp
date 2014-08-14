@@ -30,6 +30,8 @@ class CardinalTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST(testLessThan);
   CPPUNIT_TEST(testRedundantLessThan);
   CPPUNIT_TEST(testDomainError);
+  CPPUNIT_TEST(testNegation);
+  CPPUNIT_TEST(testNegNeg);
   CPPUNIT_TEST_SUITE_END();
 protected:
   void testCopy(void);
@@ -47,6 +49,8 @@ protected:
   void testLessThan(void);
   void testRedundantLessThan(void);
   void testDomainError(void);
+  void testNegation(void);
+  void testNegNeg(void);
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( CardinalTest );
@@ -225,6 +229,9 @@ void CardinalTest::testAddition(void) {
 
   CPPUNIT_ASSERT_EQUAL(cardinal+1 == 2, cardinal == 1);
   CPPUNIT_ASSERT_EQUAL(cardinal-1 == 0, cardinal == 1);
+
+  CPPUNIT_ASSERT_EQUAL( 1+cardinal == 2, cardinal == 1);
+  CPPUNIT_ASSERT_EQUAL(-1+cardinal == 0, cardinal == 1);
 }
 
 
@@ -281,3 +288,27 @@ void CardinalTest::testDomainError(void) {
 
 }
 
+void CardinalTest::testNegation(void) {
+  Var var = 0;
+  Cardinal cardinal(nullptr, 0, 10, var);
+  Cardinal negation = -cardinal;
+  Cardinal subtraction = 12-cardinal;
+
+  CPPUNIT_ASSERT_EQUAL(-9, negation.min());
+  CPPUNIT_ASSERT_EQUAL(1, negation.max());
+  CPPUNIT_ASSERT_EQUAL(cardinal == 3, negation == -3);
+
+  CPPUNIT_ASSERT_EQUAL(3,  subtraction.min());
+  CPPUNIT_ASSERT_EQUAL(13, subtraction.max());
+  CPPUNIT_ASSERT_EQUAL(cardinal == 3, subtraction == 9);
+}
+
+void CardinalTest::testNegNeg(void) {
+  Var var = 0;
+  Cardinal cardinal(nullptr, 0, 10, var);
+  Cardinal negneg = -(-cardinal);
+
+  CPPUNIT_ASSERT_EQUAL(0,  negneg.min());
+  CPPUNIT_ASSERT_EQUAL(10, negneg.max());
+  CPPUNIT_ASSERT_EQUAL(cardinal == 3, negneg == 3);
+}
