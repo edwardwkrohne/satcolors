@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <type_traits>
+#include <stdexcept>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include "../src/literal.h"
@@ -15,12 +16,14 @@ class LiteralTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST(testOutputLitPositive);
   CPPUNIT_TEST(testOutputLitNegative);
   CPPUNIT_TEST(testDoubleNegative);
+  CPPUNIT_TEST(testThrow);
   CPPUNIT_TEST_SUITE_END();
 protected:
   void testTriviality(void);
   void testOutputLitPositive(void);
   void testOutputLitNegative(void);
   void testDoubleNegative(void);
+  void testThrow(void);
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( LiteralTest );
@@ -52,4 +55,9 @@ void LiteralTest::testDoubleNegative(void) {
   Literal result = ~~Literal(2);
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
+}
+
+void LiteralTest::testThrow(void) {
+  Literal lit;
+  CPPUNIT_ASSERT_THROW(~Literal(0), std::logic_error);
 }

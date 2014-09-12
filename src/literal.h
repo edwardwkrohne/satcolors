@@ -5,9 +5,9 @@
 // engine, other than minisat, as the solving engine, by reducing the
 // number of places that directly reference engine details.
 //
-// Optimized for readability and ease of use; speed is not a concern
-// since everything gets converted to Minisat vecs before the heavy
-// lifting happens.
+// Optimized for readability and ease of use; speed takes second
+// priority since everything gets converted to Minisat vecs before the
+// heavy lifting happens.
 
 #ifndef LITERAL_H
 #define LITERAL_H
