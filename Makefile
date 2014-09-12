@@ -93,6 +93,7 @@ makefile-debug:
 .PHONY: clean
 clean:
 	-rm -rf \
+	archive/*.touch \
 	${BIN}/* \
 	${DATA}/*.mtx \
 	${DATA}/*.palette \

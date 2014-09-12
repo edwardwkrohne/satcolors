@@ -39,5 +39,7 @@ ${SOLUTIONS}/${SCENNAME}/solve: ${SCENARIOS}/${SCENNAME}/solve.cpp ${OBJS} ${BIN
 	${GPP} ${SCENARIOS}/${SCENNAME}/solve.cpp ${CPPFLAGS} ${OBJS} ${LIBMINISAT} -o $@
 
 ${SOLUTIONS}/${SCENNAME}/completed-puzzle: ${SOLUTIONS}/${SCENNAME}/solve ${DATA}/sudoku
-	$^  >  $@ || (cat $@; rm $@; false)
-	cat $@
+	rm -rf $@
+	touch $@
+	tail -f $@ &
+	$^  >  $@

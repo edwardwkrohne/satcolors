@@ -119,17 +119,6 @@ Pattern::Pattern(istream& strin) :
   computePattern(strin);
 }
 
-
-Pattern::Pattern(const Pattern& copy) :
-    height(copy.height),
-    width(copy.width),
-    centerRow(copy.centerRow),
-    centerCol(copy.centerCol),
-    pattern(copy.pattern)
-{
-
-}
-
 Pattern::subscript_type Pattern::operator[] (int index) {
   return pattern[index];
 }
