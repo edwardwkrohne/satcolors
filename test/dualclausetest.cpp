@@ -2,14 +2,11 @@
 
 #include <string>
 #include <sstream>
-#include <minisat/core/SolverTypes.h>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include "../src/dualclause.h"
 
 using namespace std;
-using Minisat::mkLit;
-using Minisat::Lit;
 
 class DualClauseTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST_SUITE(DualClauseTest);
@@ -46,10 +43,10 @@ protected:
 CPPUNIT_TEST_SUITE_REGISTRATION( DualClauseTest );
 
 void DualClauseTest::testCompileTimeTests(void) {
-  Clause clause = mkLit(1) | mkLit(2);
+  Clause clause = Literal(1) | Literal(2);
 
-  Lit lit1 = mkLit(1);
-  Lit lit2 = mkLit(2);
+  Literal lit1 = Literal(1);
+  Literal lit2 = Literal(2);
 
   DualClause dc = lit1 & lit2;
 
@@ -64,47 +61,47 @@ void DualClauseTest::testCompileTimeTests(void) {
 
 void DualClauseTest::testOperatorAndLitLit(void) {
   DualClause expected;
-  expected &= mkLit(1);
-  expected &= mkLit(2);
+  expected &= Literal(1);
+  expected &= Literal(2);
   
-  DualClause result = mkLit(1) & mkLit(2);
+  DualClause result = Literal(1) & Literal(2);
   
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
 void DualClauseTest::testOperatorAndLitDualClause(void) {
   DualClause expected;
-  expected &= mkLit(1);
-  expected &= mkLit(2);
-  expected &= ~mkLit(3);
+  expected &= Literal(1);
+  expected &= Literal(2);
+  expected &= ~Literal(3);
 
-  const DualClause rhs = mkLit(2) & ~mkLit(3);
-  DualClause result = mkLit(1) & move(rhs);
+  const DualClause rhs = Literal(2) & ~Literal(3);
+  DualClause result = Literal(1) & move(rhs);
   
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
 void DualClauseTest::testOperatorAndEqualsLit(void) {
   DualClause expected;
-  expected &= ~mkLit(1);
-  expected &= mkLit(2);
-  expected &= ~mkLit(3);
+  expected &= ~Literal(1);
+  expected &= Literal(2);
+  expected &= ~Literal(3);
 
-  DualClause result = ~mkLit(1) & mkLit(2);
-  result &= ~mkLit(3);
+  DualClause result = ~Literal(1) & Literal(2);
+  result &= ~Literal(3);
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
 void DualClauseTest::testOperatorAndEqualsDualClause(void) {
   DualClause expected;
-  expected &= ~mkLit(1);
-  expected &= mkLit(2);
-  expected &= ~mkLit(3);
-  expected &= ~mkLit(4);
+  expected &= ~Literal(1);
+  expected &= Literal(2);
+  expected &= ~Literal(3);
+  expected &= ~Literal(4);
 
-  DualClause result = ~mkLit(1) & mkLit(2);
-  const DualClause rhs = ~mkLit(3) & ~mkLit(4);
+  DualClause result = ~Literal(1) & Literal(2);
+  const DualClause rhs = ~Literal(3) & ~Literal(4);
   result &= rhs;
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
@@ -112,25 +109,25 @@ void DualClauseTest::testOperatorAndEqualsDualClause(void) {
 
 void DualClauseTest::testOperatorAndDualClauseLit(void) {
   DualClause expected;
-  expected &= ~mkLit(1);
-  expected &= mkLit(2);
-  expected &= ~mkLit(3);
+  expected &= ~Literal(1);
+  expected &= Literal(2);
+  expected &= ~Literal(3);
 
-  const DualClause lhs = ~mkLit(1) & mkLit(2);
-  DualClause result = lhs & ~mkLit(3);
+  const DualClause lhs = ~Literal(1) & Literal(2);
+  DualClause result = lhs & ~Literal(3);
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
 void DualClauseTest::testOperatorAndDualClauseDualClause(void) {
   DualClause expected;
-  expected &= ~mkLit(1);
-  expected &= mkLit(2);
-  expected &= ~mkLit(3);
-  expected &= ~mkLit(4);
+  expected &= ~Literal(1);
+  expected &= Literal(2);
+  expected &= ~Literal(3);
+  expected &= ~Literal(4);
 
-  const DualClause lhs = ~mkLit(1) & mkLit(2);
-  const DualClause rhs = ~mkLit(3) & ~mkLit(4);
+  const DualClause lhs = ~Literal(1) & Literal(2);
+  const DualClause rhs = ~Literal(3) & ~Literal(4);
   DualClause result = lhs & rhs;
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
@@ -147,9 +144,9 @@ void DualClauseTest::testOutputDualClauseEmpty(void) {
 }
 
 void DualClauseTest::testClauseNegation(void) {
-  Lit lit1 = mkLit(1);
-  Lit lit2 = mkLit(2);
-  Lit lit3 = mkLit(3);
+  Literal lit1 = Literal(1);
+  Literal lit2 = Literal(2);
+  Literal lit3 = Literal(3);
 
   Clause clause = lit1 | lit2 | lit3;
   DualClause result(~clause);
@@ -160,9 +157,9 @@ void DualClauseTest::testClauseNegation(void) {
 }
 
 void DualClauseTest::testDualClauseNegation(void) {
-  Lit lit1 = mkLit(1);
-  Lit lit2 = mkLit(2);
-  Lit lit3 = mkLit(3);
+  Literal lit1 = Literal(1);
+  Literal lit2 = Literal(2);
+  Literal lit3 = Literal(3);
 
   DualClause clause = lit1 & lit2 & lit3;
   Clause result(~clause);
@@ -176,7 +173,7 @@ void DualClauseTest::testDualClauseNegation(void) {
 
 void DualClauseTest::testOutputDualClauseSingleton(void) {
   string expected = "~3";
-  const DualClause clause(~mkLit(3));
+  const DualClause clause(~Literal(3));
 
   ostringstream resultStream;
   resultStream << clause;
@@ -186,7 +183,7 @@ void DualClauseTest::testOutputDualClauseSingleton(void) {
 
 void DualClauseTest::testOutputDualClause(void) {
   string expected = "1 & 2 & ~3 & 4";
-  const DualClause clause = (mkLit(1) & mkLit(2) & ~mkLit(3) & mkLit(4));
+  const DualClause clause = (Literal(1) & Literal(2) & ~Literal(3) & Literal(4));
 
   ostringstream resultStream;
   resultStream << clause;
@@ -195,7 +192,7 @@ void DualClauseTest::testOutputDualClause(void) {
 }
 
 void DualClauseTest::testDoubleOutput(void) {
-  const DualClause clause = (mkLit(1) & mkLit(2) & ~mkLit(3) & mkLit(4));
+  const DualClause clause = (Literal(1) & Literal(2) & ~Literal(3) & Literal(4));
 
   ostringstream resultStream;
   CPPUNIT_ASSERT_NO_THROW(resultStream << clause << clause);

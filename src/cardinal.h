@@ -12,7 +12,6 @@
 #define CARDINAL_H
 
 #include <iostream>
-#include <minisat/core/SolverTypes.h>
 #include "requirement.h"
 #include "solvermanager.h"
 
@@ -40,8 +39,8 @@ public:
   Cardinal& operator=(Cardinal&& move) = default;
 
   // After a solution has been found, a requirement for the current/a different solution
-  Minisat::Lit diffSolnReq() const;
-  Minisat::Lit currSolnReq() const;
+  Literal diffSolnReq() const;
+  Literal currSolnReq() const;
 
   // Addition of a cardinal by a constant.  Surprisingly easy to implement, and useful.
   // If idx is a Cardinal, then idx+1 returns a cardinal that is equal to n+1 iff idx is equal to n.
@@ -54,8 +53,8 @@ public:
   
   // Simple literals indicating equality with a specific cardinal rhs.  If rhs is out of bounds,
   // behavior is undefined.
-  Minisat::Lit operator==(value_type rhs) const;
-  Minisat::Lit operator!=(value_type rhs) const;
+  Literal operator==(value_type rhs) const;
+  Literal operator!=(value_type rhs) const;
 
   // Ordering requirements
   Clause operator>(value_type rhs) const;
@@ -114,7 +113,7 @@ Clause operator<(Cardinal::value_type lhs, const Cardinal& rhs);
 Clause operator<=(Cardinal::value_type lhs, const Cardinal& rhs);
 
 // Comparison operators
-Minisat::Lit operator==(Cardinal::value_type lhs, const Cardinal& rhs);
-Minisat::Lit operator!=(Cardinal::value_type lhs, const Cardinal& rhs);
+Literal operator==(Cardinal::value_type lhs, const Cardinal& rhs);
+Literal operator!=(Cardinal::value_type lhs, const Cardinal& rhs);
 
 #endif // CARDINAL_H

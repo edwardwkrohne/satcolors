@@ -16,7 +16,6 @@
 #define REQUIREMENT_H
 
 #include <utility>
-#include <minisat/core/SolverTypes.h>
 
 #include "clause.h"
 #include "dualclause.h"
@@ -33,7 +32,7 @@ public:
   Requirement(Requirement&& other);
 
   // Create a requirement from a single element
-  Requirement(Minisat::Lit lit);
+  Requirement(Literal lit);
   Requirement(Clause clause);
   Requirement(DualClause clause);
 
@@ -41,42 +40,42 @@ public:
   Requirement& operator=(Requirement rhs);
 
   // Conjoin and assign
-  Requirement& operator&=(Minisat::Lit rhs);
+  Requirement& operator&=(Literal rhs);
   Requirement& operator&=(Clause rhs);
   Requirement& operator&=(DualClause rhs);
   Requirement& operator&=(Requirement rhs);
 
   // Disjoin and assign
-  Requirement& operator|=(Minisat::Lit rhs);
+  Requirement& operator|=(Literal rhs);
   Requirement& operator|=(Clause rhs);
   Requirement& operator|=(DualClause rhs);
   Requirement& operator|=(Requirement rhs);
 };
 
 // Operator & for conjunction
-Requirement operator&(Minisat::Lit lhs, Clause rhs);
-Requirement operator&(Minisat::Lit lhs, Requirement rhs);
-Requirement operator&(Clause lhs,       Minisat::Lit rhs);
+Requirement operator&(Literal lhs, Clause rhs);
+Requirement operator&(Literal lhs, Requirement rhs);
+Requirement operator&(Clause lhs,       Literal rhs);
 Requirement operator&(Clause lhs,       Clause rhs);
 Requirement operator&(Clause lhs,       DualClause rhs);
 Requirement operator&(Clause lhs,       Requirement rhs);
 Requirement operator&(DualClause lhs,   Clause rhs);
 Requirement operator&(DualClause lhs,   Requirement rhs);
-Requirement operator&(Requirement lhs,  Minisat::Lit rhs);
+Requirement operator&(Requirement lhs,  Literal rhs);
 Requirement operator&(Requirement lhs,  Clause rhs);
 Requirement operator&(Requirement lhs,  DualClause rhs);
 Requirement operator&(Requirement lhs,  Requirement rhs);
 
 // Operator | for disjunction
-Requirement operator|(Minisat::Lit lhs, DualClause rhs);
-Requirement operator|(Minisat::Lit lhs, Requirement rhs);
+Requirement operator|(Literal lhs, DualClause rhs);
+Requirement operator|(Literal lhs, Requirement rhs);
 Requirement operator|(Clause lhs,       DualClause rhs);
 Requirement operator|(Clause lhs,       Requirement rhs);
-Requirement operator|(DualClause lhs,   Minisat::Lit rhs);
+Requirement operator|(DualClause lhs,   Literal rhs);
 Requirement operator|(DualClause lhs,   Clause rhs);
 Requirement operator|(DualClause lhs,   DualClause rhs);
 Requirement operator|(DualClause lhs,   Requirement rhs);
-Requirement operator|(Requirement lhs,  Minisat::Lit rhs);
+Requirement operator|(Requirement lhs,  Literal rhs);
 Requirement operator|(Requirement lhs,  Clause rhs);
 Requirement operator|(Requirement lhs,  DualClause rhs);
 Requirement operator|(Requirement lhs,  Requirement rhs);

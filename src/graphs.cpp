@@ -9,9 +9,7 @@
 
 #include <iostream>
 #include "grid.h"
-using Minisat::Lit;
 using Minisat::Var;
-using Minisat::mkLit;
 using namespace std;
 
 /////////////////////////////////////////////////////////////////////
@@ -26,7 +24,7 @@ using namespace std;
 //  true or false in certain scenarios, which will create a (probably)
 //  ridiculous amount of unnecessary unit propagation.
 //
-class StreamGraph: public Grid<Lit> {
+class StreamGraph: public Grid<Literal> {
 public:
   StreamGraph() = delete;
   StreamGraph(SolverManager* manager, istream& in, Var& startingVar = SolverManager::allocateNew);
@@ -39,16 +37,16 @@ private:
   static Grid createGrid(SolverManager* manager, istream& in, Var& startingVar);
 };
 
-Grid<Lit> StreamGraph::createGrid(SolverManager* manager, istream& in, Var& startingVar) {
+Grid<Literal> StreamGraph::createGrid(SolverManager* manager, istream& in, Var& startingVar) {
   value_type order;
   in >> order;
   return Grid(order, order,
 	      [&](int src, int dst) {
-		Lit lit;
+		Literal lit;
 		if ( startingVar == SolverManager::allocateNew) {
-		  lit = mkLit(manager->newVars(1));
+		  lit = Literal(manager->newVars(1));
 		} else {
-		  lit = mkLit(startingVar++);
+		  lit = Literal(startingVar++);
 		}
 
 		if ( !in ) {
@@ -80,7 +78,7 @@ int StreamGraph::order() const {
 //
 //  A complete graph (K_n)
 //
-class CompleteGraph: public Grid<Lit> {
+class CompleteGraph: public Grid<Literal> {
 public:
   CompleteGraph() = delete;
   CompleteGraph(SolverManager* manager, int order, Var& startingVar = SolverManager::allocateNew);
@@ -91,11 +89,11 @@ public:
 CompleteGraph::CompleteGraph(SolverManager* manager, int order, Var& startingVar) :
   Grid(order, order, 
        [&](int src, int dst) {
-	 Lit lit;
+	 Literal lit;
 	 if ( startingVar == SolverManager::allocateNew) {
-	   lit = mkLit(manager->newVars(1));
+	   lit = Literal(manager->newVars(1));
 	 } else {
-	   lit = mkLit(startingVar++);
+	   lit = Literal(startingVar++);
 	 }
 	 auto req = (src == dst) ? ~lit : lit;
 	 manager->require(req);
@@ -113,7 +111,7 @@ int CompleteGraph::order() const {
 //
 //  The twisted torus graph
 //
-class TwistedTorusGraph: public Grid<Lit> {
+class TwistedTorusGraph: public Grid<Literal> {
 public:
   TwistedTorusGraph() = delete;
   TwistedTorusGraph(SolverManager* manager, int order, Var& startingVar = SolverManager::allocateNew);
@@ -161,11 +159,11 @@ TwistedTorusGraph::TwistedTorusGraph(SolverManager* manager, int length, Var& st
 	 }
 	 
 	 // Fill in the corresponding part of the matrix
-	 Lit lit;
+	 Literal lit;
 	 if ( startingVar == SolverManager::allocateNew) {
-	   lit = mkLit(manager->newVars(1));
+	   lit = Literal(manager->newVars(1));
 	 } else {
-	   lit = mkLit(startingVar++);
+	   lit = Literal(startingVar++);
 	 }
 
 	 manager->require(includeLink ? lit : ~lit);
@@ -183,7 +181,7 @@ int TwistedTorusGraph::order() const {
 //
 //  The orientation reversal graph
 //
-class OrientationReversalGraph: public Grid<Lit> {
+class OrientationReversalGraph: public Grid<Literal> {
 public:
   OrientationReversalGraph() = delete;
   OrientationReversalGraph(SolverManager* manager, int width, int height, Var& startingVar = SolverManager::allocateNew);
@@ -327,11 +325,11 @@ OrientationReversalGraph::OrientationReversalGraph(SolverManager* manager, int c
 
 
 	 // Fill in the corresponding part of the matrix
-	 Lit lit;
+	 Literal lit;
 	 if ( startingVar == SolverManager::allocateNew) {
-	   lit = mkLit(manager->newVars(1));
+	   lit = Literal(manager->newVars(1));
 	 } else {
-	   lit = mkLit(startingVar++);
+	   lit = Literal(startingVar++);
 	 }
 
 	 manager->require(includeLink ? lit : ~lit);

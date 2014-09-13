@@ -23,11 +23,11 @@
 
 #include <list>
 #include <iostream>
-#include <minisat/core/SolverTypes.h>
+#include "literal.h"
 
 class DualClause;
 
-class Clause : public std::list<Minisat::Lit> {
+class Clause : public std::list<Literal> {
 public:
   // Default constructor
   Clause();
@@ -39,7 +39,7 @@ public:
   Clause(Clause&& other);
 
   // Create a clause from a single element
-  Clause(Minisat::Lit lit);
+  Clause(Literal lit);
 
   // Assignment
   Clause& operator=(Clause rhs);
@@ -48,20 +48,20 @@ public:
   Clause& operator|=(Clause rhs);
 
   // Concatenate and assign
-  Clause& operator|=(Minisat::Lit rhs);
+  Clause& operator|=(Literal rhs);
 
   friend Clause operator~(DualClause dual);
 
 private:
   // Fast way of manufacturing a clause from a DualClause
-  Clause(std::list<Minisat::Lit>&& dual);
+  Clause(std::list<Literal>&& dual);
 };
 
 // Operator | for concatenation (disjunction)
 // Concatenate two Clauses to produce a third
-Clause operator|(Minisat::Lit rhs, Minisat::Lit lhs);
-Clause operator|(Clause rhs, Minisat::Lit lhs);
-Clause operator|(Minisat::Lit rhs, Clause lhs);
+Clause operator|(Literal rhs, Literal lhs);
+Clause operator|(Clause rhs, Literal lhs);
+Clause operator|(Literal rhs, Clause lhs);
 Clause operator|(Clause rhs, Clause lhs);
 
 // Clauses are equal if they have the same elements
@@ -69,9 +69,6 @@ Clause operator|(Clause rhs, Clause lhs);
 bool operator==(Clause rhs, Clause lhs);
 bool operator!=(Clause rhs, Clause lhs);
 bool operator<(Clause rhs, Clause lhs);
-
-// Output a "nice" representation (for debugging, primarily)
-std::ostream& operator<<(std::ostream& out, Minisat::Lit rhs);
 
 // Output a "nice" representation (for debugging, primarily)
 std::ostream& operator<<(std::ostream& out, Clause rhs);

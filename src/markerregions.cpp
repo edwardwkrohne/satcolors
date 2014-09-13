@@ -5,12 +5,10 @@
 #include <iterator>
 #include "markerregions.h"
 #include "pairindexedscalar.h"
-#include "requirementinserter.h"
 #include "manipulators.h"
 
 using Minisat::Var;
 using namespace std;
-using Minisat::Lit;
 
 // Returns the unique integer b such that
 //
@@ -223,7 +221,7 @@ function<ostream& (ostream&)> MarkerRegionsImpl::yesNoMaybe(const DualClause& cl
 
 // Plots entailment in the markerRegions.  That is: what must be in the boundary,
 // what must not be in the boundary, and what could be or not.
-function<ostream& (ostream&)> MarkerRegionsImpl::yesNoMaybeRedBlue(const DualClause& clause, Lit redLit, Lit blueLit) const {
+function<ostream& (ostream&)> MarkerRegionsImpl::yesNoMaybeRedBlue(const DualClause& clause, Literal redLit, Literal blueLit) const {
   const auto GRAY = -1;
   const auto WHITE = 0;
   const auto BLACK = 1;

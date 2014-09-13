@@ -8,7 +8,6 @@
 #include <vector>
 #include "isolatedpattern.h"
 
-using Minisat::Lit;
 using Minisat::Var;
 using namespace std;
 

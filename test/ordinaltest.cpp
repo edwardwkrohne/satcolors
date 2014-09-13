@@ -2,7 +2,6 @@
 
 #include <string>
 #include <sstream>
-#include <minisat/core/SolverTypes.h>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <stdexcept>
@@ -10,8 +9,6 @@
 #include "../src/ordinaladdexpr.h"
 
 using namespace std;
-using Minisat::mkLit;
-using Minisat::Lit;
 using Minisat::Var;
 
 class OrdinalTest : public CPPUNIT_NS::TestFixture {
@@ -250,7 +247,7 @@ void OrdinalTest::testModelValue(void) {
   Ordinal ord(&manager,  0,  5);
   Ordinal negOrd = -ord;
 
-  Lit lit = mkLit(manager.newVars(1));
+  Literal lit = Literal(manager.newVars(1));
   manager.require(implication(lit, ord == 2));
 
   CPPUNIT_ASSERT(manager.solve(ord == 0));

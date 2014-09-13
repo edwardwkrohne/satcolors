@@ -8,17 +8,23 @@
 
 using namespace std;
 
-Literal::Literal(unsigned int var) :
-  m_lit(var)
+Literal::Literal(unsigned lit, bool pos) :
+  m_lit((signed)lit)
 {
+  *this = pos ? *this : ~*this;
+}
+
+unsigned int Literal::getVar() const {
+  return (unsigned) (isPos() ? m_lit : ~m_lit );
+}
+
+bool Literal::isPos() const {
+  return m_lit >= 0;
 }
 
 Literal Literal::operator~() const {
-  if ( m_lit == 0 ) {
-    throw std::logic_error("The zero literal is invalid and cannot be used.");
-  }
-  Literal retVal(*this);
-  retVal.m_lit = -retVal.m_lit;
+  Literal retVal;
+  retVal.m_lit = ~m_lit; // (-1)-retVal.m_lit  
   return retVal;
 }
 
@@ -31,7 +37,13 @@ bool Literal::operator!=(Literal other) const {
 }
 
 bool Literal::operator<(Literal other) const {
-  return m_lit < other.m_lit;
+  // The exact order in question is tested by the unit tests, because
+  // the order is used by Clause's cout << function.
+  if ( getVar() != other.getVar() ) {
+    return getVar() < other.getVar();
+  }
+
+  return isPos() < other.isPos();
 }
 
 ostream& operator<<(std::ostream& out, Literal rhs) {

@@ -8,18 +8,14 @@
 #include <sstream>
 #include <functional>
 #include <minisat/core/Solver.h>
-#include <minisat/core/SolverTypes.h>
 
 #include "markerregionsexperiment.h"
-#include "requirementinserter.h"
 #include "manipulators.h"
 #include "solvermanager.h"
 
 typedef typename Matrix<>::size_type size_type;
 typedef typename Matrix<>::value_type value_type;
 
-using Minisat::Lit;
-using Minisat::mkLit;
 using Minisat::Var;
 using namespace std;
 

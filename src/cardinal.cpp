@@ -8,8 +8,6 @@
 #include <stdexcept>
 #include "cardinal.h"
 
-using Minisat::Lit;
-using Minisat::mkLit;
 using Minisat::Var;
 typedef Cardinal::value_type value_type;
 using namespace std;
@@ -112,15 +110,15 @@ Cardinal Cardinal::operator-(const value_type rhs) const {
 
 // Simple literals indicating equality with a specific cardinal rhs.  If rhs is out of bounds,
 // behavior is undefined.
-Minisat::Lit Cardinal::operator==(value_type rhs) const {
+Literal Cardinal::operator==(value_type rhs) const {
   checkDomain(rhs);
   if ( !inverted ) {
-    return mkLit( Var(rhs - min()) + mStartingVar);
+    return Literal( Var(rhs - min()) + mStartingVar);
   } else {
-    return mkLit( Var(max()-1-rhs) + mStartingVar);
+    return Literal( Var(max()-1-rhs) + mStartingVar);
   }
 }
-Minisat::Lit Cardinal::operator!=(value_type rhs) const {
+Literal Cardinal::operator!=(value_type rhs) const {
   checkDomain(rhs);
   return ~(*this == rhs);
 }
@@ -227,10 +225,10 @@ value_type Cardinal::modelValue() const {
 }
 
 // After a solution has been found, a requirement for a different solution
-Lit Cardinal::diffSolnReq() const {
+Literal Cardinal::diffSolnReq() const {
   return (*this) != this->modelValue();
 }
-Lit Cardinal::currSolnReq() const {
+Literal Cardinal::currSolnReq() const {
   return (*this) == this->modelValue();
 }
 
@@ -238,10 +236,10 @@ Cardinal::operator value_type() const {
   return modelValue();
 }
 
-Lit operator==(value_type lhs, const Cardinal& rhs) {
+Literal operator==(value_type lhs, const Cardinal& rhs) {
   return rhs == lhs;
 }
 
-Lit operator!=(value_type lhs, const Cardinal& rhs) {
+Literal operator!=(value_type lhs, const Cardinal& rhs) {
   return rhs == lhs;
 }

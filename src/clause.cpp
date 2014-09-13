@@ -6,7 +6,6 @@
 #include <iostream>
 #include "clause.h"
 
-using Minisat::Lit;
 using namespace std;
 
 // Default constructor
@@ -15,25 +14,25 @@ Clause::Clause() {
 }
 
 // Constructor from one literal
-Clause::Clause(const Lit lit) {
+Clause::Clause(const Literal lit) {
   push_back(lit);
 }
 
 // Copy onstructor
 Clause::Clause(const Clause& other) :
-  list<Lit>(other)
+  list<Literal>(other)
 {
 }
 
 // Move constructor
 Clause::Clause(Clause&& other) :
-  list<Lit>(move(other))
+  list<Literal>(move(other))
 {
 }
 
 // Constructor from another list of literals (like a dualClause)
-Clause::Clause(std::list<Minisat::Lit>&& other) :
-  list<Lit>(move(other))
+Clause::Clause(std::list<Literal>&& other) :
+  list<Literal>(move(other))
 {
 }
 
@@ -44,26 +43,26 @@ Clause operator|(Clause lhs, Clause rhs) {
 }
 
 // Concatenation of a clause and a literal
-Clause operator|(Minisat::Lit lhs, Clause rhs) {
+Clause operator|(Literal lhs, Clause rhs) {
   rhs |= lhs;
   return move(rhs);
 }
 
 // Concatenation of a clause and a literal
-Clause operator|(Clause lhs, Minisat::Lit rhs) {
+Clause operator|(Clause lhs, Literal rhs) {
   lhs |= rhs;
   return move(lhs);
 }
 
 // Concatenation of two literals
-Clause operator|(Minisat::Lit lhs, Minisat::Lit rhs) {
+Clause operator|(Literal lhs, Literal rhs) {
   Clause clause(rhs);
   clause |= move(lhs);
   return move(clause);
 }
 
 // Concatenation of a clause and a literal
-Clause& Clause::operator|=(const Lit rhs) {
+Clause& Clause::operator|=(const Literal rhs) {
   push_back(rhs);
   return *this;
 }
@@ -85,8 +84,8 @@ bool operator==(Clause rhs, Clause lhs) {
   rhs.unique();
   lhs.sort();
   lhs.unique();
-  list<Lit>& rhs_ref = rhs;
-  list<Lit>& lhs_ref = lhs;
+  list<Literal>& rhs_ref = rhs;
+  list<Literal>& lhs_ref = lhs;
   return rhs_ref == lhs_ref;
 }
 
@@ -99,14 +98,9 @@ bool operator<(Clause rhs, Clause lhs)  {
   rhs.unique();
   lhs.sort();
   lhs.unique();
-  list<Lit>& rhs_ref = rhs;
-  list<Lit>& lhs_ref = lhs;
+  list<Literal>& rhs_ref = rhs;
+  list<Literal>& lhs_ref = lhs;
   return rhs_ref < lhs_ref;
-}
-
-// Output a literal
-ostream& operator<<(ostream& out, const Lit lit) {
-  return out << (sign(lit) ? "~" : "") << var(lit);
 }
 
 // Output a clause

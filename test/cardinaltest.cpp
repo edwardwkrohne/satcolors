@@ -2,15 +2,12 @@
 
 #include <string>
 #include <sstream>
-#include <minisat/core/SolverTypes.h>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <stdexcept>
 #include "../src/cardinal.h"
 
 using namespace std;
-using Minisat::mkLit;
-using Minisat::Lit;
 using Minisat::Var;
 
 class CardinalTest : public CPPUNIT_NS::TestFixture {
@@ -72,10 +69,10 @@ void CardinalTest::testIsCardinal(void) {
   Requirement result = cardinal.typeRequirement();
 
   Requirement expected;
-  expected &= mkLit(0) | mkLit(1) | mkLit(2);
-  expected &= ~mkLit(0) | ~mkLit(1);
-  expected &= ~mkLit(0) | ~mkLit(2);
-  expected &= ~mkLit(1) | ~mkLit(2);
+  expected &= Literal(0) | Literal(1) | Literal(2);
+  expected &= ~Literal(0) | ~Literal(1);
+  expected &= ~Literal(0) | ~Literal(2);
+  expected &= ~Literal(1) | ~Literal(2);
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
@@ -87,10 +84,10 @@ void CardinalTest::testNonzeroMin(void) {
   Requirement result = cardinal.typeRequirement();
 
   Requirement expected;
-  expected &= mkLit(0) | mkLit(1) | mkLit(2);
-  expected &= ~mkLit(0) | ~mkLit(1);
-  expected &= ~mkLit(0) | ~mkLit(2);
-  expected &= ~mkLit(1) | ~mkLit(2);
+  expected &= Literal(0) | Literal(1) | Literal(2);
+  expected &= ~Literal(0) | ~Literal(1);
+  expected &= ~Literal(0) | ~Literal(2);
+  expected &= ~Literal(1) | ~Literal(2);
 
   CPPUNIT_ASSERT_EQUAL(result, expected);
 }
@@ -100,13 +97,13 @@ void CardinalTest::testEqualsValue(void) {
   Var var = 0;
   Cardinal cardinal(nullptr, 0, 3, var);
 
-  CPPUNIT_ASSERT_EQUAL(mkLit(0), cardinal == 0);
-  CPPUNIT_ASSERT_EQUAL(mkLit(1), cardinal == 1);
-  CPPUNIT_ASSERT_EQUAL(mkLit(2), cardinal == 2);
+  CPPUNIT_ASSERT_EQUAL(Literal(0), cardinal == 0);
+  CPPUNIT_ASSERT_EQUAL(Literal(1), cardinal == 1);
+  CPPUNIT_ASSERT_EQUAL(Literal(2), cardinal == 2);
 
-  CPPUNIT_ASSERT_EQUAL(~mkLit(0), cardinal != 0);
-  CPPUNIT_ASSERT_EQUAL(~mkLit(1), cardinal != 1);
-  CPPUNIT_ASSERT_EQUAL(~mkLit(2), cardinal != 2);
+  CPPUNIT_ASSERT_EQUAL(~Literal(0), cardinal != 0);
+  CPPUNIT_ASSERT_EQUAL(~Literal(1), cardinal != 1);
+  CPPUNIT_ASSERT_EQUAL(~Literal(2), cardinal != 2);
 }
 
 void CardinalTest::testEqualsCardinal(void) {

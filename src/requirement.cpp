@@ -6,7 +6,6 @@
 #include <iostream>
 #include "requirement.h"
 
-using Minisat::Lit;
 using namespace std;
 
 Requirement::Requirement() {
@@ -31,7 +30,7 @@ Requirement::Requirement(Clause clause) {
   *this &= move(clause);
 }
 
-Requirement::Requirement(Lit lit) {
+Requirement::Requirement(Literal lit) {
   *this &= lit;
 }
 
@@ -66,23 +65,23 @@ Requirement& Requirement::operator&=(Clause rhs) {
   return *this;
 }
 
-Requirement& Requirement::operator&=(Lit rhs) {
+Requirement& Requirement::operator&=(Literal rhs) {
   *this &= (Clause)move(rhs);
   return *this;
 }
 
-Requirement operator&(Minisat::Lit lhs, Clause rhs) {
+Requirement operator&(Literal lhs, Clause rhs) {
   Requirement req(move(rhs));
   req &= move(lhs);
   return req;
 }
 
-Requirement operator&(Minisat::Lit lhs, Requirement rhs) {
+Requirement operator&(Literal lhs, Requirement rhs) {
   rhs &= move(lhs);
   return move(rhs);
 }
 
-Requirement operator&(Clause lhs, Lit rhs) {
+Requirement operator&(Clause lhs, Literal rhs) {
   Requirement req(move(lhs));
   req &= move(rhs);
   return req;
@@ -116,7 +115,7 @@ Requirement operator&(DualClause lhs, Requirement rhs) {
   return move(rhs);
 }
 
-Requirement operator&(Requirement lhs, Lit rhs) {
+Requirement operator&(Requirement lhs, Literal rhs) {
   lhs &= move(rhs);
   return move(lhs);
 }
@@ -190,7 +189,7 @@ Requirement& Requirement::operator|=(Clause rhs) {
   return *this;
 }
 
-Requirement& Requirement::operator|=(Minisat::Lit rhs) {
+Requirement& Requirement::operator|=(Literal rhs) {
   Clause clause(rhs);
   *this |= move(clause);
   return *this;
@@ -216,7 +215,7 @@ Requirement operator|(Requirement lhs, DualClause rhs) {
   return move(lhs);
 }
 
-Requirement operator|(Requirement lhs, Minisat::Lit rhs) {
+Requirement operator|(Requirement lhs, Literal rhs) {
   lhs |= move(rhs);
   return move(lhs);
 }
@@ -233,7 +232,7 @@ Requirement operator|(DualClause lhs, Clause rhs) {
   return req;
 }
 
-Requirement operator|(DualClause lhs, Lit rhs) {
+Requirement operator|(DualClause lhs, Literal rhs) {
   Requirement req(move(lhs));
   req |= move(rhs);
   return req;
@@ -255,12 +254,12 @@ Requirement operator|(Clause lhs, Requirement rhs) {
   return move(rhs);
 }
 
-Requirement operator|(Minisat::Lit lhs, Requirement rhs) {
+Requirement operator|(Literal lhs, Requirement rhs) {
   rhs |= move(lhs);
   return move(rhs);
 }
 
-Requirement operator|(Lit lhs, DualClause rhs) {
+Requirement operator|(Literal lhs, DualClause rhs) {
   Requirement req(move(rhs));
   req |= move(lhs);
   return req;

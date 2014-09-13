@@ -9,7 +9,6 @@
 #define ORDINALMINEXPR_H
 
 #include <iostream>
-#include <minisat/core/SolverTypes.h>
 #include "requirement.h"
 #include "solvermanager.h"
 #include "ordinal.h"

@@ -2,14 +2,11 @@
 
 #include <string>
 #include <sstream>
-#include <minisat/core/SolverTypes.h>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include "../src/clause.h"
 
 using namespace std;
-using Minisat::mkLit;
-using Minisat::Lit;
 
 class ClauseTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST_SUITE(ClauseTest);
@@ -45,47 +42,47 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ClauseTest );
 
 void ClauseTest::testOperatorOrLitLit(void) {
   Clause expected;
-  expected |= mkLit(1);
-  expected |= mkLit(2);
+  expected |= Literal(1);
+  expected |= Literal(2);
   
-  Clause result = mkLit(1) | mkLit(2);
+  Clause result = Literal(1) | Literal(2);
   
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
 void ClauseTest::testOperatorOrLitClause(void) {
   Clause expected;
-  expected |= mkLit(1);
-  expected |= mkLit(2);
-  expected |= ~mkLit(3);
+  expected |= Literal(1);
+  expected |= Literal(2);
+  expected |= ~Literal(3);
 
-  const Clause rhs = mkLit(2) | ~mkLit(3);
-  Clause result = mkLit(1) | rhs;
+  const Clause rhs = Literal(2) | ~Literal(3);
+  Clause result = Literal(1) | rhs;
   
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
 void ClauseTest::testOperatorOrEqualsLit(void) {
   Clause expected;
-  expected |= ~mkLit(1);
-  expected |= mkLit(2);
-  expected |= ~mkLit(3);
+  expected |= ~Literal(1);
+  expected |= Literal(2);
+  expected |= ~Literal(3);
 
-  Clause result = ~mkLit(1) | mkLit(2);
-  result |= ~mkLit(3);
+  Clause result = ~Literal(1) | Literal(2);
+  result |= ~Literal(3);
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
 void ClauseTest::testOperatorOrEqualsClause(void) {
   Clause expected;
-  expected |= ~mkLit(1);
-  expected |= mkLit(2);
-  expected |= ~mkLit(3);
-  expected |= ~mkLit(4);
+  expected |= ~Literal(1);
+  expected |= Literal(2);
+  expected |= ~Literal(3);
+  expected |= ~Literal(4);
 
-  Clause result = ~mkLit(1) | mkLit(2);
-  const Clause rhs = ~mkLit(3) | ~mkLit(4);
+  Clause result = ~Literal(1) | Literal(2);
+  const Clause rhs = ~Literal(3) | ~Literal(4);
   result |= rhs;
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
@@ -93,25 +90,25 @@ void ClauseTest::testOperatorOrEqualsClause(void) {
 
 void ClauseTest::testOperatorOrClauseLit(void) {
   Clause expected;
-  expected |= ~mkLit(1);
-  expected |= mkLit(2);
-  expected |= ~mkLit(3);
+  expected |= ~Literal(1);
+  expected |= Literal(2);
+  expected |= ~Literal(3);
 
-  const Clause lhs = ~mkLit(1) | mkLit(2);
-  Clause result = lhs | ~mkLit(3);
+  const Clause lhs = ~Literal(1) | Literal(2);
+  Clause result = lhs | ~Literal(3);
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
 void ClauseTest::testOperatorOrClauseClause(void) {
   Clause expected;
-  expected |= ~mkLit(1);
-  expected |= mkLit(2);
-  expected |= ~mkLit(3);
-  expected |= ~mkLit(4);
+  expected |= ~Literal(1);
+  expected |= Literal(2);
+  expected |= ~Literal(3);
+  expected |= ~Literal(4);
 
-  const Clause lhs = ~mkLit(1) | mkLit(2);
-  const Clause rhs = ~mkLit(3) | ~mkLit(4);
+  const Clause lhs = ~Literal(1) | Literal(2);
+  const Clause rhs = ~Literal(3) | ~Literal(4);
   Clause result = lhs | rhs;
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
@@ -121,7 +118,7 @@ void ClauseTest::testOutputLitPositive(void) {
   string expected = "1";
 
   ostringstream resultStream;
-  resultStream << mkLit(1);
+  resultStream << Literal(1);
   
   CPPUNIT_ASSERT_EQUAL(expected, resultStream.str());  
 }
@@ -130,7 +127,7 @@ void ClauseTest::testOutputLitNegative(void) {
   string expected = "~2";
 
   ostringstream resultStream;
-  resultStream << ~mkLit(2);
+  resultStream << ~Literal(2);
   
   CPPUNIT_ASSERT_EQUAL(expected, resultStream.str());  
 }
@@ -147,7 +144,7 @@ void ClauseTest::testOutputClauseEmpty(void) {
 
 void ClauseTest::testOutputClauseSingleton(void) {
   string expected = "~3";
-  const Clause clause(~mkLit(3));
+  const Clause clause(~Literal(3));
 
   ostringstream resultStream;
   resultStream << clause;
@@ -157,7 +154,7 @@ void ClauseTest::testOutputClauseSingleton(void) {
 
 void ClauseTest::testOutputClause(void) {
   string expected = "1 | 2 | ~3 | 4";
-  Clause clause = (mkLit(1) | mkLit(2) | ~mkLit(3) | mkLit(4));
+  Clause clause = (Literal(1) | Literal(2) | ~Literal(3) | Literal(4));
 
   ostringstream resultStream;
   resultStream << clause;
@@ -166,7 +163,7 @@ void ClauseTest::testOutputClause(void) {
 }
 
 void ClauseTest::testDoubleOutput(void) {
-  const Clause clause = (mkLit(1) | mkLit(2) | ~mkLit(3) | mkLit(4));
+  const Clause clause = (Literal(1) | Literal(2) | ~Literal(3) | Literal(4));
 
   ostringstream resultStream;
   CPPUNIT_ASSERT_NO_THROW(resultStream << clause << clause);

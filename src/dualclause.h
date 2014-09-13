@@ -2,17 +2,15 @@
 //
 // The De Morgan dual of a clause, i.e., a conjunction of literals.
 //
-// Designed to play well with Clause, Requirement, Lit, etc.
+// Designed to play well with Clause, Requirement, Literal, etc.
 
 #ifndef DUALCLAUSE_H
 #define DUALCLAUSE_H
 
 #include <list>
-#include <minisat/core/SolverTypes.h>
-
 #include "clause.h"
 
-class DualClause : public std::list<Minisat::Lit> {
+class DualClause : public std::list<Literal> {
 public:
   // Default constructor
   DualClause();
@@ -24,13 +22,13 @@ public:
   DualClause(DualClause&& other);
 
   // Create a clause from a single element
-  DualClause(Minisat::Lit lit);
+  DualClause(Literal lit);
 
   // Concatenate and assign
   DualClause& operator&=(DualClause rhs);
 
   // Concatenate and assign
-  DualClause& operator&=(Minisat::Lit rhs);
+  DualClause& operator&=(Literal rhs);
 
   // Assignment operator
   DualClause& operator=(DualClause rhs);
@@ -39,7 +37,7 @@ public:
 
 private:
   // Fast way of manufacturing a dualClause from a Clause
-  DualClause(std::list<Minisat::Lit>&& other);
+  DualClause(std::list<Literal>&& other);
 };
 
 // Negate a clause to get a dual clause.
@@ -49,9 +47,9 @@ DualClause operator~(Clause dual);
 Clause operator~(DualClause dual);
 
 // Operator & for conjoining two literals or dualclauses
-DualClause operator&(Minisat::Lit lhs, Minisat::Lit rhs);
-DualClause operator&(Minisat::Lit lhs, DualClause rhs);
-DualClause operator&(DualClause lhs, Minisat::Lit rhs);
+DualClause operator&(Literal lhs, Literal rhs);
+DualClause operator&(Literal lhs, DualClause rhs);
+DualClause operator&(DualClause lhs, Literal rhs);
 DualClause operator&(DualClause lhs, DualClause rhs);
 
 // Clauses are equal if they have the same elements

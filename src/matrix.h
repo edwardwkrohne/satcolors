@@ -11,7 +11,6 @@
 #define MATRIX_H
 
 #include <iostream>
-#include <minisat/core/SolverTypes.h>
 #include "requirement.h"
 #include "cardinal.h"
 #include "grid.h"

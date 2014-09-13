@@ -7,9 +7,11 @@
 #include <algorithm>
 #include "solveriter.h"
 
+using namespace std;
+
 using Minisat::Solver;
 using Minisat::vec;
-using Minisat::Lit;
+using Minisat::var;
 
 // Constructor
 SolverIter::SolverIter(Solver& _solver) :
@@ -24,9 +26,9 @@ const SolverIter& SolverIter::operator*() const {
 }
 
 // Assign
-const vec<Lit>& SolverIter::operator=(const vec<Lit>& clause) const {
+const vec<Minisat::Lit>& SolverIter::operator=(const vec<Minisat::Lit>& clause) const {
   for (int i=0; i < clause.size(); i++ ) {
-    while ( solver.nVars() <= var(clause[i]) ) {
+    while ( solver.nVars() <= abs(var(clause[i])) ) {
       solver.newVar();
     }
   }
@@ -36,9 +38,9 @@ const vec<Lit>& SolverIter::operator=(const vec<Lit>& clause) const {
 }
 
 // Assign
-Lit SolverIter::operator=(const Lit unit) const {
-  vec<Lit> vecClause;
-  vecClause.push(unit);
+Literal SolverIter::operator=(const Literal unit) const {
+  vec<Minisat::Lit> vecClause;
+  vecClause.push(Minisat::mkLit(unit.getVar(), unit.isPos()));
   
   *this = vecClause;
 
@@ -47,9 +49,9 @@ Lit SolverIter::operator=(const Lit unit) const {
 
 // Assign
 const Clause& SolverIter::operator=(const Clause& clause) const {
-  vec<Lit> vecClause;
-  for ( auto iter = clause.begin(); iter != clause.end(); iter++) {
-    vecClause.push(*iter);
+  vec<Minisat::Lit> vecClause;
+  for ( auto lit : clause ) {
+    vecClause.push(Minisat::mkLit(lit.getVar(), lit.isPos()));
   }
 
   *this = vecClause;
@@ -60,7 +62,6 @@ const Requirement& SolverIter::operator=(const Requirement& req) const {
   std::copy(req.begin(), req.end(), *this);
   return req;
 }
-
 
 // Increment (no-op, as usual for output iterators)
 const SolverIter& SolverIter::operator++() const {

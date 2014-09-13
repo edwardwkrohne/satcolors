@@ -25,7 +25,10 @@ public:
   Literal& operator=(Literal&& rhs) = default;
 
   // Construction from integer
-  Literal(unsigned int var);
+  explicit Literal(unsigned int lit, bool positive = true);
+
+  unsigned int getVar() const;
+  bool isPos() const;
 
   // Only one basic logic operation that doesn't use more complicated objects like clauses or dualclauses.
   Literal operator~() const;
@@ -39,7 +42,7 @@ public:
   friend std::ostream& operator<<(std::ostream& out, Literal rhs);
 
 private:
-  signed long m_lit;
+  int m_lit;
 };
 
 #endif // LITERAL_H

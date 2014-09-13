@@ -11,9 +11,8 @@
 #define SOLVERMANAGER_H
 
 #include <iostream>
-#include <minisat/core/SolverTypes.h>
 #include "requirement.h"
-#include "solveriter.h"
+#include <minisat/core/Solver.h>
 
 class SolverManager {
 public:
@@ -28,16 +27,16 @@ public:
   virtual void require(const Requirement& req);
   void require(const DualClause& clause) { require(Requirement(clause)); };
   void require(const Clause& clause) { require(Requirement(clause)); };
-  void require(Minisat::Lit lit) { require(Requirement(lit)); };
+  void require(Literal lit) { require(Requirement(lit)); };
 
   // Get an insertion iterator for adding requirements.
-  virtual SolverIter getIter();
+  //  virtual SolverIter getIter();
 
   // Solve
   virtual bool solve();
-  virtual bool solve(Minisat::Lit lit);
-  virtual bool solve(Minisat::Lit lit1, Minisat::Lit lit2);
-  virtual bool solve(Minisat::Lit lit1, Minisat::Lit lit2, Minisat::Lit lit3);
+  virtual bool solve(Literal lit);
+  virtual bool solve(Literal lit1, Literal lit2);
+  virtual bool solve(Literal lit1, Literal lit2, Literal lit3);
   virtual bool solve(const DualClause& assumptions);
 
   // Find out whether the last run was successful

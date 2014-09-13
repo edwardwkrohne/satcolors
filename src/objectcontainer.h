@@ -5,7 +5,6 @@
 #ifndef OBJECTCONTAINER_H
 #define OBJECTCONTAINER_H
 
-#include <minisat/core/SolverTypes.h>
 #include <vector>
 #include "solvermanager.h"
 #include "requirement.h"

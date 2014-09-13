@@ -3,14 +3,11 @@
 #include <string>
 #include <sstream>
 #include <stdexcept>
-#include <minisat/core/SolverTypes.h>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include "../src/array2d.h"
 
 using namespace std;
-using Minisat::mkLit;
-using Minisat::Lit;
 
 class Array2dTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST_SUITE(Array2dTest);

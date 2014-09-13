@@ -9,7 +9,6 @@
 
 #include <iterator>
 #include <minisat/core/Solver.h>
-#include <minisat/core/SolverTypes.h>
 #include "requirement.h"
 
 class SolverIter : public std::iterator<std::output_iterator_tag, void, void, void, void> {
@@ -22,13 +21,16 @@ class SolverIter : public std::iterator<std::output_iterator_tag, void, void, vo
   // just return "this".
   const SolverIter& operator*() const;
 
+  // The assignment operator -- places a literal into the solver
+  Minisat::Lit operator=(Minisat::Lit unit) const;
+
   // The assignment operator -- places a vector of literals
   // into the solver
   const Minisat::vec<Minisat::Lit>& operator=(const Minisat::vec<Minisat::Lit>& clause) const;
 
   // The assignment operator -- places a literal as a unit clause into
   // the solver
-  Minisat::Lit operator=(Minisat::Lit unit) const;
+  Literal operator=(Literal unit) const;
 
   // The assignment operator -- places a Clause into the solver
   const Clause& operator=(const Clause& clause) const;

@@ -10,7 +10,6 @@
 #include <vector>
 #include <stdexcept>
 #include <functional>
-#include <minisat/core/SolverTypes.h>
 #include "array2d.h"
 #include "requirement.h"
 #include "solvermanager.h"

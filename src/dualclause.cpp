@@ -6,7 +6,6 @@
 #include "dualclause.h"
 #include "clause.h"
 
-using Minisat::Lit;
 using namespace std;
 
 // Default constructor
@@ -15,30 +14,30 @@ DualClause::DualClause() {
 }
 
 // Constructor from one literal
-DualClause::DualClause(const Lit lit) {
+DualClause::DualClause(const Literal lit) {
   push_back(~lit);
 }
 
 // Copy constructor
 DualClause::DualClause(const DualClause& other) :
-  list<Lit>(other)
+  list<Literal>(other)
 {
 }
 
 // Move constructor
 DualClause::DualClause(DualClause&& other) :
-  list<Lit>(move(other))
+  list<Literal>(move(other))
 {
 }
 
 // Constructor from a set
-DualClause::DualClause(std::list<Minisat::Lit>&& other) :
-    list<Lit>(move(other))
+DualClause::DualClause(std::list<Literal>&& other) :
+    list<Literal>(move(other))
 {
 }
 
 // Concatenation of a clause and a literal
-DualClause& DualClause::operator&=(const Lit rhs) {
+DualClause& DualClause::operator&=(const Literal rhs) {
   push_back(~rhs);
   return *this;
 }
@@ -56,19 +55,19 @@ DualClause operator&(DualClause lhs, DualClause rhs) {
 }
 
 // Concatenation of a literal and a clause
-DualClause operator&(Lit lhs, DualClause rhs) {
+DualClause operator&(Literal lhs, DualClause rhs) {
   rhs &= lhs;
   return move(rhs);
 }
 
 // Concatenation of a clause and a literal
-DualClause operator&(DualClause lhs, Lit rhs) {
+DualClause operator&(DualClause lhs, Literal rhs) {
   lhs &= rhs;
   return move(lhs);
 }
 
 // Concatenation of literals
-DualClause operator&(Lit lhs, Lit rhs) {
+DualClause operator&(Literal lhs, Literal rhs) {
   DualClause dClause(lhs);
   dClause &= rhs;
   return dClause;
@@ -94,8 +93,8 @@ bool operator==(DualClause rhs, DualClause lhs) {
   rhs.unique();
   lhs.sort();
   lhs.unique();
-  list<Lit>& rhs_ref = rhs;
-  list<Lit>& lhs_ref = lhs;
+  list<Literal>& rhs_ref = rhs;
+  list<Literal>& lhs_ref = lhs;
   return rhs_ref == lhs_ref;
 }
 bool operator!=(DualClause rhs, DualClause lhs) {
@@ -106,8 +105,8 @@ bool operator<(DualClause rhs, DualClause lhs) {
   rhs.unique();
   lhs.sort();
   lhs.unique();
-  list<Lit>& rhs_ref = rhs;
-  list<Lit>& lhs_ref = lhs;
+  list<Literal>& rhs_ref = rhs;
+  list<Literal>& lhs_ref = lhs;
   return rhs_ref == lhs_ref;
 }
 // Output a clause

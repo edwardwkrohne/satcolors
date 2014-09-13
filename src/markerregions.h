@@ -10,7 +10,6 @@
 
 #include <iostream>
 #include <functional>
-#include <minisat/core/SolverTypes.h>
 #include "requirement.h"
 #include "solvermanager.h"
 #include "compoundobject.h"
@@ -42,7 +41,7 @@ public:
 
   // Returns a stream manipulator that plots what must, must not, can be, or must be with some assumptions,
   // in the boundary.
-  std::function<std::ostream& (std::ostream&)> yesNoMaybeRedBlue(const DualClause& clause, Minisat::Lit redLit, Minisat::Lit blueLit) const;
+  std::function<std::ostream& (std::ostream&)> yesNoMaybeRedBlue(const DualClause& clause, Literal redLit, Literal blueLit) const;
 
   const size_type height;
   const size_type width;

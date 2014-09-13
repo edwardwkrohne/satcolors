@@ -3,15 +3,15 @@
 // Implementation of the SolverManager class
 
 #include <algorithm>
-#include "solvermanager.h"
 #include <stdexcept>
+#include "solvermanager.h"
+#include "solveriter.h"
 
 using namespace std;
 using Minisat::Solver;
 using Minisat::Var;
 using Minisat::vec;
 using Minisat::lbool;
-using Minisat::Lit;
 
 Minisat::Var SolverManager::allocateNew = ~(Minisat::Var)0;
 
@@ -43,12 +43,7 @@ Var SolverManager::newVars(unsigned int numReservations) {
 
 // Register a single requirement
 void SolverManager::require(const Requirement& req) {
-  copy(req.begin(), req.end(), getIter());
-}
-
-// Get an insertion iterator for adding requirements.
-SolverIter SolverManager::getIter() {
-  return SolverIter(solver);
+  copy(req.begin(), req.end(), SolverIter(solver));
 }
 
 // Solve
@@ -56,22 +51,25 @@ bool SolverManager::solve() {
   solver.simplify();
   return successfulRun = solver.solve();
 }
-bool SolverManager::solve(Lit lit) {
+bool SolverManager::solve(Literal lit) {
   solver.simplify();
-  return successfulRun = solver.solve(lit);
+  return successfulRun = solver.solve(Minisat::mkLit(lit.getVar(), lit.isPos()));
 }
-bool SolverManager::solve(Lit lit1, Lit lit2) {
+bool SolverManager::solve(Literal lit1, Literal lit2) {
   solver.simplify();
-  return successfulRun = solver.solve(lit1, lit2);
+  return successfulRun = solver.solve(Minisat::mkLit(lit1.getVar(), lit1.isPos()), 
+				      Minisat::mkLit(lit2.getVar(), lit2.isPos()));
 }
-bool SolverManager::solve(Lit lit1, Lit lit2, Lit lit3) {
+bool SolverManager::solve(Literal lit1, Literal lit2, Literal lit3) {
   solver.simplify();
-  return successfulRun = solver.solve(lit1, lit2, lit3);
+  return successfulRun = solver.solve(Minisat::mkLit(lit1.getVar(), lit1.isPos()), 
+				      Minisat::mkLit(lit2.getVar(), lit2.isPos()), 
+				      Minisat::mkLit(lit3.getVar(), lit3.isPos()));
 }
 bool SolverManager::solve(const DualClause& assumptions) {
-  vec<Lit> vecAssumps(0);
+  vec<Minisat::Lit> vecAssumps(0);
   for ( auto assump : assumptions ) {
-     vecAssumps.push(~assump);
+    vecAssumps.push(Minisat::mkLit(assump.getVar(), !assump.isPos()));
   }
   return successfulRun = solver.solve(vecAssumps);
 }
@@ -91,5 +89,9 @@ bool SolverManager::modelValue(Var var) const {
   if ( var >= solver.nVars() || var < 0 ) {
     throw out_of_range("SolverManager::modelValue called requesting a variable out of range");
   }
-  return solver.modelValue(var) == l_True;
+  // Somewhat counterintuitive, but I blame this on minisat's
+  // interface.  False is true, and true is false.  I could
+  // equivalently negate all the literals going into the solver, but
+  // it's easier to negate variables coming out.
+  return solver.modelValue(var) == l_False;
 }

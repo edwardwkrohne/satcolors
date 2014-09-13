@@ -2,14 +2,11 @@
 
 #include <string>
 #include <sstream>
-#include <minisat/core/SolverTypes.h>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include "../src/requirement.h"
 
 using namespace std;
-using Minisat::mkLit;
-using Minisat::Lit;
 typedef Requirement::size_type size_type;
 
 class RequirementTest : public CPPUNIT_NS::TestFixture {
@@ -55,13 +52,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION( RequirementTest );
 // deallocations occur, and then count them for the purposes of testing.
 
 void RequirementTest::testCompileTimeTests(void) {
-  const Clause clause1 = mkLit(1) | mkLit(2);
-  const Clause clause2 = mkLit(2) | mkLit(3);
-  const Clause clause3 = mkLit(3) | mkLit(4);
+  const Clause clause1 = Literal(1) | Literal(2);
+  const Clause clause2 = Literal(2) | Literal(3);
+  const Clause clause3 = Literal(3) | Literal(4);
 
-  const DualClause dClause1 = mkLit(1) & mkLit(2);
-  const Lit lit1 = mkLit(1);
-  const Lit lit2 = mkLit(2);
+  const DualClause dClause1 = Literal(1) & Literal(2);
+  const Literal lit1 = Literal(1);
+  const Literal lit2 = Literal(2);
 
   const Requirement req1 = clause1 & clause2;
   const Requirement req2 = clause2 & clause3;
@@ -81,7 +78,7 @@ void RequirementTest::testCompileTimeTests(void) {
 
   req = req1 & clause1 & lit1;
   req = clause1 & clause2 & clause3;
-  req = (mkLit(1) | mkLit(2)) & clause1;
+  req = (Literal(1) | Literal(2)) & clause1;
 
   req = req1 & dClause1;
   req = req1 | dClause1;
@@ -104,8 +101,8 @@ void RequirementTest::testCompileTimeTests(void) {
 }
 
 void RequirementTest::testOperatorAndClauseClause(void) {
-  Clause clause1 = mkLit(1) | mkLit(2);
-  Clause clause2 = mkLit(2) | mkLit(3);
+  Clause clause1 = Literal(1) | Literal(2);
+  Clause clause2 = Literal(2) | Literal(3);
 
   Requirement expected;
   expected &= clause1;
@@ -117,21 +114,21 @@ void RequirementTest::testOperatorAndClauseClause(void) {
 }
 
 void RequirementTest::testCopyOnInsert(void) {
-  Clause clause1 = mkLit(1) | mkLit(2);
+  Clause clause1 = Literal(1) | Literal(2);
 
   Requirement expected;
-  expected &= Clause(mkLit(1) | mkLit(2));
+  expected &= Clause(Literal(1) | Literal(2));
   
   Requirement result(clause1);
-  clause1 |= mkLit(3);
+  clause1 |= Literal(3);
   
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
 void RequirementTest::testInstantiation(void) {
-  Clause clause1 = mkLit(1) | mkLit(2);
+  Clause clause1 = Literal(1) | Literal(2);
 
-  Lit lit1 = mkLit(1);
+  Literal lit1 = Literal(1);
 
   Requirement req1(lit1);
 
@@ -146,9 +143,9 @@ void RequirementTest::testInstantiation(void) {
 }
 
 void RequirementTest::testClauseDisjunction(void) {
-  Clause clause1 = mkLit(1) | mkLit(2);
-  Clause clause2 = mkLit(3) | mkLit(4);
-  Clause clause3 = mkLit(5) | mkLit(6);
+  Clause clause1 = Literal(1) | Literal(2);
+  Clause clause2 = Literal(3) | Literal(4);
+  Clause clause3 = Literal(5) | Literal(6);
 
   Requirement expected;
   expected &= clause1 | clause2;
@@ -161,12 +158,12 @@ void RequirementTest::testClauseDisjunction(void) {
 }
 
 void RequirementTest::testDualClauseAndClauseDisjunction(void) {
-  Clause     clause = mkLit(1)  | mkLit(2);
-  DualClause dClause = mkLit(3) & mkLit(4);
+  Clause     clause = Literal(1)  | Literal(2);
+  DualClause dClause = Literal(3) & Literal(4);
 
   Requirement expected;
-  expected &= clause | mkLit(3);
-  expected &= clause | mkLit(4);
+  expected &= clause | Literal(3);
+  expected &= clause | Literal(4);
 
   Requirement result = clause | dClause;
 
@@ -174,13 +171,13 @@ void RequirementTest::testDualClauseAndClauseDisjunction(void) {
 }
 
 void RequirementTest::testDualClauseAndClauseConjunction(void) {
-  Clause     clause = mkLit(1)  | mkLit(2);
-  DualClause dClause = mkLit(3) & mkLit(4);
+  Clause     clause = Literal(1)  | Literal(2);
+  DualClause dClause = Literal(3) & Literal(4);
 
   Requirement expected;
   expected &= clause;
-  expected &= mkLit(3);
-  expected &= mkLit(4);
+  expected &= Literal(3);
+  expected &= Literal(4);
 
   Requirement result = clause & dClause;
 
@@ -188,14 +185,14 @@ void RequirementTest::testDualClauseAndClauseConjunction(void) {
 }
 
 void RequirementTest::testDualClauseAndDualClauseDisjunction(void) {
-  DualClause dClause1 = mkLit(1) & mkLit(2);
-  DualClause dClause2 = mkLit(3) & mkLit(4);
+  DualClause dClause1 = Literal(1) & Literal(2);
+  DualClause dClause2 = Literal(3) & Literal(4);
 
   Requirement expected;
-  expected &= mkLit(1) | mkLit(3);
-  expected &= mkLit(1) | mkLit(4);
-  expected &= mkLit(2) | mkLit(3);
-  expected &= mkLit(2) | mkLit(4);
+  expected &= Literal(1) | Literal(3);
+  expected &= Literal(1) | Literal(4);
+  expected &= Literal(2) | Literal(3);
+  expected &= Literal(2) | Literal(4);
 
   Requirement result = dClause1 | dClause2;
 
@@ -203,10 +200,10 @@ void RequirementTest::testDualClauseAndDualClauseDisjunction(void) {
 }
 
 void RequirementTest::testRequirementDisjunction(void) {
-  Clause clause1 = mkLit(1) | mkLit(2);
-  Clause clause2 = mkLit(3) | mkLit(4);
-  Clause clause3 = mkLit(5) | mkLit(6);
-  Clause clause4 = mkLit(7) | mkLit(8);
+  Clause clause1 = Literal(1) | Literal(2);
+  Clause clause2 = Literal(3) | Literal(4);
+  Clause clause3 = Literal(5) | Literal(6);
+  Clause clause4 = Literal(7) | Literal(8);
 
   Requirement expected;
   expected &= clause1 | clause3;
@@ -218,9 +215,9 @@ void RequirementTest::testRequirementDisjunction(void) {
 }
 
 void RequirementTest::testClauseNegation(void) {
-  Lit lit1 = mkLit(1);
-  Lit lit2 = mkLit(2);
-  Lit lit3 = mkLit(3);
+  Literal lit1 = Literal(1);
+  Literal lit2 = Literal(2);
+  Literal lit3 = Literal(3);
 
   Clause clause = lit1 | lit2 | lit3;
   Requirement result(~clause);
@@ -231,30 +228,30 @@ void RequirementTest::testClauseNegation(void) {
 }
 
 void RequirementTest::testMoveConstruction(void) {
-  Requirement req = mkLit(1) & mkLit(2);
+  Requirement req = Literal(1) & Literal(2);
   Requirement result = move(req);
 
-  Requirement expected = mkLit(1) & mkLit(2);
+  Requirement expected = Literal(1) & Literal(2);
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
 void RequirementTest::testImplication(void) {
-  Requirement req = mkLit(1) & mkLit(2);
-  Requirement result = implication(mkLit(3), move(req));
+  Requirement req = Literal(1) & Literal(2);
+  Requirement result = implication(Literal(3), move(req));
   Requirement expected =
-      (~mkLit(3) | mkLit(1)) &
-      (~mkLit(3) | mkLit(2));
+      (~Literal(3) | Literal(1)) &
+      (~Literal(3) | Literal(2));
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
 void RequirementTest::testEquivalence(void) {
-  Requirement result = equivalence(mkLit(3), mkLit(1) & mkLit(2));
+  Requirement result = equivalence(Literal(3), Literal(1) & Literal(2));
   Requirement expected =
-      (~mkLit(3) | mkLit(1)) &
-      (~mkLit(3) | mkLit(2)) &
-      (~mkLit(1) | ~mkLit(2) | mkLit(3));
+      (~Literal(3) | Literal(1)) &
+      (~Literal(3) | Literal(2)) &
+      (~Literal(1) | ~Literal(2) | Literal(3));
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
@@ -262,7 +259,7 @@ void RequirementTest::testEquivalence(void) {
 
 void RequirementTest::testOutput(void) {
   ostringstream sout;
-  Clause clause = mkLit(1) | mkLit(2);
+  Clause clause = Literal(1) | Literal(2);
   Requirement req(clause);
   sout << req;
 
@@ -273,7 +270,7 @@ void RequirementTest::testOutput(void) {
 
 void RequirementTest::testOutput2(void) {
   ostringstream sout;
-  Requirement req(mkLit(1));
+  Requirement req(Literal(1));
   sout << req;
 
   string expected = "1";

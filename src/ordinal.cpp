@@ -8,8 +8,6 @@
 #include <stdexcept>
 #include "ordinal.h"
 
-using Minisat::Lit;
-using Minisat::mkLit;
 using Minisat::Var;
 typedef Ordinal::value_type value_type;
 using namespace std;
@@ -117,15 +115,15 @@ Clause Ordinal::operator!=(value_type rhs) const {
 }
 
 // Comparison operators
-Lit Ordinal::operator>(value_type rhs) const {
+Literal Ordinal::operator>(value_type rhs) const {
   return ~(*this <= rhs);
 }
 
-Lit Ordinal::operator>=(value_type rhs) const {
+Literal Ordinal::operator>=(value_type rhs) const {
   return ~(*this < rhs);
 }
 
-Lit Ordinal::operator<(value_type rhs) const {
+Literal Ordinal::operator<(value_type rhs) const {
   if ( rhs <= min() || rhs >= max() ) {
     ostringstream sout;
     sout << "Incorrect value comparison for Ordinal.  This ordinal is in the interval [" << min() << ", " << max() << ") but less than " << rhs << " requested.";
@@ -133,29 +131,29 @@ Lit Ordinal::operator<(value_type rhs) const {
   }
 
   if ( !mNegated ) {
-    return  mkLit(rhs-1-min()+mStartingVar);
+    return  Literal(rhs-1-min()+mStartingVar);
   } else {
-    return ~mkLit(max()-rhs-1+mStartingVar);
+    return ~Literal(max()-rhs-1+mStartingVar);
   }
 }
 
-Lit Ordinal::operator<=(value_type rhs) const {
+Literal Ordinal::operator<=(value_type rhs) const {
   return *this < rhs+1;
 }
 
-Lit operator>(value_type lhs, const Ordinal& rhs) {
+Literal operator>(value_type lhs, const Ordinal& rhs) {
   return rhs < lhs;
 }
 
-Lit operator>=(value_type lhs, const Ordinal& rhs) {
+Literal operator>=(value_type lhs, const Ordinal& rhs) {
   return rhs <= lhs;
 }
 
-Lit operator<(value_type lhs, const Ordinal& rhs) {
+Literal operator<(value_type lhs, const Ordinal& rhs) {
   return rhs > lhs;
 }
 
-Lit operator<=(value_type lhs, const Ordinal& rhs) {
+Literal operator<=(value_type lhs, const Ordinal& rhs) {
   return rhs >= lhs;
 }
 

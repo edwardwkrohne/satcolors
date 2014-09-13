@@ -2,7 +2,6 @@
 
 #include <string>
 #include <sstream>
-#include <minisat/core/SolverTypes.h>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <stdexcept>
@@ -10,8 +9,6 @@
 #include "../src/ordinaladdexpr.h"
 
 using namespace std;
-using Minisat::mkLit;
-using Minisat::Lit;
 using Minisat::Var;
 
 class OrdinalAddExprTest : public CPPUNIT_NS::TestFixture {

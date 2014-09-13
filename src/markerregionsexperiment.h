@@ -9,7 +9,6 @@
 #define MARKERREGIONSEXPERIMENT_H
 
 #include <iostream>
-#include <minisat/core/SolverTypes.h>
 #include <functional>
 #include "requirement.h"
 #include "solvermanager.h"

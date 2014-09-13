@@ -20,7 +20,6 @@
 #ifndef COMPOUNDOBJECT_H
 #define COMPOUNDOBJECT_H
 
-#include <minisat/core/SolverTypes.h>
 #include <utility>
 #include <tuple>
 #include <type_traits>

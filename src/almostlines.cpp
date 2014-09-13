@@ -4,13 +4,11 @@
 
 #include <iterator>
 #include "almostlines.h"
-#include "requirementinserter.h"
 #include "manipulators.h"
 #include <iomanip>
 
 using Minisat::Var;
 using namespace std;
-using Minisat::Lit;
 
 // Creates an object representing the marker regions structure.  Registers requirements if
 // var is SolverManager::allocateNew

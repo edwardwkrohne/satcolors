@@ -19,7 +19,6 @@
 #define ORDINAL_H
 
 #include <iostream>
-#include <minisat/core/SolverTypes.h>
 #include "requirement.h"
 #include "solvermanager.h"
 
@@ -64,10 +63,10 @@ public:
   Clause     operator!=(value_type rhs) const;
 
   // Ordering requirements
-  Minisat::Lit operator>(value_type rhs) const;
-  Minisat::Lit operator>=(value_type rhs) const;
-  Minisat::Lit operator<(value_type rhs) const;
-  Minisat::Lit operator<=(value_type rhs) const;
+  Literal operator>(value_type rhs) const;
+  Literal operator>=(value_type rhs) const;
+  Literal operator<(value_type rhs) const;
+  Literal operator<=(value_type rhs) const;
 
   // Requirements that two Ordinals be equal, whatever values they
   // take.  Requires that both Ordinals have the same manager.  Does
@@ -120,10 +119,10 @@ Ordinal operator+(const Ordinal::value_type rhs, const Ordinal& lhs);
 Ordinal operator-(const Ordinal::value_type rhs, const Ordinal& lhs);
 
 // Ordering requirements
-Minisat::Lit operator>(Ordinal::value_type lhs, const Ordinal& rhs);
-Minisat::Lit operator>=(Ordinal::value_type lhs, const Ordinal& rhs);
-Minisat::Lit operator<(Ordinal::value_type lhs, const Ordinal& rhs);
-Minisat::Lit operator<=(Ordinal::value_type lhs, const Ordinal& rhs);
+Literal operator>(Ordinal::value_type lhs, const Ordinal& rhs);
+Literal operator>=(Ordinal::value_type lhs, const Ordinal& rhs);
+Literal operator<(Ordinal::value_type lhs, const Ordinal& rhs);
+Literal operator<=(Ordinal::value_type lhs, const Ordinal& rhs);
 
 // Comparison operators
 DualClause operator==(Ordinal::value_type lhs, const Ordinal& rhs);

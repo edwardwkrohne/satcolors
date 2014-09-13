@@ -2,15 +2,12 @@
 
 #include <string>
 #include <sstream>
-#include <minisat/core/SolverTypes.h>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include "../src/markerregions.h"
 #include "../src/pairindexedscalar.h"
 
 using namespace std;
-using Minisat::mkLit;
-using Minisat::Lit;
 using Minisat::Var;
 
 class MarkerRegionsTest : public CPPUNIT_NS::TestFixture {
