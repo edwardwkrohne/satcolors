@@ -19,8 +19,6 @@
 using namespace std;
 
 using Minisat::Var;
-using Minisat::Lit;
-using Minisat::mkLit;
 
 /////////////////////////////////////////////////////////////////////
 //

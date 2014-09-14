@@ -21,8 +21,6 @@
 using namespace std;
 
 using Minisat::Var;
-using Minisat::Lit;
-using Minisat::mkLit;
 
 const string pieces[5][2] = {
   {

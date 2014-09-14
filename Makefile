@@ -36,11 +36,12 @@ ${SCENARIOS}/$(1)/Makefile.gen.$(1): ${SCENARIOS}/$(1)/Makefile
 solve-$(1): $${DEPENDENCIES-$(1)} archive/archive-up-to-date-$(1).touch
 
 archive/archive-up-to-date-$(1).touch: $${DEPENDENCIES-$(1)}
-	mkdir tempdir
-	cp -R ${SCENARIOS}/$(1) tempdir/scenario
-	cp -R ${SOLUTIONS}/$(1) tempdir/solution
-	cp -R ${DATA} tempdir/data
-	mv tempdir archive/`date '+%Y-%m-%d_%H-%M-%S'`_$(1)
+	mkdir archive/tempdir
+	cp -R ${SCENARIOS}/$(1) archive/tempdir/scenario
+	cp -R ${SOLUTIONS}/$(1) archive/tempdir/solution
+	cp -R ${DATA} archive/tempdir/data
+	chmod -R ago-w archive/tempdir
+	mv archive/tempdir archive/`date '+%Y-%m-%d_%H-%M-%S'`_$(1)
 	touch $$@
 
 endef ### SCENARIO_INCLUDE_TEMPLATE
