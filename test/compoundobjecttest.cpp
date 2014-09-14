@@ -37,8 +37,6 @@ namespace {
 
 class TestImpl {
 public:
-  // TODO Remove the requirement that the implementation class supply a default argument
-  // (not terribly important)
   TestImpl(SolverManager* manager, unsigned int& var = SolverManager::allocateNew);
 
   Clause diffSolnReq() const;

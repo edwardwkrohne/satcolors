@@ -260,3 +260,7 @@ DualClause Ordinal::currSolnReq() const {
 Ordinal::operator int() const {
   return modelValue();
 }
+
+ostream& operator<<(ostream& out, const Ordinal& rhs) {
+  out << (int)rhs;
+}

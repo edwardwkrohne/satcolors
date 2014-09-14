@@ -77,8 +77,7 @@ public:
   Requirement typeRequirement() const;
 
   // The number of (contiguous) literals required to represent this cardinal.
-  // Equal to max-min.
-  // TODO make this a constant in all solver objects.
+  // Equal to max()-min().
   unsigned int numLiterals() const;
 
   // Access basic information
@@ -113,5 +112,7 @@ Clause operator<=(int lhs, const Cardinal& rhs);
 // Comparison operators
 Literal operator==(int lhs, const Cardinal& rhs);
 Literal operator!=(int lhs, const Cardinal& rhs);
+
+std::ostream& operator << (std::ostream& lhs, const Cardinal& rhs);
 
 #endif // CARDINAL_H

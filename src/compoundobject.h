@@ -82,11 +82,20 @@ public:
   typeRequirement() const;
 
 private:
-  // FIXME Clean this up.
-  // I only know how to do this sort of template manipulation if
-  // I have a return type to work with, so I can't do it directly
-  // on the constructor.  Perhaps when I learn more I won't need
-  // this helper.
+  // These helpers represent the bodies of three different flavors of
+  // constructor: copy constructor, explicit "Var" variable, and
+  // implicit "Var" variable.
+  //
+  // In theory I would just have three constructors instead, but I
+  // only know how to do this sort of SFINAE manipulation if I have
+  // a return type to work with, and constructors don't have return types.
+  //
+  // There may be a better way, but having these extra functions isn't
+  // too shabby a way to do this.
+  //
+  // There are some good thoughts here,
+  // http://seanmiddleditch.com/journal/2012/03/using-stdenable_if-on-constructors/
+  // for the next time I revisit this.
   template<class... ArgsT>
   typename std::enable_if<CopyConstructorArgs<T, ArgsT...>::value, void>::type
   constructorHelper(ArgsT&&... args);

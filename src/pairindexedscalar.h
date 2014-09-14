@@ -31,8 +31,8 @@ public:
   Requirement operator >=(int rhs) const;  // Not Yet Implemented
   Requirement operator >(int rhs)  const;  // Not Yet Implemented
 
-  Requirement operator == (Scalar rhs) const;
-  Requirement operator != (Scalar rhs) const;
+  Requirement operator == (Scalar rhs) const; // Not Yet Implemented
+  Requirement operator != (Scalar rhs) const; // Not Yet Implemented
 
   friend class Matrix<Scalar>;
   friend class MatrixView<Scalar>;
@@ -137,37 +137,5 @@ Requirement PairIndexedScalar<Scalar>::operator != (int rhs) const {
 
   return result;
 }
-
-// TODO: FIXME: I don't know why these are commented out; EK April 2014
-// Not currently implemented?
-// template<class Scalar>
-// Requirement PairIndexedScalar<Scalar>::operator == (const Scalar& rhs) const {
-// }
-
-// template<class Scalar>
-// Requirement PairIndexedScalar<Scalar>::operator != (const Scalar& rhs) const {
-// }
-
-template<class Scalar = Cardinal>
-Requirement operator==(Scalar lhs, const PairIndexedScalar<Scalar>& rhs) {
-  return rhs == lhs;
-}
-
-template<class Scalar = Cardinal>
-Requirement operator!=(Scalar lhs, const PairIndexedScalar<Scalar>& rhs) {
-  return rhs != lhs;
-}
-
-// TODO: FIXME: I don't know why these are commented out; EK April 2014
-// Not currently implemented?
-// template<class Scalar>
-// Requirement operator==(int lhs, const PairIndexedScalar<Scalar>& rhs) {
-//   return rhs == lhs;
-// }
-
-// template<class Scalar = Cardinal>
-// Requirement operator!=(int lhs, const PairIndexedScalar<Scalar>& rhs) {
-//   return rhs != lhs;
-// }
 
 #endif // PAIRINDEXEDSCALAR_H

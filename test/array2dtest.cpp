@@ -14,7 +14,7 @@ class Array2dTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST(testStorage);
   CPPUNIT_TEST(testStorageBool);
   CPPUNIT_TEST(testCpp11InitializerList);
-//  CPPUNIT_TEST(testCpp11InitializerListWidthMismatch);
+  CPPUNIT_TEST(testCpp11InitializerListWidthMismatch);
   CPPUNIT_TEST(testConstAccess);
   CPPUNIT_TEST_SUITE_END();
 protected:
@@ -77,13 +77,21 @@ void Array2dTest::testCpp11InitializerList(void) {
 }
 
 void Array2dTest::testCpp11InitializerListWidthMismatch(void) {
-  // FIXME This test fails intermittently, and strangely segfaults
-  // when other tests run.  I've been able to control whether THIS TEST
-  // segfaults by adjusting the length of a string stream operation
-  // in a completely unrelated test.  This seems to be a bizarre
+  // EK 2012???
+  // This test fails intermittently, and strangely segfaults when
+  // other tests run.  I've been able to control whether THIS TEST
+  // segfaults by adjusting the length of a string stream operation in
+  // a completely unrelated test.  This seems to be a bizarre
   // memory/multithreading issue.
   //
   // I've removed it from the test list to see if similar faults crop up.
+  //
+  // EK Sep 2014
+  //
+  // I wrote the above comment so long ago I don't remember writing it
+  // (I had to guess on the date just now), so "similar faults" did
+  // not crop up.  So I reenabled the test, and it passes.  This test
+  // is worth watching, for sure.
 
   // Create an initializer list where one row has three elements, but one row has two.
   initializer_list<initializer_list<string>> bad_init_list = {

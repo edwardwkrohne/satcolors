@@ -241,3 +241,7 @@ Literal operator==(int lhs, const Cardinal& rhs) {
 Literal operator!=(int lhs, const Cardinal& rhs) {
   return rhs == lhs;
 }
+
+ostream& operator<<(ostream& out, const Cardinal& rhs) {
+  out << (int)rhs;
+}

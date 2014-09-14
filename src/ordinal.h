@@ -83,8 +83,7 @@ public:
   Requirement typeRequirement() const;
 
   // The number of (contiguous) literals required to represent this
-  // ordinal.  Equal to max-min.
-  // TODO make this a constant in all solver objects.
+  // ordinal.  Equal to max()-min()-1.
   unsigned int numLiterals() const;
 
   // The minimum and maximum allowable values
@@ -125,5 +124,7 @@ Literal operator<=(int lhs, const Ordinal& rhs);
 // Comparison operators
 DualClause operator==(int lhs, const Ordinal& rhs);
 Clause     operator!=(int lhs, const Ordinal& rhs);
+
+std::ostream& operator<<(std::ostream& out, const Ordinal& rhs);
 
 #endif // ORDINAL_H

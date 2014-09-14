@@ -117,8 +117,7 @@ std::ostream& operator<<(std::ostream& out, const Matrix<Scalar>& matrix) {
   for ( int i = 0; i < matrix.height(); i++) {
     out << "    ";
     for ( int j = 0; j < matrix.width(); j++ ) {
-      // FIXME: why do I have to cast this?
-      out << int(matrix[i][j]) << " ";
+      out << matrix[i][j] << " ";
     }
     out << std::endl;
   }
