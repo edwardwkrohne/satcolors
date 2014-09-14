@@ -100,15 +100,21 @@ int main (int argc, char** argv) {
 
   cout << timestamp << " Constraints established" << endl;
 
-  int numSolns = 0;
+  int numSolns = 5;
 
   // See if the problem is solvable
-  while ( manager.solve() ) {
-    cout << timestamp << " Solution " << numSolns++ << " found: " << endl;
-    cout << puzzle << endl;
-
-    // Repeatedly require new solutions
-    manager.require(puzzle.diffSolnReq());
+  for ( int i = 0; i < numSolns; i++ ) {
+    if ( manager.solve() ) {
+      cout << timestamp << " Solution " << i << " found: " << endl;
+      cout << puzzle << endl;
+      
+      // Repeatedly require new solutions
+      manager.require(puzzle.diffSolnReq());
+    }
+    else {
+      cout << timestamp << " UNSATISFIABLE searching for solution " << i << "." << endl;
+      return 1;
+    }
   }
 
   cout << timestamp << " Done.  All " << numSolns << " solutions found." << endl;
