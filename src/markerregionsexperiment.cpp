@@ -7,7 +7,6 @@
 #include <iomanip>
 #include <sstream>
 #include <functional>
-#include <minisat/core/Solver.h>
 
 #include "markerregionsexperiment.h"
 #include "manipulators.h"
