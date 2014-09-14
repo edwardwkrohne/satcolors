@@ -29,8 +29,6 @@ class Matrix;
 template<typename Scalar = Cardinal>
 class MatrixView {
 public:
-  typedef typename Matrix<Scalar>::size_type size_type;
-
   MatrixView(const Matrix<Scalar>& other); 
   MatrixView(const MatrixView& copy) = default;
   //  MatrixView(MatrxView&& move) = default;
@@ -38,7 +36,7 @@ public:
   MatrixView& operator=(MatrixView&& copy) = default;
 
   // Return various related views
-  MatrixView restrict(size_type startRow, size_type startCol, size_type endRow, size_type endCol) const;
+  MatrixView restrict(int startRow, int startCol, int endRow, int endCol) const;
   MatrixView rotCCW() const;
   MatrixView rotCW() const;
   MatrixView reflectH() const;
@@ -46,14 +44,14 @@ public:
   MatrixView transpose() const;
 
   // Return a vector representing a row of the matrix.  Can be used to double-index the matrix.
-  SubscriptWrapper<Scalar> operator[](size_type index) const;
+  SubscriptWrapper<Scalar> operator[](int index) const;
 
   // Allows indexing of Scalars by Scalars.  Thus, the location of the Scalar indexed can
   // depend on constraints.
   SubscriptWrapper<PairIndexedScalar<Scalar>, Scalar> operator[](Scalar row) const;
 
-  size_type  height() const;
-  size_type  width() const;
+  unsigned int height() const;
+  unsigned int width() const;
 
 private:
   template<typename T> 
@@ -62,10 +60,10 @@ private:
   T transformedCol(T row, T col) const;
 
   const Matrix<Scalar>* baseMatrix;
-  size_type mStartRow;
-  size_type mStartCol;
-  size_type mEndRow;
-  size_type mEndCol;
+  int mStartRow;
+  int mStartCol;
+  int mEndRow;
+  int mEndCol;
 
   bool mFlipV;
   bool mFlipH;
@@ -76,10 +74,9 @@ private:
 // Output operator
 template<typename Scalar>
 std::ostream& operator<<(std::ostream& out, const MatrixView<Scalar>& matrix) {
-  typedef typename MatrixView<Scalar>::size_type size_type;
-  for ( size_type i = 0; i < matrix.height(); i++) {
+  for ( int i = 0; i < matrix.height(); i++) {
     out << "    ";
-    for ( size_type j = 0; j < matrix.width(); j++ ) {
+    for ( int j = 0; j < matrix.width(); j++ ) {
       out << matrix[i] << " ";
     }
     out << std::endl;
@@ -124,10 +121,10 @@ T MatrixView<Scalar>::transformedCol(T row, T col) const {
 
 // Return a submatrix of the current matrix
 template<typename Scalar>
-MatrixView<Scalar> MatrixView<Scalar>::restrict(size_type startRow, 
-						size_type startCol, 
-						size_type endRow, 
-						size_type endCol) const {
+MatrixView<Scalar> MatrixView<Scalar>::restrict(int startRow, 
+						int startCol, 
+						int endRow, 
+						int endCol) const {
   if ( startRow > endRow || startCol > endCol ) {
     throw std::invalid_argument("Degenerate view requested.");
   }
@@ -211,10 +208,10 @@ MatrixView<Scalar> MatrixView<Scalar>::transpose() const {
 
 // Return a vector representing a row of the matrix.  Can be used to double-index the matrix.
 template<typename Scalar>
-SubscriptWrapper<Scalar> MatrixView<Scalar>::operator[](size_type row) const {
+SubscriptWrapper<Scalar> MatrixView<Scalar>::operator[](int row) const {
   // This closure almost identical to that in the other operator[].
   // Not sure if it's worth the additional complexity to consolidate code.
-  auto closure = [=] (size_type col) {
+  auto closure = [=] (int col) {
     auto accessRow = this->transformedRow(row, col);
     auto accessCol = this->transformedCol(row, col);
     return (*baseMatrix)[accessRow][accessCol];
@@ -239,7 +236,7 @@ SubscriptWrapper<PairIndexedScalar<Scalar>, Scalar> MatrixView<Scalar>::operator
 }
 
 template<typename Scalar>
-typename MatrixView<Scalar>::size_type MatrixView<Scalar>::height() const {
+unsigned int MatrixView<Scalar>::height() const {
   if ( !mTransposed ) {
     return mEndRow - mStartRow;
   } else {
@@ -248,7 +245,7 @@ typename MatrixView<Scalar>::size_type MatrixView<Scalar>::height() const {
 }
 
 template<typename Scalar>
-typename MatrixView<Scalar>::size_type MatrixView<Scalar>::width() const {
+unsigned int MatrixView<Scalar>::width() const {
   if ( !mTransposed ) {
     return mEndCol - mStartCol;
   } else {

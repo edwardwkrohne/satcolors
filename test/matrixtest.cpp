@@ -145,8 +145,8 @@ void MatrixTest::testRestrict(void) {
   Matrix<> matrix(nullptr, 4, 6, 0, 3, var);  // values are in [0,3)
   auto view = matrix.restrict(1, 2, 3, 4); // Get a 2x2 view corresponding to [1,3)x[2,4).
 
-  CPPUNIT_ASSERT_EQUAL(2, view.width());
-  CPPUNIT_ASSERT_EQUAL(2, view.height());
+  CPPUNIT_ASSERT_EQUAL(2u, view.width());
+  CPPUNIT_ASSERT_EQUAL(2u, view.height());
   CPPUNIT_ASSERT_EQUAL(matrix[1][2] == 0, view[0][0] == 0);
   CPPUNIT_ASSERT_EQUAL(matrix[2][2] == 0, view[1][0] == 0);
   CPPUNIT_ASSERT_EQUAL(matrix[1][3] == 0, view[0][1] == 0);
@@ -188,14 +188,12 @@ void MatrixTest::testRotate(void) {
   auto rot360 = rot270.rotCW();
 
   // Check dimensions
-  // TODO: Figure out return types, get rid of kludges like the
-  // explicit cast here
-  CPPUNIT_ASSERT_EQUAL(4, int(matrix.height())); 
-  CPPUNIT_ASSERT_EQUAL(3, int(matrix.width())); 
-  CPPUNIT_ASSERT_EQUAL(3, rot90.height());
-  CPPUNIT_ASSERT_EQUAL(4, rot90.width());
-  CPPUNIT_ASSERT_EQUAL(4, rot180.height());
-  CPPUNIT_ASSERT_EQUAL(3, rot180.width());
+  CPPUNIT_ASSERT_EQUAL(4u, matrix.height()); 
+  CPPUNIT_ASSERT_EQUAL(3u, matrix.width()); 
+  CPPUNIT_ASSERT_EQUAL(3u, rot90.height());
+  CPPUNIT_ASSERT_EQUAL(4u, rot90.width());
+  CPPUNIT_ASSERT_EQUAL(4u, rot180.height());
+  CPPUNIT_ASSERT_EQUAL(3u, rot180.width());
 
   // Easy rotations
   CPPUNIT_ASSERT_EQUAL(matrix[0][0] == 0, rot90 [0][3] == 0);
@@ -256,8 +254,8 @@ void MatrixTest::testRestrictedTransposedView() {
   auto view = matrix.restrict(1,3,5,5);
   auto transp = view.transpose();
 
-  CPPUNIT_ASSERT_EQUAL(2, transp.height());
-  CPPUNIT_ASSERT_EQUAL(4, transp.width());
+  CPPUNIT_ASSERT_EQUAL(2u, transp.height());
+  CPPUNIT_ASSERT_EQUAL(4u, transp.width());
   CPPUNIT_ASSERT_EQUAL(matrix[1][3] == 0, transp[0][0] == 0);
   CPPUNIT_ASSERT_EQUAL(matrix[2][3] == 0, transp[0][1] == 0);
 }
@@ -275,8 +273,8 @@ void MatrixTest::testRotatedRestrictedView() {
 
   auto restrict2 = rot.restrict(1,3,5,5);
 
-  CPPUNIT_ASSERT_EQUAL(4, restrict2.height());
-  CPPUNIT_ASSERT_EQUAL(2, restrict2.width());
+  CPPUNIT_ASSERT_EQUAL(4u, restrict2.height());
+  CPPUNIT_ASSERT_EQUAL(2u, restrict2.width());
   CPPUNIT_ASSERT_EQUAL(matrix[6][1] == 0, restrict2[0][0] == 0); 
   CPPUNIT_ASSERT_EQUAL(matrix[5][4] == 0, restrict2[3][1] == 0); 
 

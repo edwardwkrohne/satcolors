@@ -16,9 +16,7 @@
 #include "../../src/matrix.h"
 #include "../../src/pairindexedscalar.h"
 #include "../../src/solvermanager.h"
-#include "../../src/markerregions.h"
 #include "../../src/manipulators.h"
-#include "../../src/almostlines.h"
 #include "../../src/ordinaladdexpr.h"
 #include "../../src/ordinalminexpr.h"
 using namespace std;

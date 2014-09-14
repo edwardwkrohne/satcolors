@@ -2,6 +2,10 @@
 //
 // Class to house the constraints for marker regions
 //
+// This class encapsulates some combinatorial work I was doing last
+// year; it probably has little relevance to anyone but myself except
+// as an example of the use of CompoundObject. (EK Sep 2014)
+//
 
 #ifndef ALMOSTLINES_H
 #define ALMOSTLINES_H

@@ -25,11 +25,9 @@ class PairIndexedScalar;
 template<typename Scalar = Cardinal>
 class Matrix : public Grid<Scalar> {
 public:
-  typedef int size_type;
-
   Matrix(SolverManager* manager, 
-	 size_type height, 
-	 size_type width, 
+	 int height, 
+	 int width, 
 	 int min, 
 	 int max, 
 	 unsigned int& startingVar = SolverManager::allocateNew);
@@ -41,7 +39,7 @@ public:
   Matrix& operator=(Matrix&& move) = default;
 
   // Return various views on the matrix
-  MatrixView<Scalar> restrict(size_type startRow, size_type startCol, size_type endRow, size_type endCol) const;
+  MatrixView<Scalar> restrict(int startRow, int startCol, int endRow, int endCol) const;
   MatrixView<Scalar> rotCCW() const;
   MatrixView<Scalar> rotCW() const;
   MatrixView<Scalar> reflectH() const;
@@ -55,8 +53,8 @@ public:
 
 template<typename Scalar>
 Matrix<Scalar>::Matrix(SolverManager* _manager, 
-		       size_type _height, 
-		       size_type _width, 
+		       int _height, 
+		       int _width, 
 		       int _min, 
 		       int _max, 
 		       unsigned int& _startingVar) :
@@ -71,10 +69,10 @@ Matrix<Scalar>::Matrix(SolverManager* _manager,
 }
 
 template<typename Scalar>
-MatrixView<Scalar> Matrix<Scalar>::restrict(size_type startRow, 
-					    size_type startCol, 
-					    size_type endRow, 
-					    size_type endCol) const {
+MatrixView<Scalar> Matrix<Scalar>::restrict(int startRow, 
+					    int startCol, 
+					    int endRow, 
+					    int endCol) const {
   return MatrixView<Scalar>(*this).restrict(startRow, startCol, endRow, endCol);
 }
 
@@ -116,10 +114,9 @@ SubscriptWrapper<PairIndexedScalar<Scalar>, Scalar> Matrix<Scalar>::operator[](S
 // Output operator
 template<class Scalar>
 std::ostream& operator<<(std::ostream& out, const Matrix<Scalar>& matrix) {
-  typedef typename Matrix<Scalar>::size_type size_type;
-  for ( size_type i = 0; i < matrix.height(); i++) {
+  for ( int i = 0; i < matrix.height(); i++) {
     out << "    ";
-    for ( size_type j = 0; j < matrix.width(); j++ ) {
+    for ( int j = 0; j < matrix.width(); j++ ) {
       // FIXME: why do I have to cast this?
       out << int(matrix[i][j]) << " ";
     }

@@ -9,7 +9,6 @@
 #include <iostream>
 #include "requirement.h"
 #include "solvermanager.h"
-#include "markerregions.h"
 #include "array2d.h"
 
 class Pattern {

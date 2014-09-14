@@ -10,7 +10,7 @@
 #include <vector>
 #include <stdexcept>
 #include <functional>
-#include "array2d.h"
+#include "array2d.h" // For subscriptwrapper
 #include "requirement.h"
 #include "solvermanager.h"
 #include "cardinal.h"
