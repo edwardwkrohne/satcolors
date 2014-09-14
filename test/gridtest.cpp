@@ -9,7 +9,6 @@
 #include "../src/testglue.h"
 
 using namespace std;
-using Minisat::Var;
 
 class GridTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST_SUITE(GridTest);
@@ -27,7 +26,7 @@ namespace {
 
 typedef Cardinal::value_type value_type;
 
-function<Cardinal(value_type, value_type)> getBuilder(Var& var) {
+function<Cardinal(value_type, value_type)> getBuilder(unsigned int& var) {
 
   auto builder2d = [&](value_type row, value_type col) {
     return Cardinal(nullptr, row, row+2*col+1, var);
@@ -39,7 +38,7 @@ function<Cardinal(value_type, value_type)> getBuilder(Var& var) {
 }
 
 void GridTest::testConstruction2d(void) {
-  Var var = 0;
+  unsigned int var = 0;
   auto builder2d = getBuilder(var);
 
   auto list = makeList(3, 4, builder2d);
@@ -67,7 +66,7 @@ void GridTest::testConstruction2d(void) {
 
 
 void GridTest::testConstructionFailure(void) {
-  Var var = 0;
+  unsigned int var = 0;
   auto builder2d = getBuilder(var);
 
   CPPUNIT_ASSERT_THROW(auto list = makeList(4, -1, builder2d), invalid_argument);

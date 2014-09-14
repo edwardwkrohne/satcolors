@@ -15,11 +15,10 @@
 typedef typename Matrix<>::size_type size_type;
 typedef typename Matrix<>::value_type value_type;
 
-using Minisat::Var;
 using namespace std;
 
 std::function<IsolatedPattern(value_type, value_type)> 
-MarkerRegionsExperiment::createGridBuilder(SolverManager* manager, Var& var) const {
+MarkerRegionsExperiment::createGridBuilder(SolverManager* manager, unsigned int& var) const {
   auto builder = [this, manager, &var] (value_type row, value_type col) {
     return IsolatedPattern
     (
@@ -32,7 +31,7 @@ MarkerRegionsExperiment::createGridBuilder(SolverManager* manager, Var& var) con
   return builder;
 }
 
-MarkerRegionsExperiment::MarkerRegionsExperiment(SolverManager* _manager, size_type _gridSize, Array2d<string> _patternStrings, Var& var) :
+MarkerRegionsExperiment::MarkerRegionsExperiment(SolverManager* _manager, size_type _gridSize, Array2d<string> _patternStrings, unsigned int& var) :
     patternStrings(_patternStrings),
     gridSize(_gridSize),
     height(_patternStrings.height()),

@@ -20,7 +20,10 @@ class MarkerRegionsExperiment {
 public:
   typedef Matrix<>::value_type value_type;
   // Usual constructors
-  MarkerRegionsExperiment(SolverManager* manager, value_type gridSize, Array2d<std::string> patternStrings, Minisat::Var& var = SolverManager::allocateNew);
+  MarkerRegionsExperiment(SolverManager* manager, 
+			  value_type gridSize, 
+			  Array2d<std::string> patternStrings, 
+			  unsigned int& var = SolverManager::allocateNew);
   MarkerRegionsExperiment(const MarkerRegionsExperiment& copy);
 
   // Usual access methods.  Behavior similar to that of Cardinal, Matrix, etc.
@@ -49,7 +52,7 @@ public:
 
 private:
   std::function<IsolatedPattern(value_type, value_type)> 
-  createGridBuilder(SolverManager* manager, Minisat::Var& var) const;
+  createGridBuilder(SolverManager* manager, unsigned int& var) const;
 };
 
 // Output operator

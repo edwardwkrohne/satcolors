@@ -20,8 +20,6 @@
 #include "../../src/manipulators.h"
 using namespace std;
 
-using Minisat::Var;
-
 const string pieces[5][2] = {
   {
     "XX  ", // Box

@@ -8,12 +8,11 @@
 #include <stdexcept>
 #include "ordinal.h"
 
-using Minisat::Var;
 typedef Ordinal::value_type value_type;
 using namespace std;
 
 // Creates an object representing an ordinal.
-Ordinal::Ordinal(SolverManager* _manager, value_type _min, value_type _max, Var& _startingVar) :
+Ordinal::Ordinal(SolverManager* _manager, value_type _min, value_type _max, unsigned int& _startingVar) :
   mMin(_min),
   mMax(_max),
   mManager(_manager),
@@ -33,7 +32,7 @@ Ordinal::Ordinal(SolverManager* _manager, value_type _min, value_type _max, Var&
 Ordinal::Ordinal(SolverManager* _manager, 
 		 value_type _min, 
 		 value_type _max, 
-		 const Var _startingVar, 
+		 const unsigned int _startingVar, 
 		 bool _negated) :
   mMin(_min),
   mMax(_max),
@@ -72,7 +71,7 @@ value_type Ordinal::max() const {
 // If scl is a Ordinal, then scl+1 returns a ordinal that is equal to n+1 iff scl is equal to n.
 // Uses no additional literals or requirements.
 Ordinal Ordinal::operator+(const value_type rhs) const {
-  Var var = mStartingVar;
+  unsigned int var = mStartingVar;
   return Ordinal(mManager, min()+rhs, max()+rhs, var, mNegated);
 }
 Ordinal Ordinal::operator-(const value_type rhs) const {
@@ -232,7 +231,7 @@ Clause operator!=(value_type lhs, const Ordinal& rhs) {
 value_type Ordinal::modelValue() const {
   if ( !mNegated ) {
     for ( int i = 0; i < max()-min()-1; i++ ) {
-      if ( mManager->modelValue(Var(mStartingVar + i) ) == true ) {
+      if ( mManager->modelValue(mStartingVar + i) == true ) {
 	return min() + i;
       }
     }
@@ -241,7 +240,7 @@ value_type Ordinal::modelValue() const {
 
   else {
     for ( int i = 0; i < max()-min()-1; i++ ) {
-      if ( mManager->modelValue(Var(mStartingVar + i) ) == true ) {
+      if ( mManager->modelValue(mStartingVar + i) == true ) {
 	return (max()-1) - i;
       }
     }

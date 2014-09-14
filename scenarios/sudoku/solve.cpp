@@ -18,7 +18,6 @@
 #include "../../src/manipulators.h"
 using namespace std;
 
-using Minisat::Var;
 
 /////////////////////////////////////////////////////////////////////
 //

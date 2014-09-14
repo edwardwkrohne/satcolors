@@ -9,11 +9,10 @@
 
 using namespace std;
 using Minisat::Solver;
-using Minisat::Var;
 using Minisat::vec;
 using Minisat::lbool;
 
-Minisat::Var SolverManager::allocateNew = ~(Minisat::Var)0;
+unsigned int SolverManager::allocateNew = ~(unsigned int)0;
 
 // Constructor
 SolverManager::SolverManager() :
@@ -29,12 +28,12 @@ SolverManager::~SolverManager() {
 
 // Reserve some variables.  Returns a variable corresponding to the literal reserved.
 // Results are undefined if numReservations is less than 0.
-Var SolverManager::newVars(unsigned int numReservations) {
+unsigned int SolverManager::newVars(unsigned int numReservations) {
   if ( numReservations <= 0 ) {
     return solver.nVars();
   }
 
-  Var firstVar = solver.newVar();
+  unsigned int firstVar = solver.newVar();
   while ( --numReservations ) {
     solver.newVar();
   }
@@ -81,7 +80,7 @@ bool SolverManager::okay() const {
 }
 
 // Query the value of a particular variable.
-bool SolverManager::modelValue(Var var) const {
+bool SolverManager::modelValue(unsigned int var) const {
   // Check for bad conditions.
   if ( !successfulRun ) {
     throw logic_error("SolverManager::modelValue called, but no model is ready. Must follow a call to solve() which was satisfiable.");

@@ -7,7 +7,6 @@
 #include "manipulators.h"
 #include <iomanip>
 
-using Minisat::Var;
 using namespace std;
 
 // Creates an object representing the marker regions structure.  Registers requirements if
@@ -18,7 +17,7 @@ AlmostLinesImpl::AlmostLinesImpl(
     size_type _width,
     value_type _minThickness,
     value_type _maxThickness,
-    Var& var)
+    unsigned int& var)
 :
     manager     (_manager),
     height      (_height),

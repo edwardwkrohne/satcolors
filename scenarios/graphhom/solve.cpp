@@ -23,7 +23,6 @@
 #include "../../src/ordinalminexpr.h"
 using namespace std;
 
-using Minisat::Var;
 
 /////////////////////////////////////////////////////////////////////
 //

@@ -10,7 +10,7 @@
 //  * Support a getNumLiterals() that adds up its members' getNumLiterals()
 //  * Support a typeRequierment() class that conjoins its members's typeRequirement() and T::typeRequirement()
 //  * Support a currSolnReq() function that negates T::diffSolnReq()
-//  * Register requirements or not, depending on the value of Var.
+//  * Register requirements or not, depending on the value of unsigned int.
 //
 // In the future, I would like to add additional functionality:
 //  * Default typeRequirement() to just conjoin the member's typeRequirement if T::typeRequirement() does not exist
@@ -33,7 +33,7 @@ class CompoundObject;
 
 // The following classes help with classifying argument lists
 template<class... ArgsT>
-struct EndsWithVar : public std::is_same<typename lastArg_type<ArgsT...>::type, Minisat::Var&>
+struct EndsWithVar : public std::is_same<typename lastArg_type<ArgsT...>::type, unsigned int&>
 {};
 
 template<class BaseT, class... ArgsT>
@@ -114,7 +114,7 @@ template<class... ArgsT>
 typename std::enable_if<ExplicitVarArgs<T, ArgsT...>::value, void>::type
 CompoundObject<T>::constructorHelper(ArgsT&&... args)
 {
-  // If this function is getting called, then the last argument is a Var&.  Check to see if it indicates
+  // If this function is getting called, then the last argument is a unsigned int&.  Check to see if it indicates
   //  we should register requirements.
   if ( lastArg(args...) == SolverManager::allocateNew ) {
     T::manager->require(T::typeRequirement());
@@ -126,7 +126,7 @@ template<class... ArgsT>
 typename std::enable_if<ImplicitVarArgs<T, ArgsT...>::value, void>::type
 CompoundObject<T>::constructorHelper(ArgsT&&... args)
 {
-  // If this function is getting called, then the last argument is NOT a Var&.
+  // If this function is getting called, then the last argument is NOT a unsigned int&.
   // Execute the default behavior of registering requirements anyway.
   T::manager->require(T::typeRequirement());
 }

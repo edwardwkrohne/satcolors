@@ -23,7 +23,11 @@ public:
   typedef value_type size_type;
 
   // Creates an object representing the marker regions structure.
-  MarkerRegionsImpl(SolverManager* manager, size_type height, size_type width, value_type regionSize, Minisat::Var& startingVar = SolverManager::allocateNew);
+  MarkerRegionsImpl(SolverManager* manager, 
+		    size_type height, 
+		    size_type width, 
+		    value_type regionSize, 
+		    unsigned int& startingVar = SolverManager::allocateNew);
 
   // The corresponding requirement of being an object of this type.
   Requirement typeRequirement() const;

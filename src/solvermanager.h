@@ -21,7 +21,7 @@ public:
   virtual ~SolverManager();
 
   // Reserve some variables.  Returns a variable corresponding to the literal reserved.
-  virtual Minisat::Var newVars(unsigned int numReservations);
+  virtual unsigned int newVars(unsigned int numReservations);
 
   // Register a single requirement
   virtual void require(const Requirement& req);
@@ -43,12 +43,12 @@ public:
   virtual bool okay() const;
 
   // Query the value of a particular variable.
-  virtual bool modelValue(Minisat::Var var) const;
+  virtual bool modelValue(unsigned int var) const;
 
   // Use this as startingVar when you want to allocate new variables.  Objects that take
   //  this shouldn't update it.  If bugs crop up where they do, I can replace this
   //  relatively easily with an object that disallows writing.
-  static Minisat::Var allocateNew;
+  static unsigned int allocateNew;
 private:
   bool successfulRun;
   Minisat::Solver solver;

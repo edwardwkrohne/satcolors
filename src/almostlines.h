@@ -25,7 +25,7 @@ public:
 		  size_type width, 
 		  value_type minThickness, 
 		  value_type maxThickness, 
-		  Minisat::Var& startingVar = SolverManager::allocateNew);
+		  unsigned int& startingVar = SolverManager::allocateNew);
 
   // The corresponding requirement of being an object of this type.
   Requirement typeRequirement() const;

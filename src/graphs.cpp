@@ -9,7 +9,6 @@
 
 #include <iostream>
 #include "grid.h"
-using Minisat::Var;
 using namespace std;
 
 /////////////////////////////////////////////////////////////////////
@@ -27,17 +26,17 @@ using namespace std;
 class StreamGraph: public Grid<Literal> {
 public:
   StreamGraph() = delete;
-  StreamGraph(SolverManager* manager, istream& in, Var& startingVar = SolverManager::allocateNew);
+  StreamGraph(SolverManager* manager, istream& in, unsigned int& startingVar = SolverManager::allocateNew);
 
   int order() const;
 
 private:
   // Helper method to make it easier to compute the grid inside of the
   // constructor initialier list.
-  static Grid createGrid(SolverManager* manager, istream& in, Var& startingVar);
+  static Grid createGrid(SolverManager* manager, istream& in, unsigned int& startingVar);
 };
 
-Grid<Literal> StreamGraph::createGrid(SolverManager* manager, istream& in, Var& startingVar) {
+Grid<Literal> StreamGraph::createGrid(SolverManager* manager, istream& in, unsigned int& startingVar) {
   value_type order;
   in >> order;
   return Grid(order, order,
@@ -64,7 +63,7 @@ Grid<Literal> StreamGraph::createGrid(SolverManager* manager, istream& in, Var& 
 	      });
 }
 
-StreamGraph::StreamGraph(SolverManager* manager, istream& in, Var& startingVar) :
+StreamGraph::StreamGraph(SolverManager* manager, istream& in, unsigned int& startingVar) :
   Grid(createGrid(manager, in, startingVar))
 {
   ; // This function has no body, just an initializer list.
@@ -81,12 +80,12 @@ int StreamGraph::order() const {
 class CompleteGraph: public Grid<Literal> {
 public:
   CompleteGraph() = delete;
-  CompleteGraph(SolverManager* manager, int order, Var& startingVar = SolverManager::allocateNew);
+  CompleteGraph(SolverManager* manager, int order, unsigned int& startingVar = SolverManager::allocateNew);
 
   int order() const;
 };
 
-CompleteGraph::CompleteGraph(SolverManager* manager, int order, Var& startingVar) :
+CompleteGraph::CompleteGraph(SolverManager* manager, int order, unsigned int& startingVar) :
   Grid(order, order, 
        [&](int src, int dst) {
 	 Literal lit;
@@ -114,12 +113,12 @@ int CompleteGraph::order() const {
 class TwistedTorusGraph: public Grid<Literal> {
 public:
   TwistedTorusGraph() = delete;
-  TwistedTorusGraph(SolverManager* manager, int order, Var& startingVar = SolverManager::allocateNew);
+  TwistedTorusGraph(SolverManager* manager, int order, unsigned int& startingVar = SolverManager::allocateNew);
 
   int order() const;
 };
 
-TwistedTorusGraph::TwistedTorusGraph(SolverManager* manager, int length, Var& startingVar) :
+TwistedTorusGraph::TwistedTorusGraph(SolverManager* manager, int length, unsigned int& startingVar) :
   Grid(3*length, 3*length,
        [&](int src, int dst) {
 	 // Symmetric matrix, so WLOG, src < dst.
@@ -184,7 +183,7 @@ int TwistedTorusGraph::order() const {
 class OrientationReversalGraph: public Grid<Literal> {
 public:
   OrientationReversalGraph() = delete;
-  OrientationReversalGraph(SolverManager* manager, int width, int height, Var& startingVar = SolverManager::allocateNew);
+  OrientationReversalGraph(SolverManager* manager, int width, int height, unsigned int& startingVar = SolverManager::allocateNew);
 
   int order() const;
 };
@@ -243,7 +242,7 @@ public:
 //  5|0 1 1 0 1 0
 //  
 
-OrientationReversalGraph::OrientationReversalGraph(SolverManager* manager, int cycleLength, int stages, Var& startingVar) :
+OrientationReversalGraph::OrientationReversalGraph(SolverManager* manager, int cycleLength, int stages, unsigned int& startingVar) :
   // Set up a long, complicated lambda function as one of the arguments for the Grid initialization
   Grid(cycleLength*stages, cycleLength*stages,
        [&](int src, int dst) {

@@ -31,11 +31,11 @@ public:
   IsolatedPattern(SolverManager* manager,
 		  const MatrixView<>& matrix,
 		  const std::string& pattern,
-		  Minisat::Var& var = SolverManager::allocateNew);
+		  unsigned int& var = SolverManager::allocateNew);
   IsolatedPattern(SolverManager* manager,
 		  const MatrixView<>& matrix,
 		  const Pattern& pattern,
-		  Minisat::Var& var = SolverManager::allocateNew);
+		  unsigned int& var = SolverManager::allocateNew);
 
   // Usual access methods.  Behavior similar to that of Cardinal, MatrixView, etc.
   Clause diffSolnReq() const;

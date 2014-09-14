@@ -30,7 +30,7 @@ public:
   Cardinal(SolverManager* manager, 
 	   value_type min, 
 	   value_type max, 
-	   Minisat::Var& startingVar = SolverManager::allocateNew);
+	   unsigned int& startingVar = SolverManager::allocateNew);
 
   Cardinal() = delete;
   Cardinal(const Cardinal& copy) = default;
@@ -86,7 +86,7 @@ public:
   // Access basic information
   value_type min() const;
   value_type max() const;
-  Minisat::Var startingVar() const;
+  unsigned int startingVar() const;
 
   // The value assigned in the model, after solving, if a solution is available.
   value_type modelValue() const;
@@ -97,7 +97,7 @@ private:
   SolverManager* mManager;
   value_type mMin;
   value_type mMax;
-  Minisat::Var mStartingVar;
+  unsigned int mStartingVar;
 
   void checkDomain(value_type arg) const;
 };

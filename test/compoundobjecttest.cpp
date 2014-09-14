@@ -8,7 +8,6 @@
 #include "../src/testglue.h"
 
 using namespace std;
-using Minisat::Var;
 
 class CompoundObjectTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST_SUITE(CompoundObjectTest);
@@ -40,7 +39,7 @@ class TestImpl {
 public:
   // TODO Remove the requirement that the implementation class supply a default argument
   // (not terribly important)
-  TestImpl(SolverManager* manager, Var& var = SolverManager::allocateNew);
+  TestImpl(SolverManager* manager, unsigned int& var = SolverManager::allocateNew);
 
   Clause diffSolnReq() const;
   Requirement typeRequirement() const;
@@ -55,7 +54,7 @@ public:
 
 typedef CompoundObject<TestImpl> Test;
 
-TestImpl::TestImpl(SolverManager* _manager, Var& var) :
+TestImpl::TestImpl(SolverManager* _manager, unsigned int& var) :
   manager(_manager),
   cardinal1(manager, 0, 5, var),
   cardinal2(manager, 2, 3, var),
@@ -88,20 +87,20 @@ auto testForward(T&&... t) -> decltype(testProject(t...)) {
 
 void CompoundObjectTest::testLastArg(void) {
   // TODO This test should probably be moved to its own test class.
-  Var var = 0;
+  unsigned int var = 0;
   char c = 0;
 
-  static_assert(is_same<Var&, decltype(lastArg(c,c,c,c,c,var))>::value, "Last argument should return a Var&.");
+  static_assert(is_same<unsigned int&, decltype(lastArg(c,c,c,c,c,var))>::value, "Last argument should return a unsigned int&.");
 
-  Var& result = lastArg(c, var);
-  Var& result2 = lastArg(c, c, c, var);
+  unsigned int& result = lastArg(c, var);
+  unsigned int& result2 = lastArg(c, c, c, var);
   CPPUNIT_ASSERT_EQUAL(&var, &result);
   CPPUNIT_ASSERT_EQUAL(&var, &result2);
 }
 
 void CompoundObjectTest::testExplicitVarConstruction(void) {
   SolverManager manager;
-  Var var = 0;
+  unsigned int var = 0;
   Test testObj(&manager, var);
 
   // Require the exact opposite of the requirement that testObj would
@@ -125,7 +124,7 @@ void CompoundObjectTest::testCopyConstruction(void) {
   static_assert(!ImplicitVarArgs<TestImpl, Test>::value, "Test failed");
 
   SolverManager manager;
-  Var var = 0;
+  unsigned int var = 0;
   Test testObj(&manager, var);
   const Test& testObjConst = testObj;
 
@@ -169,7 +168,7 @@ void CompoundObjectTest::testAllocateNewConstruction(void) {
 }
 
 void CompoundObjectTest::testGetNumLiterals(void) {
-  Var var = 0;
+  unsigned int var = 0;
   Test testObj(nullptr, var);
 
   typename Matrix<>::value_type expected =
@@ -182,7 +181,7 @@ void CompoundObjectTest::testGetNumLiterals(void) {
 }
 
 void CompoundObjectTest::testTypeRequirement(void) {
-  Var var = 0;
+  unsigned int var = 0;
   Test testObj(nullptr, var);
 
   Requirement expected =

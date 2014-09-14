@@ -8,12 +8,11 @@
 #include <stdexcept>
 #include "cardinal.h"
 
-using Minisat::Var;
 typedef Cardinal::value_type value_type;
 using namespace std;
 
 // Creates an object representing a cardinal.
-Cardinal::Cardinal(SolverManager* _manager, value_type _min, value_type _max, Var& _startingVar) :
+Cardinal::Cardinal(SolverManager* _manager, value_type _min, value_type _max, unsigned int& _startingVar) :
   mManager(_manager),
   mMin(_min),
   mMax(_max),
@@ -63,7 +62,7 @@ value_type Cardinal::min() const {
   return mMin;
 }
 
-Var Cardinal::startingVar() const {
+unsigned int Cardinal::startingVar() const {
   return mStartingVar;
 }
 
@@ -113,9 +112,9 @@ Cardinal Cardinal::operator-(const value_type rhs) const {
 Literal Cardinal::operator==(value_type rhs) const {
   checkDomain(rhs);
   if ( !inverted ) {
-    return Literal( Var(rhs - min()) + mStartingVar);
+    return Literal( rhs - min() + mStartingVar);
   } else {
-    return Literal( Var(max()-1-rhs) + mStartingVar);
+    return Literal( max()-1-rhs + mStartingVar);
   }
 }
 Literal Cardinal::operator!=(value_type rhs) const {
@@ -215,7 +214,7 @@ Requirement Cardinal::operator!=(const Cardinal& rhs) const {
 // The value assigned in the model, after solving, if a solution is available.
 value_type Cardinal::modelValue() const {
   for (value_type value = 0; value < max()-min(); value++ ) {
-    if ( mManager->modelValue(Var(value + mStartingVar) ) == true ) {
+    if ( mManager->modelValue(value + mStartingVar ) == true ) {
       return value+min();
     }
   }

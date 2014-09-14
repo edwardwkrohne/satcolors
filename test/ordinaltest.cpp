@@ -9,7 +9,6 @@
 #include "../src/ordinaladdexpr.h"
 
 using namespace std;
-using Minisat::Var;
 
 class OrdinalTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST_SUITE(OrdinalTest);
@@ -48,9 +47,9 @@ protected:
 CPPUNIT_TEST_SUITE_REGISTRATION( OrdinalTest );
 
 void OrdinalTest::testCopy(void) {
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ord(nullptr, 0, 4, var);
-  Var expectedVar = var;
+  unsigned int expectedVar = var;
   Ordinal cpy(ord);
   Ordinal mv(std::move(ord));
 
@@ -62,10 +61,10 @@ void OrdinalTest::testCopy(void) {
 
 void OrdinalTest::testIsOrdinal(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ordinal(nullptr, 0, 4, var);
   CPPUNIT_ASSERT_EQUAL(3u, ordinal.numLiterals());
-  CPPUNIT_ASSERT_EQUAL(3, var);
+  CPPUNIT_ASSERT_EQUAL(3u, var);
 
   Requirement result = ordinal.typeRequirement();
   
@@ -79,7 +78,7 @@ void OrdinalTest::testIsOrdinal(void) {
 
 void OrdinalTest::testEmptyConstructorRange(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   CPPUNIT_ASSERT_THROW(Ordinal(nullptr, 2, 2, var), domain_error);
   CPPUNIT_ASSERT_THROW(Ordinal(nullptr, 5, 3, var), domain_error);
 }
@@ -87,7 +86,7 @@ void OrdinalTest::testEmptyConstructorRange(void) {
 
 void OrdinalTest::testEquality(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ordinal(nullptr, 1, 5, var);
 
   typedef decltype(ordinal == 1) eqType;
@@ -103,7 +102,7 @@ void OrdinalTest::testEquality(void) {
 
 void OrdinalTest::testDomainError(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ordinal(nullptr, 1, 4, var);
 
   CPPUNIT_ASSERT_THROW(ordinal == 4, domain_error);
@@ -127,7 +126,7 @@ void OrdinalTest::testDomainError(void) {
 
 void OrdinalTest::testLessEq1(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ord1(nullptr, -3, 5, var);
   Ordinal ord2(nullptr, -2, 2, var);
 
@@ -144,7 +143,7 @@ void OrdinalTest::testLessEq1(void) {
 
 void OrdinalTest::testLessEq2(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ord1(nullptr, 3, 7, var);
   Ordinal ord2(nullptr, 1, 10, var);
 
@@ -161,7 +160,7 @@ void OrdinalTest::testLessEq2(void) {
 
 void OrdinalTest::testLessEqImpossible(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ord1(nullptr, 3, 7, var);
   Ordinal ord2(nullptr, 0, 3, var);
 
@@ -175,7 +174,7 @@ void OrdinalTest::testLessEqImpossible(void) {
 
 void OrdinalTest::testLessEqTrivial(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ord1(nullptr, 0, 3, var);
   Ordinal ord2(nullptr, 3, 7, var);
 
@@ -188,7 +187,7 @@ void OrdinalTest::testLessEqTrivial(void) {
 
 void OrdinalTest::testNotEq(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ord1(nullptr, -1, 4, var);
   Ordinal ord2(nullptr, 1, 7, var);
 
@@ -205,7 +204,7 @@ void OrdinalTest::testNotEq(void) {
 
 void OrdinalTest::testNegation(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ord(nullptr,  0,  5, var);
   Ordinal negOrd = -ord;
 
@@ -224,7 +223,7 @@ void OrdinalTest::testNegation(void) {
 
 void OrdinalTest::testNegation2(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ord(nullptr,  0,  5, var);
   Ordinal negOrdPlusOne = -ord + 1;
   

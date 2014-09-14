@@ -36,7 +36,7 @@ public:
   Ordinal(SolverManager* manager,
 	  value_type min, 
 	  value_type max, 
-	  Minisat::Var& startingVar = SolverManager::allocateNew);
+	  unsigned int& startingVar = SolverManager::allocateNew);
 
   Ordinal() = delete;
   Ordinal(const Ordinal& copy) = default;
@@ -102,14 +102,14 @@ private:
   SolverManager* mManager;
   value_type mMin;
   value_type mMax;
-  Minisat::Var mStartingVar;
+  int mStartingVar;
 
   bool mNegated;
 
   Ordinal(SolverManager* manager,
 	  value_type min, 
 	  value_type max,
-	  const Minisat::Var startingVar,
+	  const unsigned int startingVar,
 	  bool negated);
 
 };

@@ -9,7 +9,6 @@
 #include "../src/ordinal.h"
 
 using namespace std;
-using Minisat::Var;
 
 class ObjectContainerTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST_SUITE(ObjectContainerTest);
@@ -30,7 +29,7 @@ protected:
 CPPUNIT_TEST_SUITE_REGISTRATION( ObjectContainerTest );
 
 void ObjectContainerTest::testConstruction(void) {
-  Var var = 0;
+  unsigned int var = 0;
   ObjectContainer<Ordinal> oc;
   CPPUNIT_ASSERT_EQUAL(0, (int)oc.size());
 
@@ -40,10 +39,10 @@ void ObjectContainerTest::testConstruction(void) {
 
   CPPUNIT_ASSERT_EQUAL(3, (int)oc.size());
 
-  auto numLiterals = oc[0].numLiterals()*3;
+  unsigned int numLiterals = oc[0].numLiterals()*3;
 
   CPPUNIT_ASSERT_EQUAL(numLiterals, oc.numLiterals());
-  CPPUNIT_ASSERT_EQUAL(Var(numLiterals), var);
+  CPPUNIT_ASSERT_EQUAL(numLiterals, var);
 }
 
 void ObjectContainerTest::testAllocateNewConstruction(void) {
@@ -54,13 +53,13 @@ void ObjectContainerTest::testAllocateNewConstruction(void) {
   oc.emplace_back(&manager, 0, 4);
   oc.emplace_back(&manager, 0, 4);
 
-  Var numLiterals = oc[0].numLiterals()*3;
+  unsigned int numLiterals = oc[0].numLiterals()*3;
 
   CPPUNIT_ASSERT_EQUAL(numLiterals, manager.newVars(0));
 }
 
 void ObjectContainerTest::testCopyConstruction(void) {
-  Var var = 0;
+  unsigned int var = 0;
   ObjectContainer<Ordinal> oc;
 
   oc.emplace_back(nullptr, 0, 4, var);
@@ -77,7 +76,7 @@ void ObjectContainerTest::testCopyConstruction(void) {
 }
 
 void ObjectContainerTest::testTypeRequirement(void) {
-  Var var = 0;
+  unsigned int var = 0;
   ObjectContainer<Ordinal> oc;
 
   oc.emplace_back(nullptr, 0, 4, var);

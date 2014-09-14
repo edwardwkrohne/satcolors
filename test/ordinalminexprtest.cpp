@@ -9,7 +9,6 @@
 #include "../src/ordinalminexpr.h"
 
 using namespace std;
-using Minisat::Var;
 
 class OrdinalMinExprTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST_SUITE(OrdinalMinExprTest);
@@ -28,7 +27,7 @@ protected:
 CPPUNIT_TEST_SUITE_REGISTRATION( OrdinalMinExprTest );
 
 void OrdinalMinExprTest::testMinLessThanValue(void) {
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ord1(nullptr, -3, 2, var);
   Ordinal ord2(nullptr, -1, 4, var);
 
@@ -48,7 +47,7 @@ void OrdinalMinExprTest::testMinLessThanValue(void) {
 }
 
 void OrdinalMinExprTest::testMinLessThan(void) {
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ord1(nullptr, -10, 10, var);
   Ordinal ord2(nullptr, -10, 10, var);
   Ordinal ord3(nullptr,  -2,  2, var);
@@ -79,7 +78,7 @@ void OrdinalMinExprTest::testMinLessThan(void) {
 }
 
 void OrdinalMinExprTest::testMinLessThan2(void) {
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ord1(nullptr,  -5,  3, var);
   Ordinal ord2(nullptr,  -1,  5, var);
   Ordinal ord3(nullptr, -10, 10, var);
@@ -100,7 +99,7 @@ void OrdinalMinExprTest::testMinLessThan2(void) {
 }
 
 void OrdinalMinExprTest::testMinLessThanImpossible(void) {
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ord1(nullptr,  2,  5, var);
   Ordinal ord2(nullptr,  2,  5, var);
   Ordinal ord3(nullptr,  0,  2, var);

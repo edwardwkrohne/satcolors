@@ -8,7 +8,6 @@
 #include "../src/pairindexedscalar.h"
 
 using namespace std;
-using Minisat::Var;
 
 class MarkerRegionsTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST_SUITE(MarkerRegionsTest);

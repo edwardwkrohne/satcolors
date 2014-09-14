@@ -9,7 +9,6 @@
 #include "../src/ordinaladdexpr.h"
 
 using namespace std;
-using Minisat::Var;
 
 class OrdinalAddExprTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST_SUITE(OrdinalAddExprTest);
@@ -29,7 +28,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( OrdinalAddExprTest );
 
 void OrdinalAddExprTest::testSummation(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ord1(nullptr,  -2,  2, var);
   Ordinal ord2(nullptr, -10, 10, var);
   Ordinal ord3(nullptr, -10, 10, var);
@@ -71,7 +70,7 @@ void OrdinalAddExprTest::testSummation(void) {
 
 void OrdinalAddExprTest::testSummationOptimization(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ord1(nullptr, -10, 10, var);
   Ordinal ord2(nullptr, -1, 3, var);
   Ordinal ord3(nullptr, -3, 1, var);
@@ -118,7 +117,7 @@ void OrdinalAddExprTest::testSummationOptimization(void) {
 
 void OrdinalAddExprTest::testSummationImpossibleInequality(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ord1(nullptr,   5, 10, var);
   Ordinal ord2(nullptr,   5, 10, var);
   Ordinal ord3(nullptr, -10, -5, var);
@@ -132,7 +131,7 @@ void OrdinalAddExprTest::testSummationImpossibleInequality(void) {
 
 void OrdinalAddExprTest::testSummationTrivialInequality(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Ordinal ord1(nullptr, -10, -5, var);
   Ordinal ord2(nullptr, -10, -5, var);
   Ordinal ord3(nullptr,   5, 10, var);

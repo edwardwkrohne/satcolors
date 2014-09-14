@@ -11,7 +11,6 @@
 #include "../src/testglue.h"
 
 using namespace std;
-using Minisat::Var;
 
 class MatrixTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST_SUITE(MatrixTest);
@@ -52,7 +51,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MatrixTest );
 
 void MatrixTest::testIsMatrix(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Matrix<> matrix(nullptr, 2, 2, 0, 3, var);
 
   Requirement expected;
@@ -66,7 +65,7 @@ void MatrixTest::testIsMatrix(void) {
 
 void MatrixTest::testPairIndexedCardinalEquals(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Matrix<> matrix(nullptr, 2, 2, 0, 3, var);
   Cardinal row(nullptr, 0, 2, var);
   Cardinal col(nullptr, 0, 2, var);
@@ -87,7 +86,7 @@ void MatrixTest::testPairIndexedCardinalEquals(void) {
 
 void MatrixTest::testPairIndexedCardinalNotEquals(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Matrix<> matrix(nullptr, 2, 2, 0, 3, var); // values are in [0,3)
   Cardinal row(nullptr, 0, 2, var);
   Cardinal col(nullptr, 0, 2, var);
@@ -108,7 +107,7 @@ void MatrixTest::testPairIndexedCardinalNotEquals(void) {
 
 void MatrixTest::testPairIndexedCardinalEqualsWithRange(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Matrix<> matrix(nullptr, 3, 3, 0, 3, var);
   Cardinal row(nullptr,  1, 4, var);
   Cardinal col(nullptr, -1, 2, var);
@@ -134,7 +133,7 @@ void MatrixTest::test3x3(void) {
   SolverManager manager;
 
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Matrix<> matrix(&manager, 3, 3, 0, 2);
 
   ASSERT_SAT(manager);
@@ -142,7 +141,7 @@ void MatrixTest::test3x3(void) {
 
 void MatrixTest::testRestrict(void) {
   // Object under test.
-  Var var = 5;
+  unsigned int var = 5;
   Matrix<> matrix(nullptr, 4, 6, 0, 3, var);  // values are in [0,3)
   auto view = matrix.restrict(1, 2, 3, 4); // Get a 2x2 view corresponding to [1,3)x[2,4).
 
@@ -156,7 +155,7 @@ void MatrixTest::testRestrict(void) {
 
 void MatrixTest::testOutOfRange(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Matrix<> matrix(nullptr, 4, 4, 0, 3, var);
 
   CPPUNIT_ASSERT_THROW(matrix[-1][0], out_of_range);
@@ -167,7 +166,7 @@ void MatrixTest::testOutOfRange(void) {
 
 void MatrixTest::testRestrictErrors(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Matrix<> matrix(nullptr, 4, 4, 0, 3, var);
 
   CPPUNIT_ASSERT_THROW(matrix.restrict(-1, 0, 2, 2), out_of_range);
@@ -180,7 +179,7 @@ void MatrixTest::testRestrictErrors(void) {
 }
 
 void MatrixTest::testRotate(void) {
-  Var var = 0;
+  unsigned int var = 0;
   Matrix<> matrix(nullptr, 4, 3, 0, 3, var);
   
   auto rot90  = matrix.rotCW();
@@ -218,7 +217,7 @@ void MatrixTest::testRotate(void) {
 }
 
 void MatrixTest::testReflect(void) {
-  Var var = 0;
+  unsigned int var = 0;
   Matrix<> matrix(nullptr, 10, 10, 0, 3, var);
   
   auto reflH  = matrix.reflectH();
@@ -233,7 +232,7 @@ void MatrixTest::testReflect(void) {
 }
 
 void MatrixTest::testTranspose(void) {
-  Var var = 0;
+  unsigned int var = 0;
   Matrix<> matrix(nullptr, 4, 3, 0, 3, var);
   
   auto transp  = matrix.transpose();
@@ -241,7 +240,7 @@ void MatrixTest::testTranspose(void) {
 }
 
 void MatrixTest::testRotatePairIndex(void) {
-  Var var = 0;
+  unsigned int var = 0;
   Matrix<> matrix(nullptr, 10, 10, 0, 3, var);
   Cardinal row(nullptr, 10, 10, var);
   Cardinal col(nullptr, 10, 10, var);
@@ -252,7 +251,7 @@ void MatrixTest::testRotatePairIndex(void) {
 }
 
 void MatrixTest::testRestrictedTransposedView() {
-  Var var = 0;
+  unsigned int var = 0;
   Matrix<> matrix(nullptr, 10, 10, 0, 3, var);
   auto view = matrix.restrict(1,3,5,5);
   auto transp = view.transpose();
@@ -264,7 +263,7 @@ void MatrixTest::testRestrictedTransposedView() {
 }
 
 void MatrixTest::testRotatedRestrictedView() {
-  Var var = 0;
+  unsigned int var = 0;
   Matrix<> matrix(nullptr, 10, 10, 0, 3, var);
   auto rot = matrix.rotCW();
   auto restrict1 = rot.restrict(0,0,10,10);

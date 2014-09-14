@@ -33,7 +33,7 @@ public:
 	 size_type width, 
 	 value_type min, 
 	 value_type max, 
-	 Minisat::Var& startingVar = SolverManager::allocateNew);
+	 unsigned int& startingVar = SolverManager::allocateNew);
 
   Matrix() = delete;
   Matrix(const Matrix& copy) = default; // deep copy inherited from vector
@@ -60,7 +60,7 @@ Matrix<Scalar>::Matrix(SolverManager* _manager,
 		       size_type _width, 
 		       value_type _min, 
 		       value_type _max, 
-		       Minisat::Var& _startingVar) :
+		       unsigned int& _startingVar) :
   Grid<Scalar>(_height, 
 	       _width, 
 	       [&] (value_type row, value_type col) { 

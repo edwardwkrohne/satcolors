@@ -7,7 +7,6 @@
 #include "pairindexedscalar.h"
 #include "manipulators.h"
 
-using Minisat::Var;
 using namespace std;
 
 // Returns the unique integer b such that
@@ -62,7 +61,7 @@ MarkerRegionsImpl::MarkerRegionsImpl(
     size_type _height,
     size_type _width,
     value_type _regionSize,
-    Var& var)
+    unsigned int& var)
 :
     manager   (_manager),
     height    (_height),

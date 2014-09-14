@@ -8,7 +8,6 @@
 #include "../src/cardinal.h"
 
 using namespace std;
-using Minisat::Var;
 
 class CardinalTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST_SUITE(CardinalTest);
@@ -53,7 +52,7 @@ protected:
 CPPUNIT_TEST_SUITE_REGISTRATION( CardinalTest );
 
 void CardinalTest::testCopy(void) {
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal card(nullptr, 0, 4, var);
   Cardinal cpy(card);
   Cardinal mv(std::move(card));
@@ -64,7 +63,7 @@ void CardinalTest::testCopy(void) {
 
 void CardinalTest::testIsCardinal(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal cardinal(nullptr, 0, 3, var);
   Requirement result = cardinal.typeRequirement();
 
@@ -79,7 +78,7 @@ void CardinalTest::testIsCardinal(void) {
 
 void CardinalTest::testNonzeroMin(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal cardinal(nullptr, 2, 5, var);
   Requirement result = cardinal.typeRequirement();
 
@@ -94,7 +93,7 @@ void CardinalTest::testNonzeroMin(void) {
 
 void CardinalTest::testEqualsValue(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal cardinal(nullptr, 0, 3, var);
 
   CPPUNIT_ASSERT_EQUAL(Literal(0), cardinal == 0);
@@ -108,7 +107,7 @@ void CardinalTest::testEqualsValue(void) {
 
 void CardinalTest::testEqualsCardinal(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal cardinal1(nullptr, 0, 3, var);
   Cardinal cardinal2(nullptr, 0, 3, var);
 
@@ -140,7 +139,7 @@ void CardinalTest::testEqualsCardinal(void) {
 
 void CardinalTest::testEqualsCardinal2(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal cardinal1(nullptr, 0, 3, var);
   Cardinal cardinal2(nullptr, 1, 4, var);
 
@@ -168,7 +167,7 @@ void CardinalTest::testEqualsCardinal2(void) {
 
 void CardinalTest::testEqualsCardinal3(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal cardinal1(nullptr, 0, 2, var);
   Cardinal cardinal2(nullptr, 3, 5, var);
 
@@ -188,7 +187,7 @@ void CardinalTest::testEqualsCardinal3(void) {
 
 void CardinalTest::testNotEqualCardinal(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal cardinal1(nullptr, 0, 3, var);
   Cardinal cardinal2(nullptr, 0, 3, var);
 
@@ -205,7 +204,7 @@ void CardinalTest::testNotEqualCardinal(void) {
 
 void CardinalTest::testNotEqualCardinal2(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal cardinal1(nullptr, 0, 3, var);
   Cardinal cardinal2(nullptr, 1, 4, var);
 
@@ -221,7 +220,7 @@ void CardinalTest::testNotEqualCardinal2(void) {
 
 void CardinalTest::testAddition(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal cardinal(nullptr, 0, 3, var);
 
   CPPUNIT_ASSERT_EQUAL(cardinal+1 == 2, cardinal == 1);
@@ -234,7 +233,7 @@ void CardinalTest::testAddition(void) {
 
 void CardinalTest::testGreaterThan(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal cardinal(nullptr, 0, 4, var);
 
   Clause expected = cardinal == 2 | cardinal == 3;
@@ -244,7 +243,7 @@ void CardinalTest::testGreaterThan(void) {
 
 void CardinalTest::testRedundantGreaterThan(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal cardinal(nullptr, 0, 4, var);
 
   Clause expected = cardinal == 0 | cardinal == 1 | cardinal == 2 | cardinal == 3;
@@ -255,7 +254,7 @@ void CardinalTest::testRedundantGreaterThan(void) {
 
 void CardinalTest::testLessThan(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal cardinal(nullptr, 0, 4, var);
 
   Clause expected = cardinal == 0 | cardinal == 1;
@@ -265,7 +264,7 @@ void CardinalTest::testLessThan(void) {
 
 void CardinalTest::testRedundantLessThan(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal cardinal(nullptr, 0, 4, var);
 
   Clause expected = cardinal == 0 | cardinal == 1 | cardinal == 2 | cardinal == 3;
@@ -275,7 +274,7 @@ void CardinalTest::testRedundantLessThan(void) {
 
 void CardinalTest::testDomainError(void) {
   // Object under test.
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal cardinal(nullptr, 1, 4, var);
 
   CPPUNIT_ASSERT_THROW(cardinal == 4, domain_error);
@@ -286,7 +285,7 @@ void CardinalTest::testDomainError(void) {
 }
 
 void CardinalTest::testNegation(void) {
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal cardinal(nullptr, 0, 10, var);
   Cardinal negation = -cardinal;
   Cardinal subtraction = 12-cardinal;
@@ -301,7 +300,7 @@ void CardinalTest::testNegation(void) {
 }
 
 void CardinalTest::testNegNeg(void) {
-  Var var = 0;
+  unsigned int var = 0;
   Cardinal cardinal(nullptr, 0, 10, var);
   Cardinal negneg = -(-cardinal);
 

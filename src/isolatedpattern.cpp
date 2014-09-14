@@ -8,7 +8,6 @@
 #include <vector>
 #include "isolatedpattern.h"
 
-using Minisat::Var;
 using namespace std;
 
 typedef IsolatedPattern::size_type size_type;
@@ -73,7 +72,7 @@ IsolatedPattern::IsolatedPattern(
   SolverManager* _manager,
   const MatrixView<>& _matrix,
   const std::string& strPattern,
-  Var& var)
+  unsigned int& var)
 :
     manager(_manager),
     pattern(strPattern),
@@ -96,7 +95,7 @@ IsolatedPattern::IsolatedPattern(
   SolverManager* _manager,
   const MatrixView<>& _matrix,
   const Pattern& _pattern,
-  Var& var)
+  unsigned int& var)
 :
     manager(_manager),
     pattern(_pattern),
