@@ -2,8 +2,8 @@
 *~
 */*~
 */*/*~
-bin/*
 */.#*
+*/*/.#*
 *.gif
 *.xcf
 data/*.sltn
@@ -12,4 +12,6 @@ data/*.mtx
 solve/
 */*.d
 scenarios/*/Makefile.gen.*
-solutions
+bin/
+solutions/
+archive/
