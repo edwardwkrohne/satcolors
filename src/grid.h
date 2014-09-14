@@ -20,15 +20,14 @@
 template<class obj_type>
 class Grid {
 public:
-  typedef Cardinal::value_type value_type;
-  typedef std::function<obj_type(value_type, value_type)> builder_type;
+  typedef std::function<obj_type(int, int)> builder_type;
 
   Grid(
-      Cardinal::value_type height,
-      Cardinal::value_type width,
+      int height,
+      int width,
       builder_type builder);
 
-  SubscriptWrapper<obj_type> operator[](value_type row) const;
+  SubscriptWrapper<obj_type> operator[](int row) const;
 
   Requirement typeRequirement() const;
   unsigned int numLiterals() const;
@@ -40,15 +39,15 @@ public:
   const ObjectContainer<obj_type>& data() const;
 
 private:
-  Cardinal::value_type mHeight;
-  Cardinal::value_type mWidth;
+  int mHeight;
+  int mWidth;
   ObjectContainer<obj_type> mData;
 };
 
 template<class obj_type>
 Grid<obj_type>::Grid(
-    Cardinal::value_type _height,
-    Cardinal::value_type _width,
+    int _height,
+    int _width,
     builder_type builder) :
   mData(),
   mHeight(_height),
@@ -73,8 +72,8 @@ Grid<obj_type>::Grid(
 
 // Function to simplify determining the type of a particular list.
 template<class builder_type>
-auto makeList(Cardinal::value_type height, 
-	      Cardinal::value_type width, 
+auto makeList(int height, 
+	      int width, 
 	      builder_type builder)
   -> Grid<decltype(builder(height, width))> {
 
@@ -83,7 +82,7 @@ auto makeList(Cardinal::value_type height,
 }
 
 template<class obj_type>
-SubscriptWrapper<obj_type> Grid<obj_type>::operator[](value_type row) const {
+SubscriptWrapper<obj_type> Grid<obj_type>::operator[](int row) const {
   // Guard against nonsensical rows.
   if ( row < 0 || row >= height() ) {
     std::ostringstream sout;
@@ -91,7 +90,7 @@ SubscriptWrapper<obj_type> Grid<obj_type>::operator[](value_type row) const {
     throw std::out_of_range(sout.str());
   }
 
-  return SubscriptWrapper<obj_type>([=] (value_type col) {
+  return SubscriptWrapper<obj_type>([=] (int col) {
     // Guard against nonsensical columns.
       if ( col < 0 || col >= this->width() ) {
 	std::ostringstream sout;

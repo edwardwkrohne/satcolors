@@ -20,17 +20,16 @@ class MatrixView;
 template<class Scalar>
 class PairIndexedScalar {
 public:
-  typedef typename Scalar::value_type value_type;
-  typedef value_type size_type;
+  typedef int size_type;
 
   // Value requirements on PairIndexedScalars
-  Requirement operator ==(value_type rhs) const;
-  Requirement operator !=(value_type rhs) const;
+  Requirement operator ==(int rhs) const;
+  Requirement operator !=(int rhs) const;
 
-  Requirement operator <=(value_type rhs) const;
-  Requirement operator <(value_type rhs)  const;  // Not Yet Implemented
-  Requirement operator >=(value_type rhs) const;  // Not Yet Implemented
-  Requirement operator >(value_type rhs)  const;  // Not Yet Implemented
+  Requirement operator <=(int rhs) const;
+  Requirement operator <(int rhs)  const;  // Not Yet Implemented
+  Requirement operator >=(int rhs) const;  // Not Yet Implemented
+  Requirement operator >(int rhs)  const;  // Not Yet Implemented
 
   Requirement operator == (Scalar rhs) const;
   Requirement operator != (Scalar rhs) const;
@@ -57,15 +56,15 @@ PairIndexedScalar<Scalar>::PairIndexedScalar(const Matrix<Scalar>* matrix,
 }
 
 template<class Scalar>
-Requirement PairIndexedScalar<Scalar>::operator <= (value_type rhs) const {
+Requirement PairIndexedScalar<Scalar>::operator <= (int rhs) const {
   Requirement result;
 
   size_type height = matrix->height();
   size_type width = matrix->width();
 
   // Range requirements
-  result &= row >= 0 & row < (value_type)height;
-  result &= col >= 0 & col < (value_type)width;
+  result &= row >= 0 & row < (int)height;
+  result &= col >= 0 & col < (int)width;
 
   size_type rowStart = std::max(row.min(), 0);	
   size_type rowEnd   = std::min(row.max(), height);
@@ -76,7 +75,7 @@ Requirement PairIndexedScalar<Scalar>::operator <= (value_type rhs) const {
   for (size_type i = rowStart; i < rowEnd; i++ ) {
     for (size_type j = colStart; j < colEnd; j++ ) {
       Scalar element = (*matrix)[i][j];
-      result &= implication(row == (value_type)i & col == (value_type)j,
+      result &= implication(row == (int)i & col == (int)j,
 			    element <= rhs);
     }
   }
@@ -85,15 +84,15 @@ Requirement PairIndexedScalar<Scalar>::operator <= (value_type rhs) const {
 }
 
 template<class Scalar>
-Requirement PairIndexedScalar<Scalar>::operator == (value_type rhs) const {
+Requirement PairIndexedScalar<Scalar>::operator == (int rhs) const {
   Requirement result;
 
   size_type height = matrix->height();
   size_type width = matrix->width();
 
   // Range requirements
-  result &= row >= 0 & row < (value_type)height;
-  result &= col >= 0 & col < (value_type)width;
+  result &= row >= 0 & row < (int)height;
+  result &= col >= 0 & col < (int)width;
 
   size_type rowStart = std::max(row.min(), 0);	
   size_type rowEnd   = std::min(row.max(), height);
@@ -104,7 +103,7 @@ Requirement PairIndexedScalar<Scalar>::operator == (value_type rhs) const {
   for (size_type i = rowStart; i < rowEnd; i++ ) {
     for (size_type j = colStart; j < colEnd; j++ ) {
       Scalar element = (*matrix)[i][j];
-      result &= implication(row == (value_type)i & col == (value_type)j,
+      result &= implication(row == (int)i & col == (int)j,
 			    element == rhs);
     }
   }
@@ -113,15 +112,15 @@ Requirement PairIndexedScalar<Scalar>::operator == (value_type rhs) const {
 }
 
 template<class Scalar>
-Requirement PairIndexedScalar<Scalar>::operator != (value_type rhs) const {
+Requirement PairIndexedScalar<Scalar>::operator != (int rhs) const {
   Requirement result;
 
   size_type height = matrix->height();
   size_type width = matrix->width();
 
   // Range requirements
-  result &= row >= 0 & row < (value_type)height;
-  result &= col >= 0 & col < (value_type)width;
+  result &= row >= 0 & row < (int)height;
+  result &= col >= 0 & col < (int)width;
 
   size_type rowStart = row.min() <= 0      ? 0      : row.min();
   size_type rowEnd   = row.max() >= height ? height : row.max();
@@ -131,7 +130,7 @@ Requirement PairIndexedScalar<Scalar>::operator != (value_type rhs) const {
 
   for (size_type i = rowStart; i < rowEnd; i++ ) {
     for (size_type j = colStart; j < colEnd; j++ ) {
-      result &= implication(row == (value_type)i & col == (value_type)j,
+      result &= implication(row == (int)i & col == (int)j,
 			    (*matrix)[i][j] != rhs);
     }
   }
@@ -162,12 +161,12 @@ Requirement operator!=(Scalar lhs, const PairIndexedScalar<Scalar>& rhs) {
 // TODO: FIXME: I don't know why these are commented out; EK April 2014
 // Not currently implemented?
 // template<class Scalar>
-// Requirement operator==(typename Matrix<Scalar>::value_type lhs, const PairIndexedScalar<Scalar>& rhs) {
+// Requirement operator==(int lhs, const PairIndexedScalar<Scalar>& rhs) {
 //   return rhs == lhs;
 // }
 
 // template<class Scalar = Cardinal>
-// Requirement operator!=(typename Matrix<Scalar>::value_type lhs, const PairIndexedScalar<Scalar>& rhs) {
+// Requirement operator!=(int lhs, const PairIndexedScalar<Scalar>& rhs) {
 //   return rhs != lhs;
 // }
 

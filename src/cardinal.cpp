@@ -8,11 +8,10 @@
 #include <stdexcept>
 #include "cardinal.h"
 
-typedef Cardinal::value_type value_type;
 using namespace std;
 
 // Creates an object representing a cardinal.
-Cardinal::Cardinal(SolverManager* _manager, value_type _min, value_type _max, unsigned int& _startingVar) :
+Cardinal::Cardinal(SolverManager* _manager, int _min, int _max, unsigned int& _startingVar) :
   mManager(_manager),
   mMin(_min),
   mMax(_max),
@@ -33,14 +32,14 @@ Requirement Cardinal::typeRequirement() const {
 
   // Build the clause requiring at least one value
   Clause atLeastOneValue;
-  for ( value_type value = min(); value < max(); value++ ) {
+  for ( int value = min(); value < max(); value++ ) {
     atLeastOneValue |= *this == value;
   }
   result &= move(atLeastOneValue);
 
   // Build clauses requiring not more than one value
-  for ( value_type value1 = min(); value1 < max(); value1++ ) {
-    for ( value_type value2 = value1+1; value2 < max(); value2++ ) {
+  for ( int value1 = min(); value1 < max(); value1++ ) {
+    for ( int value2 = value1+1; value2 < max(); value2++ ) {
       result &= *this != value1 | *this != value2;
     }
   }
@@ -54,11 +53,11 @@ unsigned int Cardinal::numLiterals() const {
   return max()-min();
 }
 
-value_type Cardinal::max() const {
+int Cardinal::max() const {
   return mMax;
 }
 
-value_type Cardinal::min() const {
+int Cardinal::min() const {
   return mMin;
 }
 
@@ -66,7 +65,7 @@ unsigned int Cardinal::startingVar() const {
   return mStartingVar;
 }
 
-void Cardinal::checkDomain(const value_type arg) const {
+void Cardinal::checkDomain(const int arg) const {
   if ( arg < min() || arg >= max() ) {
     ostringstream sout;
     sout << "Incorrect value comparison for Cardinal.  This cardinal min=" << min() << " and max=" << max() << " but " << arg << " requested.";
@@ -86,30 +85,30 @@ Cardinal Cardinal::operator-() const {
   return retVal; 
 }
 
-Cardinal operator+(const Cardinal::value_type rhs, const Cardinal& lhs) {
+Cardinal operator+(const int rhs, const Cardinal& lhs) {
   return lhs + rhs;
 }
 
-Cardinal operator-(const Cardinal::value_type rhs, const Cardinal& lhs) {
+Cardinal operator-(const int rhs, const Cardinal& lhs) {
   return (-lhs) + rhs;
 }
 
 // Addition of a cardinal by a constant.  Surprisingly easy to implement, and useful.
 // If idx is a Cardinal, then idx+1 returns a cardinal that is equal to n+1 iff idx is equal to n.
 // Uses no additional literals or requirements.
-Cardinal Cardinal::operator+(const value_type rhs) const {
+Cardinal Cardinal::operator+(const int rhs) const {
   Cardinal retVal(*this);
   retVal.mMin += rhs;
   retVal.mMax += rhs;
   return retVal;
 }
-Cardinal Cardinal::operator-(const value_type rhs) const {
+Cardinal Cardinal::operator-(const int rhs) const {
   return *this + (-rhs);
 }
 
 // Simple literals indicating equality with a specific cardinal rhs.  If rhs is out of bounds,
 // behavior is undefined.
-Literal Cardinal::operator==(value_type rhs) const {
+Literal Cardinal::operator==(int rhs) const {
   checkDomain(rhs);
   if ( !inverted ) {
     return Literal( rhs - min() + mStartingVar);
@@ -117,51 +116,51 @@ Literal Cardinal::operator==(value_type rhs) const {
     return Literal( max()-1-rhs + mStartingVar);
   }
 }
-Literal Cardinal::operator!=(value_type rhs) const {
+Literal Cardinal::operator!=(int rhs) const {
   checkDomain(rhs);
   return ~(*this == rhs);
 }
 
 // Comparison operators
-Clause Cardinal::operator>(value_type rhs) const {
+Clause Cardinal::operator>(int rhs) const {
   return *this >= rhs+1;
 }
 
-Clause Cardinal::operator>=(value_type rhs) const {
+Clause Cardinal::operator>=(int rhs) const {
   Clause result;
-  value_type start = rhs < min() ? min() : rhs;
-  for ( value_type i = start; i < max(); i++ ) {
+  int start = rhs < min() ? min() : rhs;
+  for ( int i = start; i < max(); i++ ) {
     result |= *this == i;
   }
   return result;
 }
 
-Clause Cardinal::operator<(value_type rhs) const {
+Clause Cardinal::operator<(int rhs) const {
   Clause result;
-  value_type end = rhs < max() ? rhs : max();
-  for ( value_type i = min(); i < end; i++ ) {
+  int end = rhs < max() ? rhs : max();
+  for ( int i = min(); i < end; i++ ) {
     result |= *this == i;
   }
   return result;
 }
 
-Clause Cardinal::operator<=(value_type rhs) const {
+Clause Cardinal::operator<=(int rhs) const {
   return *this < rhs+1;
 }
 
-Clause operator>(value_type lhs, const Cardinal& rhs) {
+Clause operator>(int lhs, const Cardinal& rhs) {
   return rhs < lhs;
 }
 
-Clause operator>=(value_type lhs, const Cardinal& rhs) {
+Clause operator>=(int lhs, const Cardinal& rhs) {
   return rhs <= lhs;
 }
 
-Clause operator<(value_type lhs, const Cardinal& rhs) {
+Clause operator<(int lhs, const Cardinal& rhs) {
   return rhs > lhs;
 }
 
-Clause operator<=(value_type lhs, const Cardinal& rhs) {
+Clause operator<=(int lhs, const Cardinal& rhs) {
   return rhs >= lhs;
 }
 
@@ -180,11 +179,11 @@ Requirement Cardinal::operator==(const Cardinal& rhs) const {
   result &= rhs >= lhs.min();
   result &= rhs < lhs.max();
 
-  value_type start = lhs.min() < rhs.min() ? rhs.min() : lhs.min();
-  value_type end   = lhs.max() > rhs.max() ? rhs.max() : lhs.max();
+  int start = lhs.min() < rhs.min() ? rhs.min() : lhs.min();
+  int end   = lhs.max() > rhs.max() ? rhs.max() : lhs.max();
 
   // Run through all possible values that either cardinal can take.
-  for ( value_type val = start; val < end; val++ ) {
+  for ( int val = start; val < end; val++ ) {
     result &= lhs != val | rhs == val;
     result &= lhs == val | rhs != val;
   }
@@ -201,19 +200,19 @@ Requirement Cardinal::operator!=(const Cardinal& rhs) const {
 
   Requirement result;
 
-  value_type maxMin = lhs.min() < rhs.min() ? rhs.min() : lhs.min();
-  value_type minMax = lhs.max() > rhs.max() ? rhs.max() : lhs.max();
+  int maxMin = lhs.min() < rhs.min() ? rhs.min() : lhs.min();
+  int minMax = lhs.max() > rhs.max() ? rhs.max() : lhs.max();
 
   // Run through all values that BOTH cardinals can take
-  for ( value_type val = maxMin; val < minMax; val++ ) {
+  for ( int val = maxMin; val < minMax; val++ ) {
     result &= lhs != val | rhs != val;
   }
 
   return result;
 }
 // The value assigned in the model, after solving, if a solution is available.
-value_type Cardinal::modelValue() const {
-  for (value_type value = 0; value < max()-min(); value++ ) {
+int Cardinal::modelValue() const {
+  for (int value = 0; value < max()-min(); value++ ) {
     if ( mManager->modelValue(value + mStartingVar ) == true ) {
       return value+min();
     }
@@ -231,14 +230,14 @@ Literal Cardinal::currSolnReq() const {
   return (*this) == this->modelValue();
 }
 
-Cardinal::operator value_type() const {
+Cardinal::operator int() const {
   return modelValue();
 }
 
-Literal operator==(value_type lhs, const Cardinal& rhs) {
+Literal operator==(int lhs, const Cardinal& rhs) {
   return rhs == lhs;
 }
 
-Literal operator!=(value_type lhs, const Cardinal& rhs) {
+Literal operator!=(int lhs, const Cardinal& rhs) {
   return rhs == lhs;
 }

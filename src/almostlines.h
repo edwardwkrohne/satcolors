@@ -16,15 +16,14 @@
 
 class AlmostLinesImpl {
 public:
-  typedef Cardinal::value_type value_type;
-  typedef Cardinal::value_type size_type;
+  typedef int size_type;
 
   // Creates an object representing the marker regions structure.
   AlmostLinesImpl(SolverManager* manager, 
 		  size_type height, 
 		  size_type width, 
-		  value_type minThickness, 
-		  value_type maxThickness, 
+		  int minThickness, 
+		  int maxThickness, 
 		  unsigned int& startingVar = SolverManager::allocateNew);
 
   // The corresponding requirement of being an object of this type.
@@ -41,8 +40,8 @@ public:
 
   const size_type height;
   const size_type width;
-  const value_type minThickness;
-  const value_type maxThickness;
+  const int minThickness;
+  const int maxThickness;
 
   Grid<Ordinal>   majorOffsets;
   Grid<Ordinal>   minorOffsets;

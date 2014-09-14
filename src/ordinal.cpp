@@ -8,11 +8,10 @@
 #include <stdexcept>
 #include "ordinal.h"
 
-typedef Ordinal::value_type value_type;
 using namespace std;
 
 // Creates an object representing an ordinal.
-Ordinal::Ordinal(SolverManager* _manager, value_type _min, value_type _max, unsigned int& _startingVar) :
+Ordinal::Ordinal(SolverManager* _manager, int _min, int _max, unsigned int& _startingVar) :
   mMin(_min),
   mMax(_max),
   mManager(_manager),
@@ -30,8 +29,8 @@ Ordinal::Ordinal(SolverManager* _manager, value_type _min, value_type _max, unsi
 }
 
 Ordinal::Ordinal(SolverManager* _manager, 
-		 value_type _min, 
-		 value_type _max, 
+		 int _min, 
+		 int _max, 
 		 const unsigned int _startingVar, 
 		 bool _negated) :
   mMin(_min),
@@ -59,29 +58,29 @@ unsigned int Ordinal::numLiterals() const {
 }
 
 // Min and max
-value_type Ordinal::min() const {
+int Ordinal::min() const {
   return mMin;
 }
 
-value_type Ordinal::max() const {
+int Ordinal::max() const {
   return mMax;
 }
 
 // Addition of a ordinal by a constant.  Surprisingly easy to implement, and useful.
 // If scl is a Ordinal, then scl+1 returns a ordinal that is equal to n+1 iff scl is equal to n.
 // Uses no additional literals or requirements.
-Ordinal Ordinal::operator+(const value_type rhs) const {
+Ordinal Ordinal::operator+(const int rhs) const {
   unsigned int var = mStartingVar;
   return Ordinal(mManager, min()+rhs, max()+rhs, var, mNegated);
 }
-Ordinal Ordinal::operator-(const value_type rhs) const {
+Ordinal Ordinal::operator-(const int rhs) const {
   return *this + (-rhs);
 }
 
-Ordinal operator+(const value_type lhs, const Ordinal& rhs) {
+Ordinal operator+(const int lhs, const Ordinal& rhs) {
   return rhs + lhs;
 }
-Ordinal operator-(const value_type lhs, const Ordinal& rhs) {
+Ordinal operator-(const int lhs, const Ordinal& rhs) {
   return lhs + (-rhs);
 }
 
@@ -92,7 +91,7 @@ Ordinal Ordinal::operator-() const {
 
 // Simple literals indicating equality with a specific ordinal rhs.  If rhs is out of bounds,
 // behavior is undefined.
-DualClause Ordinal::operator==(value_type rhs) const {
+DualClause Ordinal::operator==(int rhs) const {
   if ( rhs < min() || rhs >= max() ) {
     ostringstream sout;
     sout << "Incorrect value comparison for Ordinal.  This ordinal min=" << min() << " and max=" << max() << " but " << rhs << " requested.";
@@ -109,20 +108,20 @@ DualClause Ordinal::operator==(value_type rhs) const {
 
   return result;
 }
-Clause Ordinal::operator!=(value_type rhs) const {
+Clause Ordinal::operator!=(int rhs) const {
   return ~(*this == rhs);
 }
 
 // Comparison operators
-Literal Ordinal::operator>(value_type rhs) const {
+Literal Ordinal::operator>(int rhs) const {
   return ~(*this <= rhs);
 }
 
-Literal Ordinal::operator>=(value_type rhs) const {
+Literal Ordinal::operator>=(int rhs) const {
   return ~(*this < rhs);
 }
 
-Literal Ordinal::operator<(value_type rhs) const {
+Literal Ordinal::operator<(int rhs) const {
   if ( rhs <= min() || rhs >= max() ) {
     ostringstream sout;
     sout << "Incorrect value comparison for Ordinal.  This ordinal is in the interval [" << min() << ", " << max() << ") but less than " << rhs << " requested.";
@@ -136,23 +135,23 @@ Literal Ordinal::operator<(value_type rhs) const {
   }
 }
 
-Literal Ordinal::operator<=(value_type rhs) const {
+Literal Ordinal::operator<=(int rhs) const {
   return *this < rhs+1;
 }
 
-Literal operator>(value_type lhs, const Ordinal& rhs) {
+Literal operator>(int lhs, const Ordinal& rhs) {
   return rhs < lhs;
 }
 
-Literal operator>=(value_type lhs, const Ordinal& rhs) {
+Literal operator>=(int lhs, const Ordinal& rhs) {
   return rhs <= lhs;
 }
 
-Literal operator<(value_type lhs, const Ordinal& rhs) {
+Literal operator<(int lhs, const Ordinal& rhs) {
   return rhs > lhs;
 }
 
-Literal operator<=(value_type lhs, const Ordinal& rhs) {
+Literal operator<=(int lhs, const Ordinal& rhs) {
   return rhs >= lhs;
 }
 
@@ -219,16 +218,16 @@ Requirement Ordinal::operator!=(const Ordinal& rhs) const {
   return result;
 }
 
-DualClause operator==(value_type lhs, const Ordinal& rhs) {
+DualClause operator==(int lhs, const Ordinal& rhs) {
   return rhs == lhs;
 }
 
-Clause operator!=(value_type lhs, const Ordinal& rhs) {
+Clause operator!=(int lhs, const Ordinal& rhs) {
   return rhs != lhs;
 }
 
 // The value assigned in the model, after solving, if a solution is available.
-value_type Ordinal::modelValue() const {
+int Ordinal::modelValue() const {
   if ( !mNegated ) {
     for ( int i = 0; i < max()-min()-1; i++ ) {
       if ( mManager->modelValue(mStartingVar + i) == true ) {
@@ -258,6 +257,6 @@ DualClause Ordinal::currSolnReq() const {
   return (*this) == this->modelValue();
 }
 
-Ordinal::operator value_type() const {
+Ordinal::operator int() const {
   return modelValue();
 }

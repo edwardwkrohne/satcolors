@@ -17,7 +17,6 @@
 
 class IsolatedPattern {
 public:
-  typedef Matrix<>::value_type value_type;
   typedef Matrix<>::size_type size_type;
 
   // Usual constructors

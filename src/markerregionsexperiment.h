@@ -18,10 +18,9 @@
 
 class MarkerRegionsExperiment {
 public:
-  typedef Matrix<>::value_type value_type;
   // Usual constructors
   MarkerRegionsExperiment(SolverManager* manager, 
-			  value_type gridSize, 
+			  int gridSize, 
 			  Array2d<std::string> patternStrings, 
 			  unsigned int& var = SolverManager::allocateNew);
   MarkerRegionsExperiment(const MarkerRegionsExperiment& copy);
@@ -37,13 +36,13 @@ public:
   void propagationExperiment(std::function<bool(void)> continueCondition, std::function<void(const DualClause&)> action) const;
 
   // The absolute row and column of the center of the pattern given by (row, col).
-  value_type patternCenterRow(value_type row, value_type col);
-  value_type patternCenterCol(value_type row, value_type col);
+  int patternCenterRow(int row, int col);
+  int patternCenterCol(int row, int col);
 
   Array2d<std::string> patternStrings;
-  const value_type gridSize;
-  const value_type height;
-  const value_type width;
+  const int gridSize;
+  const int height;
+  const int width;
 
   SolverManager* manager;
   MarkerRegions markerRegions;
@@ -51,7 +50,7 @@ public:
   Grid<IsolatedPattern> grids;
 
 private:
-  std::function<IsolatedPattern(value_type, value_type)> 
+  std::function<IsolatedPattern(int, int)> 
   createGridBuilder(SolverManager* manager, unsigned int& var) const;
 };
 

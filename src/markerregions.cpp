@@ -60,7 +60,7 @@ MarkerRegionsImpl::MarkerRegionsImpl(
     SolverManager* _manager,
     size_type _height,
     size_type _width,
-    value_type _regionSize,
+    int _regionSize,
     unsigned int& var)
 :
     manager   (_manager),

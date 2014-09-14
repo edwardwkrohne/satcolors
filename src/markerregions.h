@@ -19,14 +19,13 @@
 
 class MarkerRegionsImpl {
 public:
-  typedef Cardinal::value_type value_type;
-  typedef value_type size_type;
+  typedef int size_type;
 
   // Creates an object representing the marker regions structure.
   MarkerRegionsImpl(SolverManager* manager, 
 		    size_type height, 
 		    size_type width, 
-		    value_type regionSize, 
+		    int regionSize, 
 		    unsigned int& startingVar = SolverManager::allocateNew);
 
   // The corresponding requirement of being an object of this type.
@@ -49,7 +48,7 @@ public:
 
   const size_type height;
   const size_type width;
-  const value_type regionSize;
+  const int regionSize;
   // Note: regions vary between regionSize and regionSize+1 in size
 
   SolverManager* manager;

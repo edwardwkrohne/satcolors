@@ -24,11 +24,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION( GridTest );
 
 namespace {
 
-typedef Cardinal::value_type value_type;
+function<Cardinal(int, int)> getBuilder(unsigned int& var) {
 
-function<Cardinal(value_type, value_type)> getBuilder(unsigned int& var) {
-
-  auto builder2d = [&](value_type row, value_type col) {
+  auto builder2d = [&](int row, int col) {
     return Cardinal(nullptr, row, row+2*col+1, var);
   };
 

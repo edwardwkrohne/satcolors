@@ -171,7 +171,7 @@ void CompoundObjectTest::testGetNumLiterals(void) {
   unsigned int var = 0;
   Test testObj(nullptr, var);
 
-  typename Matrix<>::value_type expected =
+  int expected =
       testObj.cardinal1.numLiterals() +
       testObj.cardinal2.numLiterals() +
       testObj.matrix1.numLiterals();

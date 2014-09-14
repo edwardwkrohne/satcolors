@@ -5,8 +5,6 @@
 #include <algorithm>
 #include "ordinaladdexpr.h"
 
-typedef Ordinal::value_type value_type;
-
 OrdinalAddExpr::OrdinalAddExpr(const Ordinal& ord1, const Ordinal& ord2) :
   ord1(ord1),
   ord2(ord2)
@@ -89,43 +87,43 @@ Requirement operator == (const Ordinal& ord3, const OrdinalAddExpr& expr) {
   return expr == ord3;
 }
 
-Requirement OrdinalAddExpr::operator <= (const value_type bound) const {
+Requirement OrdinalAddExpr::operator <= (const int bound) const {
   return ord1 <= bound - ord2;
 }
 
-Requirement OrdinalAddExpr::operator >= (const value_type bound) const {
+Requirement OrdinalAddExpr::operator >= (const int bound) const {
   return ord1 >= bound - ord2;
 }
 
-Requirement OrdinalAddExpr::operator <  (const value_type bound) const {
+Requirement OrdinalAddExpr::operator <  (const int bound) const {
   return *this <= bound-1;
 }
 
-Requirement OrdinalAddExpr::operator >  (const value_type bound) const {
+Requirement OrdinalAddExpr::operator >  (const int bound) const {
   return *this >= bound+1;
 }
 
-Requirement OrdinalAddExpr::operator == (const value_type equality) const {
+Requirement OrdinalAddExpr::operator == (const int equality) const {
   return *this <= equality & *this >= equality;
 }
 
-Requirement operator <  (const value_type bound, const OrdinalAddExpr& expr) {
+Requirement operator <  (const int bound, const OrdinalAddExpr& expr) {
   return expr > bound;
 }
 
-Requirement operator >  (const value_type bound, const OrdinalAddExpr& expr) {
+Requirement operator >  (const int bound, const OrdinalAddExpr& expr) {
   return expr < bound;
 }
 
-Requirement operator <= (const value_type bound, const OrdinalAddExpr& expr) {
+Requirement operator <= (const int bound, const OrdinalAddExpr& expr) {
   return expr >= bound;
 }
 
-Requirement operator >= (const value_type bound, const OrdinalAddExpr& expr) {
+Requirement operator >= (const int bound, const OrdinalAddExpr& expr) {
   return expr <= bound;
 }
 
-Requirement operator == (const value_type equality, const OrdinalAddExpr& expr) {
+Requirement operator == (const int equality, const OrdinalAddExpr& expr) {
   return expr == equality;
 }
 

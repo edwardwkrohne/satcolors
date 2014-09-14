@@ -14,7 +14,6 @@
 #include "ordinal.h"
 
 class OrdinalMinExpr {
-  typedef Ordinal::value_type value_type;
 private:
   OrdinalMinExpr(const Ordinal& ord1, const Ordinal& ord2);
   OrdinalMinExpr() = delete;
@@ -23,10 +22,10 @@ public:
 
   friend OrdinalMinExpr min(const Ordinal& ord1, const Ordinal& ord2);
 
-  Clause      operator <  (const value_type bound) const;
-  DualClause  operator >  (const value_type bound) const;
-  Clause      operator <= (const value_type bound) const;
-  DualClause  operator >= (const value_type bound) const;
+  Clause      operator <  (const int bound) const;
+  DualClause  operator >  (const int bound) const;
+  Clause      operator <= (const int bound) const;
+  DualClause  operator >= (const int bound) const;
 
   Requirement operator <  (const Ordinal& ord3) const;
   Requirement operator >  (const Ordinal& ord3) const;
@@ -35,18 +34,18 @@ public:
 
   Requirement operator == (const Ordinal& ord3) const;
 
-  Requirement operator == (const value_type equality) const;
+  Requirement operator == (const int equality) const;
 
 private:
   const Ordinal& ord1;
   const Ordinal& ord2;
 };
 
-DualClause  operator <  (const Ordinal::value_type bound, const OrdinalMinExpr& expr);
-Clause      operator >  (const Ordinal::value_type bound, const OrdinalMinExpr& expr);
-DualClause  operator <= (const Ordinal::value_type bound, const OrdinalMinExpr& expr);
-Clause      operator >= (const Ordinal::value_type bound, const OrdinalMinExpr& expr);
-Requirement operator == (const Ordinal::value_type equality, const OrdinalMinExpr& expr);
+DualClause  operator <  (const int bound, const OrdinalMinExpr& expr);
+Clause      operator >  (const int bound, const OrdinalMinExpr& expr);
+DualClause  operator <= (const int bound, const OrdinalMinExpr& expr);
+Clause      operator >= (const int bound, const OrdinalMinExpr& expr);
+Requirement operator == (const int equality, const OrdinalMinExpr& expr);
 
 Requirement operator <  (const Ordinal& ord3, const OrdinalMinExpr& expr);
 Requirement operator >  (const Ordinal& ord3, const OrdinalMinExpr& expr);

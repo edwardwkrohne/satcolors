@@ -25,14 +25,13 @@ class PairIndexedScalar;
 template<typename Scalar = Cardinal>
 class Matrix : public Grid<Scalar> {
 public:
-  typedef typename Scalar::value_type value_type;
-  typedef value_type size_type;
+  typedef int size_type;
 
   Matrix(SolverManager* manager, 
 	 size_type height, 
 	 size_type width, 
-	 value_type min, 
-	 value_type max, 
+	 int min, 
+	 int max, 
 	 unsigned int& startingVar = SolverManager::allocateNew);
 
   Matrix() = delete;
@@ -58,12 +57,12 @@ template<typename Scalar>
 Matrix<Scalar>::Matrix(SolverManager* _manager, 
 		       size_type _height, 
 		       size_type _width, 
-		       value_type _min, 
-		       value_type _max, 
+		       int _min, 
+		       int _max, 
 		       unsigned int& _startingVar) :
   Grid<Scalar>(_height, 
 	       _width, 
-	       [&] (value_type row, value_type col) { 
+	       [&] (int row, int col) { 
 		 return Scalar(_manager, _min, _max, _startingVar);
 	       })
 

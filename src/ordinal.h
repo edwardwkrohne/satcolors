@@ -24,8 +24,6 @@
 
 class Ordinal {
 public:
-  typedef signed int value_type;
-
   // Builds a ordinal object with the corresponding parameters.  With
   // the default startingVar, registers requirements and allocates a
   // new object using the next available literals.  With a non-default
@@ -34,8 +32,8 @@ public:
   // requirements, and increments allocateNew by the number of
   // literals used.
   Ordinal(SolverManager* manager,
-	  value_type min, 
-	  value_type max, 
+	  int min, 
+	  int max, 
 	  unsigned int& startingVar = SolverManager::allocateNew);
 
   Ordinal() = delete;
@@ -52,21 +50,21 @@ public:
   // implement, and useful.  If ord is a Ordinal, then ord+1 returns a
   // ordinal that is equal to n+1 iff ord is equal to n.  Uses no
   // additional literals or requirements.
-  Ordinal operator+(const value_type rhs) const;
-  Ordinal operator-(const value_type rhs) const;
+  Ordinal operator+(const int rhs) const;
+  Ordinal operator-(const int rhs) const;
 
   // Negation of ordinal
   Ordinal operator-() const;
 
   // Equality requirements
-  DualClause operator==(value_type rhs) const;
-  Clause     operator!=(value_type rhs) const;
+  DualClause operator==(int rhs) const;
+  Clause     operator!=(int rhs) const;
 
   // Ordering requirements
-  Literal operator>(value_type rhs) const;
-  Literal operator>=(value_type rhs) const;
-  Literal operator<(value_type rhs) const;
-  Literal operator<=(value_type rhs) const;
+  Literal operator>(int rhs) const;
+  Literal operator>=(int rhs) const;
+  Literal operator<(int rhs) const;
+  Literal operator<=(int rhs) const;
 
   // Requirements that two Ordinals be equal, whatever values they
   // take.  Requires that both Ordinals have the same manager.  Does
@@ -90,42 +88,42 @@ public:
   unsigned int numLiterals() const;
 
   // The minimum and maximum allowable values
-  value_type min() const;
-  value_type max() const;
+  int min() const;
+  int max() const;
 
   // The value assigned in the model, after solving, if a solution is
   // available.
-  value_type modelValue() const;
-  explicit operator value_type() const;
+  int modelValue() const;
+  explicit operator int() const;
 
 private:
   SolverManager* mManager;
-  value_type mMin;
-  value_type mMax;
+  int mMin;
+  int mMax;
   int mStartingVar;
 
   bool mNegated;
 
   Ordinal(SolverManager* manager,
-	  value_type min, 
-	  value_type max,
+	  int min, 
+	  int max,
 	  const unsigned int startingVar,
 	  bool negated);
 
 };
 
 // Ordinal arithmetic (by constants)
-Ordinal operator+(const Ordinal::value_type rhs, const Ordinal& lhs);
-Ordinal operator-(const Ordinal::value_type rhs, const Ordinal& lhs);
+Ordinal operator+(const int rhs, const Ordinal& lhs);
+Ordinal operator-(const int rhs, const Ordinal& lhs);
 
 // Ordering requirements
-Literal operator>(Ordinal::value_type lhs, const Ordinal& rhs);
-Literal operator>=(Ordinal::value_type lhs, const Ordinal& rhs);
-Literal operator<(Ordinal::value_type lhs, const Ordinal& rhs);
-Literal operator<=(Ordinal::value_type lhs, const Ordinal& rhs);
+Literal operator>(int lhs, const Ordinal& rhs);
+Literal operator>=(int lhs, const Ordinal& rhs);
+Literal operator<(int lhs, const Ordinal& rhs);
+Literal operator<=(int lhs, const Ordinal& rhs);
 
 // Comparison operators
-DualClause operator==(Ordinal::value_type lhs, const Ordinal& rhs);
-Clause     operator!=(Ordinal::value_type lhs, const Ordinal& rhs);
+DualClause operator==(int lhs, const Ordinal& rhs);
+Clause     operator!=(int lhs, const Ordinal& rhs);
 
 #endif // ORDINAL_H

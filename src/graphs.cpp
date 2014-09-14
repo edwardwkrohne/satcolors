@@ -37,7 +37,7 @@ private:
 };
 
 Grid<Literal> StreamGraph::createGrid(SolverManager* manager, istream& in, unsigned int& startingVar) {
-  value_type order;
+  int order;
   in >> order;
   return Grid(order, order,
 	      [&](int src, int dst) {

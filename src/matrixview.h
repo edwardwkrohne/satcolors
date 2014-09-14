@@ -29,7 +29,6 @@ class Matrix;
 template<typename Scalar = Cardinal>
 class MatrixView {
 public:
-  typedef typename Matrix<Scalar>::value_type value_type;
   typedef typename Matrix<Scalar>::size_type size_type;
 
   MatrixView(const Matrix<Scalar>& other); 

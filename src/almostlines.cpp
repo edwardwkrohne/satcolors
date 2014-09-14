@@ -15,8 +15,8 @@ AlmostLinesImpl::AlmostLinesImpl(
     SolverManager* _manager,
     size_type _height,
     size_type _width,
-    value_type _minThickness,
-    value_type _maxThickness,
+    int _minThickness,
+    int _maxThickness,
     unsigned int& var)
 :
     manager     (_manager),

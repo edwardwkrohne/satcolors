@@ -13,13 +13,12 @@
 #include "solvermanager.h"
 
 typedef typename Matrix<>::size_type size_type;
-typedef typename Matrix<>::value_type value_type;
 
 using namespace std;
 
-std::function<IsolatedPattern(value_type, value_type)> 
+std::function<IsolatedPattern(int, int)> 
 MarkerRegionsExperiment::createGridBuilder(SolverManager* manager, unsigned int& var) const {
-  auto builder = [this, manager, &var] (value_type row, value_type col) {
+  auto builder = [this, manager, &var] (int row, int col) {
     return IsolatedPattern
     (
         manager,
@@ -78,10 +77,10 @@ void MarkerRegionsExperiment::propagationExperiment(std::function<bool(void)> co
 }
 
 // The absolute row and column of the center of the pattern given by (row, col).
-value_type MarkerRegionsExperiment::patternCenterRow(value_type row, value_type col) {
+int MarkerRegionsExperiment::patternCenterRow(int row, int col) {
   return grids[row][col].row + row*gridSize;
 };
 
-value_type MarkerRegionsExperiment::patternCenterCol(value_type row, value_type col) {
+int MarkerRegionsExperiment::patternCenterCol(int row, int col) {
   return grids[row][col].col + col*gridSize;
 };

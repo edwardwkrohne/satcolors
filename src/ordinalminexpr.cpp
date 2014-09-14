@@ -7,7 +7,6 @@
 #include "ordinalminexpr.h"
 
 using namespace std;
-typedef Ordinal::value_type value_type;
 
 OrdinalMinExpr::OrdinalMinExpr(const Ordinal& ord1, const Ordinal& ord2) :
   ord1(ord1),
@@ -20,7 +19,7 @@ OrdinalMinExpr min(const Ordinal& ord1, const Ordinal& ord2) {
   return OrdinalMinExpr(ord1, ord2);
 }
 
-Clause OrdinalMinExpr::operator <= (const value_type bound) const {
+Clause OrdinalMinExpr::operator <= (const int bound) const {
   if ( bound >= ord1.max()-1 || bound >= ord2.max()-1 ) {
     throw domain_error("Requested a clause that would always be true, which is impossible to represent.");
   }
@@ -37,39 +36,39 @@ Clause OrdinalMinExpr::operator <= (const value_type bound) const {
   return result;
 }
 
-DualClause OrdinalMinExpr::operator >= (const value_type bound) const {
+DualClause OrdinalMinExpr::operator >= (const int bound) const {
   return ~(*this < bound);
 }
 
-Clause OrdinalMinExpr::operator <  (const value_type bound) const {
+Clause OrdinalMinExpr::operator <  (const int bound) const {
   return *this <= bound-1;
 }
 
-DualClause OrdinalMinExpr::operator >  (const value_type bound) const {
+DualClause OrdinalMinExpr::operator >  (const int bound) const {
   return *this >= bound+1;
 }
 
-Requirement OrdinalMinExpr::operator == (const value_type equality) const {
+Requirement OrdinalMinExpr::operator == (const int equality) const {
   return *this <= equality & *this >= equality;
 }
 
-DualClause operator <  (const value_type bound, const OrdinalMinExpr& expr) {
+DualClause operator <  (const int bound, const OrdinalMinExpr& expr) {
   return expr > bound;
 }
 
-Clause operator >  (const value_type bound, const OrdinalMinExpr& expr) {
+Clause operator >  (const int bound, const OrdinalMinExpr& expr) {
   return expr < bound;
 }
 
-DualClause operator <= (const value_type bound, const OrdinalMinExpr& expr) {
+DualClause operator <= (const int bound, const OrdinalMinExpr& expr) {
   return expr >= bound;
 }
 
-Clause operator >= (const value_type bound, const OrdinalMinExpr& expr) {
+Clause operator >= (const int bound, const OrdinalMinExpr& expr) {
   return expr <= bound;
 }
 
-Requirement operator == (const value_type equality, const OrdinalMinExpr& expr) {
+Requirement operator == (const int equality, const OrdinalMinExpr& expr) {
   return expr == equality;
 }
 
