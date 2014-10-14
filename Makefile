@@ -20,6 +20,10 @@ TEST_SOURCES:=${SOURCES} $(wildcard ${TESTSRC}/*test.cpp) ${TESTSRC}/runtests.cp
 OBJS:=$(SOURCES:.cpp=.o)
 TEST_OBJS:=$(TEST_SOURCES:.cpp=.o)
 
+# Default target
+.PHONY: build
+build: test 
+
 # Include the targets from the Makefiles for the scenarios.  To help
 # the writability of each Makefile, replace the ${SCENNAME} variable
 # with the actual name of the scenario before including.
@@ -48,11 +52,6 @@ endef ### SCENARIO_INCLUDE_TEMPLATE
 
 SCENARIO_LIST:=$(notdir $(wildcard ${SCENARIOS}/*))
 $(foreach scen, ${SCENARIO_LIST}, $(eval $(call SCENARIO_INCLUDE_TEMPLATE,$(scen))))
-
-# Default target
-all: ${BIN}/solve
-.PHONY: build
-build: all
 
 .PHONY: all-scenarios
 all-scenarios: $(addprefix solve-,${SCENARIO_LIST})
