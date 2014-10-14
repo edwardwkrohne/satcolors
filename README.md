@@ -8,6 +8,7 @@ Installation and Getting Started
 satcolors requires minisat v2.2, and cppunit v1.13.1; these can be obtained on Ubuntu, as of the time of this writing, via
 
 > sudo apt-get install minisat
+
 > sudo apt-get install libcppunit-dev
 
 satcolors also requires a C++0x compatible compiler. g++ 4.8 is recommended; others may work, but as of the time of this writing, C++0x support is a work in progress for most compilers.
