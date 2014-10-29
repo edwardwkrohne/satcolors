@@ -93,13 +93,21 @@ void Array2dTest::testCpp11InitializerListWidthMismatch(void) {
   // not crop up.  So I reenabled the test, and it passes.  This test
   // is worth watching, for sure.
 
-  // Create an initializer list where one row has three elements, but one row has two.
-  initializer_list<initializer_list<string>> bad_init_list = {
-      {"hello", "world", "this"},
-      {"is", "a"}
-  };
+  // EK Oct 2014 
+  //
+  // I think I fixed the problem; I was creating an "initializer list"
+  // separately to make the code easier to read, and it probably
+  // doesn't copy nicely.  Was definitely seeing corrupted memory
+  // problems.  Should be fixed, but I'm leaving these comments in in
+  // case it breaks again.
 
-  CPPUNIT_ASSERT_THROW(Array2d<string> array(bad_init_list), std::invalid_argument);
+  // Create an initializer list where one row has three elements, but one row has two.
+  CPPUNIT_ASSERT_THROW(Array2d<string> array({
+	{"hello", "world", "this"},
+	{"is", "a"}
+      }), std::invalid_argument);
+  
+  cout << "Exception thrown correctly" << endl;
 }
 
 void Array2dTest::testConstAccess(void) {
