@@ -61,7 +61,7 @@ public:
 
   // Want these to be read-only by clients, so they are functions.
   size_type height() const { return m_height; };
-  size_type width() const {return m_width; };
+  size_type width() const { return m_width; };
 private:
   size_type m_height;
   size_type m_width;

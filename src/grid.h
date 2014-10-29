@@ -63,9 +63,7 @@ Grid<obj_type>::Grid(
 
   for ( int row = 0; row < height(); row++ ) {
     for ( int col = 0; col < width(); col++ ) {
-      obj_type pat = builder(row, col);
-      obj_type pat2 = obj_type(pat);
-      mData.emplace_back(pat2);
+      mData.emplace_back(builder(row, col));
     }
   }
 }

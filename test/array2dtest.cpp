@@ -106,8 +106,6 @@ void Array2dTest::testCpp11InitializerListWidthMismatch(void) {
 	{"hello", "world", "this"},
 	{"is", "a"}
       }), std::invalid_argument);
-  
-  cout << "Exception thrown correctly" << endl;
 }
 
 void Array2dTest::testConstAccess(void) {
