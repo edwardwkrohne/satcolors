@@ -9,8 +9,8 @@
 #define TESTGLUE_H_
 
 #include <sstream>
-#include "solvermanager.h"
 #include <cppunit/extensions/HelperMacros.h>
+#include "../src/solvermanager.h"
 
 #define ASSERT_UNSAT_ASSUMP(manager, assumptions, obj) assertUnsat((manager), (assumptions), (obj), CPPUNIT_SOURCELINE());
 #define ASSERT_UNSAT(manager, obj)                     assertUnsat((manager), (obj), CPPUNIT_SOURCELINE());

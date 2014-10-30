@@ -5,8 +5,8 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <stdexcept>
+#include "testglue.h"
 #include "../src/grid.h"
-#include "../src/testglue.h"
 
 using namespace std;
 

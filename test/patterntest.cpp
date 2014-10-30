@@ -4,8 +4,8 @@
 #include <sstream>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include "testglue.h"
 #include "../src/pattern.h"
-#include "../src/testglue.h"
 
 using namespace std;
 

@@ -22,10 +22,9 @@ class Grid {
 public:
   typedef std::function<obj_type(int, int)> builder_type;
 
-  Grid(
-      int height,
-      int width,
-      builder_type builder);
+  Grid(int height,
+       int width,
+       builder_type builder);
 
   SubscriptWrapper<obj_type> operator[](int row) const;
 

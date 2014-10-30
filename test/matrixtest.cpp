@@ -5,10 +5,10 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <stdexcept>
+#include "testglue.h"
 #include "../src/matrix.h"
 #include "../src/matrixview.h"
 #include "../src/pairindexedscalar.h"
-#include "../src/testglue.h"
 
 using namespace std;
 

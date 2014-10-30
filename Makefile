@@ -14,7 +14,7 @@ SOLUTIONS:=solutions
 
 # Sources and sources involving tests.
 SOURCES:=$(wildcard ${SRC}/*.cpp)
-TEST_SOURCES:=${SOURCES} $(wildcard ${TESTSRC}/*test.cpp) ${TESTSRC}/runtests.cpp
+TEST_SOURCES:=${SOURCES} $(wildcard ${TESTSRC}/*.cpp)
 
 # Corresponding object lists
 OBJS:=$(SOURCES:.cpp=.o)
@@ -63,11 +63,6 @@ ${SRC}/%.o: ${SRC}/%.cpp
 # Compile test files
 ${TESTSRC}/%.o: ${TESTSRC}/%.cpp
 	${GPP} $< -c ${CPPFLAGS} -o ${TESTSRC}/$*.o
-
-# The test runner is a special source file not depending on headers.
-# TODO: stop treating this specially?
-${TESTSRC}/runtests.o: ${TESTSRC}/runtests.cpp
-	${GPP} $< -c ${CPPFLAGS} -o ${TESTSRC}/runtests.o
 
 ${BIN}/runtests: ${TEST_OBJS}
 	${GPP} $^ -o $@ ${LIBCPPUNIT} ${LIBMINISAT}
