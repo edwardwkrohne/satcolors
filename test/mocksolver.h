@@ -1,17 +1,16 @@
 // -*- Mode:C++ -*-
 //
-// Solver object using minisat to do the solving.
+// Mock solver object with which to do unit tests
 //
-#ifndef MINISATSOLVER_H
-#define MINISATSOLVER_H
+#ifndef MOCKSOLVER_H
+#define MOCKSOLVER_H
 
-#include "solver.h"
-#include <minisat/core/Solver.h>
+#include "../src/solver.h"
 
-class MinisatSolver : public Solver {
+class MockSolver : public Solver {
 public:
   // Constructor
-  MinisatSolver();
+  MockSolver();
 
   // Reserve some variables.  Returns a variable corresponding to the literal reserved.
   virtual unsigned int newVars(unsigned int numReservations) override;
@@ -21,10 +20,7 @@ public:
   virtual void require(const Clause& clause) override;
 
   // Solve
-  virtual bool solve() override;
-  virtual bool solve(Literal lit) override;
-  virtual bool solve(Literal lit1, Literal lit2) override;
-  virtual bool solve(Literal lit1, Literal lit2, Literal lit3) override;
+  using Solver::solve;
   virtual bool solve(const DualClause& assumptions) override;
 
   // Find out whether the last run was successful
@@ -33,9 +29,12 @@ public:
   // Query the value of a particular variable.
   virtual bool modelValue(unsigned int var) const override;
 
+  // Get the requirements required so far (returns const reference)
+  const Requirement& getRequirements() const;
+
 private:
-  bool successfulRun;
-  Minisat::Solver solver;
+  unsigned int varSpaceSize;
+  Requirement requirements;
 };
 
 #endif // MINISATSOLVER_H
