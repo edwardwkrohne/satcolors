@@ -19,7 +19,7 @@
 
 #include <iostream>
 #include "requirement.h"
-#include "solvermanager.h"
+#include "solver.h"
 #include "cardinal.h"
 #include "matrix.h"
 

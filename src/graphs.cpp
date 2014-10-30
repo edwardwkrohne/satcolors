@@ -26,24 +26,24 @@ using namespace std;
 class StreamGraph: public Grid<Literal> {
 public:
   StreamGraph() = delete;
-  StreamGraph(SolverManager* manager, istream& in, unsigned int& startingVar = SolverManager::allocateNew);
+  StreamGraph(Solver* solver, istream& in, unsigned int& startingVar = Solver::allocateNew);
 
   int order() const;
 
 private:
   // Helper method to make it easier to compute the grid inside of the
   // constructor initialier list.
-  static Grid createGrid(SolverManager* manager, istream& in, unsigned int& startingVar);
+  static Grid createGrid(Solver* solver, istream& in, unsigned int& startingVar);
 };
 
-Grid<Literal> StreamGraph::createGrid(SolverManager* manager, istream& in, unsigned int& startingVar) {
+Grid<Literal> StreamGraph::createGrid(Solver* solver, istream& in, unsigned int& startingVar) {
   int order;
   in >> order;
   return Grid(order, order,
 	      [&](int src, int dst) {
 		Literal lit;
-		if ( startingVar == SolverManager::allocateNew) {
-		  lit = Literal(manager->newVars(1));
+		if ( startingVar == Solver::allocateNew) {
+		  lit = Literal(solver->newVars(1));
 		} else {
 		  lit = Literal(startingVar++);
 		}
@@ -58,13 +58,13 @@ Grid<Literal> StreamGraph::createGrid(SolverManager* manager, istream& in, unsig
 		in >> elem;
 
 		auto req = (elem == 0) ? ~lit : lit;
-		manager->require(req);
+		solver->require(req);
 		return lit;
 	      });
 }
 
-StreamGraph::StreamGraph(SolverManager* manager, istream& in, unsigned int& startingVar) :
-  Grid(createGrid(manager, in, startingVar))
+StreamGraph::StreamGraph(Solver* solver, istream& in, unsigned int& startingVar) :
+  Grid(createGrid(solver, in, startingVar))
 {
   ; // This function has no body, just an initializer list.
 }
@@ -80,22 +80,22 @@ int StreamGraph::order() const {
 class CompleteGraph: public Grid<Literal> {
 public:
   CompleteGraph() = delete;
-  CompleteGraph(SolverManager* manager, int order, unsigned int& startingVar = SolverManager::allocateNew);
+  CompleteGraph(Solver* solver, int order, unsigned int& startingVar = Solver::allocateNew);
 
   int order() const;
 };
 
-CompleteGraph::CompleteGraph(SolverManager* manager, int order, unsigned int& startingVar) :
+CompleteGraph::CompleteGraph(Solver* solver, int order, unsigned int& startingVar) :
   Grid(order, order, 
        [&](int src, int dst) {
 	 Literal lit;
-	 if ( startingVar == SolverManager::allocateNew) {
-	   lit = Literal(manager->newVars(1));
+	 if ( startingVar == Solver::allocateNew) {
+	   lit = Literal(solver->newVars(1));
 	 } else {
 	   lit = Literal(startingVar++);
 	 }
 	 auto req = (src == dst) ? ~lit : lit;
-	 manager->require(req);
+	 solver->require(req);
 	 return lit;
        })
 {
@@ -113,12 +113,12 @@ int CompleteGraph::order() const {
 class TwistedTorusGraph: public Grid<Literal> {
 public:
   TwistedTorusGraph() = delete;
-  TwistedTorusGraph(SolverManager* manager, int order, unsigned int& startingVar = SolverManager::allocateNew);
+  TwistedTorusGraph(Solver* solver, int order, unsigned int& startingVar = Solver::allocateNew);
 
   int order() const;
 };
 
-TwistedTorusGraph::TwistedTorusGraph(SolverManager* manager, int length, unsigned int& startingVar) :
+TwistedTorusGraph::TwistedTorusGraph(Solver* solver, int length, unsigned int& startingVar) :
   Grid(3*length, 3*length,
        [&](int src, int dst) {
 	 // Symmetric matrix, so WLOG, src < dst.
@@ -159,13 +159,13 @@ TwistedTorusGraph::TwistedTorusGraph(SolverManager* manager, int length, unsigne
 	 
 	 // Fill in the corresponding part of the matrix
 	 Literal lit;
-	 if ( startingVar == SolverManager::allocateNew) {
-	   lit = Literal(manager->newVars(1));
+	 if ( startingVar == Solver::allocateNew) {
+	   lit = Literal(solver->newVars(1));
 	 } else {
 	   lit = Literal(startingVar++);
 	 }
 
-	 manager->require(includeLink ? lit : ~lit);
+	 solver->require(includeLink ? lit : ~lit);
 	 return lit;
        })
 {
@@ -183,7 +183,7 @@ int TwistedTorusGraph::order() const {
 class OrientationReversalGraph: public Grid<Literal> {
 public:
   OrientationReversalGraph() = delete;
-  OrientationReversalGraph(SolverManager* manager, int width, int height, unsigned int& startingVar = SolverManager::allocateNew);
+  OrientationReversalGraph(Solver* solver, int width, int height, unsigned int& startingVar = Solver::allocateNew);
 
   int order() const;
 };
@@ -242,7 +242,7 @@ public:
 //  5|0 1 1 0 1 0
 //  
 
-OrientationReversalGraph::OrientationReversalGraph(SolverManager* manager, int cycleLength, int stages, unsigned int& startingVar) :
+OrientationReversalGraph::OrientationReversalGraph(Solver* solver, int cycleLength, int stages, unsigned int& startingVar) :
   // Set up a long, complicated lambda function as one of the arguments for the Grid initialization
   Grid(cycleLength*stages, cycleLength*stages,
        [&](int src, int dst) {
@@ -325,13 +325,13 @@ OrientationReversalGraph::OrientationReversalGraph(SolverManager* manager, int c
 
 	 // Fill in the corresponding part of the matrix
 	 Literal lit;
-	 if ( startingVar == SolverManager::allocateNew) {
-	   lit = Literal(manager->newVars(1));
+	 if ( startingVar == Solver::allocateNew) {
+	   lit = Literal(solver->newVars(1));
 	 } else {
 	   lit = Literal(startingVar++);
 	 }
 
-	 manager->require(includeLink ? lit : ~lit);
+	 solver->require(includeLink ? lit : ~lit);
 	 return lit;
        })
 {
@@ -343,7 +343,7 @@ int OrientationReversalGraph::order() const {
 }
 
 template<class T>
-void printGraph(SolverManager* manager, const T& graph) {
+void printGraph(Solver* solver, const T& graph) {
   cout << "   ";
   for ( int i = 0; i < graph.order(); i++ ) {
     cout << (i%10) << " ";
@@ -352,7 +352,7 @@ void printGraph(SolverManager* manager, const T& graph) {
   for ( int i = 0; i < graph.order(); i++ ) {
     cout << (i%10) << "  ";
     for ( int j = 0; j < graph.order(); j++ ) {
-      cout << manager->modelValue(var(graph[i][j])) << " ";
+      cout << solver->modelValue(var(graph[i][j])) << " ";
     }
     cout << endl;
   }

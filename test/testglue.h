@@ -10,17 +10,17 @@
 
 #include <sstream>
 #include <cppunit/extensions/HelperMacros.h>
-#include "../src/solvermanager.h"
+#include "../src/solver.h"
 
-#define ASSERT_UNSAT_ASSUMP(manager, assumptions, obj) assertUnsat((manager), (assumptions), (obj), CPPUNIT_SOURCELINE());
-#define ASSERT_UNSAT(manager, obj)                     assertUnsat((manager), (obj), CPPUNIT_SOURCELINE());
-#define ASSERT_SAT_ASSUMP(manager, assumptions)        assertSat  ((manager), (assumptions), #assumptions, CPPUNIT_SOURCELINE());
-#define ASSERT_SAT(manager)                            assertSat  ((manager), CPPUNIT_SOURCELINE());
+#define ASSERT_UNSAT_ASSUMP(solver, assumptions, obj) assertUnsat((solver), (assumptions), (obj), CPPUNIT_SOURCELINE());
+#define ASSERT_UNSAT(solver, obj)                     assertUnsat((solver), (obj), CPPUNIT_SOURCELINE());
+#define ASSERT_SAT_ASSUMP(solver, assumptions)        assertSat  ((solver), (assumptions), #assumptions, CPPUNIT_SOURCELINE());
+#define ASSERT_SAT(solver)                            assertSat  ((solver), CPPUNIT_SOURCELINE());
 
 template<class T, class U>
-void assertUnsat(SolverManager& manager, const U& assumptions, T& obj, CPPUNIT_NS::SourceLine sourceLine) {
+void assertUnsat(Solver& solver, const U& assumptions, T& obj, CPPUNIT_NS::SourceLine sourceLine) {
   using namespace std;
-  if ( manager.solve(assumptions) ) {
+  if ( solver.solve(assumptions) ) {
     ostringstream sout;
     sout << "Illegal solution to constraints and assumptions." << endl << obj;
     CPPUNIT_NS::Asserter::fail( sout.str(), sourceLine );
@@ -28,9 +28,9 @@ void assertUnsat(SolverManager& manager, const U& assumptions, T& obj, CPPUNIT_N
 }
 
 template<class T>
-void assertUnsat(SolverManager& manager, T& obj, CPPUNIT_NS::SourceLine sourceLine) {
+void assertUnsat(Solver& solver, T& obj, CPPUNIT_NS::SourceLine sourceLine) {
   using namespace std;
-  if ( manager.solve() ) {
+  if ( solver.solve() ) {
     ostringstream sout;
     sout << "Illegal solution to constraints." << endl << obj;
     CPPUNIT_NS::Asserter::fail( sout.str(), sourceLine );
@@ -39,18 +39,18 @@ void assertUnsat(SolverManager& manager, T& obj, CPPUNIT_NS::SourceLine sourceLi
 
 
 template<class T>
-void assertSat(SolverManager& manager, const T& assumptions, const std::string& strAssumptions, CPPUNIT_NS::SourceLine sourceLine) {
+void assertSat(Solver& solver, const T& assumptions, const std::string& strAssumptions, CPPUNIT_NS::SourceLine sourceLine) {
   using namespace std;
-  if ( !manager.solve(assumptions) ) {
+  if ( !solver.solve(assumptions) ) {
     ostringstream sout;
     sout << "Constraints unsolvable under assumptions." << endl << strAssumptions << endl;
     CPPUNIT_NS::Asserter::fail( sout.str(), sourceLine );
   }
 }
 
-inline void assertSat(SolverManager& manager, CPPUNIT_NS::SourceLine sourceLine) {
+inline void assertSat(Solver& solver, CPPUNIT_NS::SourceLine sourceLine) {
   using namespace std;
-  if ( !manager.solve() ) {
+  if ( !solver.solve() ) {
     CPPUNIT_NS::Asserter::fail( "Constraints unsolvable.", sourceLine );
   }
 }

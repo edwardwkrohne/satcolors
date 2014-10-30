@@ -15,7 +15,7 @@
 #include "../../src/ordinal.h"
 #include "../../src/matrix.h"
 #include "../../src/pairindexedscalar.h"
-#include "../../src/solvermanager.h"
+#include "../../src/minisatsolver.h"
 #include "../../src/manipulators.h"
 #include "../../src/ordinaladdexpr.h"
 #include "../../src/ordinalminexpr.h"
@@ -36,7 +36,7 @@ int main (int argc, char** argv) {
   ifstream fin(argv[1]);
   ofstream fout(argv[2]);
 
-  SolverManager manager;
+  MinisatSolver solver;
 
   const int topPeriod = 3;
   const int bottomPeriod = 7;
@@ -64,7 +64,7 @@ int main (int argc, char** argv) {
 
   // Establish the constraints
   cout << timestamp << " Establishing basic morphism constraints." << endl;
-  Matrix<Cardinal> morphism(&manager, height, width, 0, order);
+  Matrix<Cardinal> morphism(&solver, height, width, 0, order);
 
   cout << timestamp << " Basic morphism constraints established." << endl;
   cout << timestamp << " Establishing graph coloring constraints." << endl;
@@ -81,8 +81,8 @@ int main (int argc, char** argv) {
 	    leftClause  |= morphism[row][col]   == otherColor;
 	  }
 	}
-	manager.require(implication(morphism[row][col]   == thisColor, rightClause));
-	manager.require(implication(morphism[row][col+1] == thisColor, leftClause));
+	solver.require(implication(morphism[row][col]   == thisColor, rightClause));
+	solver.require(implication(morphism[row][col+1] == thisColor, leftClause));
       }
     }
   }
@@ -99,8 +99,8 @@ int main (int argc, char** argv) {
 	    upClause   |= morphism[row]  [col] == otherColor;
 	  }
 	}
-	manager.require(implication(morphism[row]  [col] == thisColor, downClause));
-	manager.require(implication(morphism[row+1][col] == thisColor, upClause));
+	solver.require(implication(morphism[row]  [col] == thisColor, downClause));
+	solver.require(implication(morphism[row+1][col] == thisColor, upClause));
       }
     }
   }
@@ -108,35 +108,35 @@ int main (int argc, char** argv) {
   // // Make the grid periodic horizontally.
   // for ( int row = 0; row < height; row++ ) {
   //   for ( int col = 0; col < width; col++ ) {
-  //     manager.require(morphism[row][col] == morphism[row][col+width]);
+  //     solver.require(morphism[row][col] == morphism[row][col+width]);
   //   }
   // }
 
   // Make the top and bottom of the grids periodic with a much tighter period
   for ( int col = 0; col < width-topPeriod; col++ ) {
-    manager.require(morphism[0][col] == morphism[0][col+topPeriod]);
+    solver.require(morphism[0][col] == morphism[0][col+topPeriod]);
   }
 
   // Make the top and bottom of the grids periodic with a much tighter period
   for ( int col = 0; col < width-bottomPeriod; col++ ) {
-    manager.require(morphism[height-1][col] == morphism[height-1][col+bottomPeriod]);
+    solver.require(morphism[height-1][col] == morphism[height-1][col+bottomPeriod]);
   }
 
   for ( int col = 0; col < width; col++ ) {
     for ( int row = height/2-1; row < height/2+1; row++ ) {
-      manager.require(morphism[row][col] <= 1);
+      solver.require(morphism[row][col] <= 1);
     }
   }
 
   for ( int col = 0; col < width; col++ ) {
-    manager.require(morphism[0][col] <= 2);
-    manager.require(morphism[height-1][col] <= 2);
+    solver.require(morphism[0][col] <= 2);
+    solver.require(morphism[height-1][col] <= 2);
   }
 
   cout << timestamp << " constraints established.  Solving." << endl;
 
   // See if the problem is solvable at all
-  if ( !manager.solve() ) {
+  if ( !solver.solve() ) {
     cout << timestamp << " UNSATISFIABLE" << endl;
     return 0;
   }
@@ -147,9 +147,9 @@ int main (int argc, char** argv) {
   cout << timestamp << " initial solution found.  Optimizing." << endl;
 
   // Location of a  cell that must be at most highColor.
-  Cardinal reqRow(&manager, 1, height-1);
-  Cardinal reqCol(&manager, 0, width);
-  manager.require(morphism[reqRow][reqCol] <= highColor);
+  Cardinal reqRow(&solver, 1, height-1);
+  Cardinal reqCol(&solver, 0, width);
+  solver.require(morphism[reqRow][reqCol] <= highColor);
 
   cout << timestamp << " Optimization constraints established.  Beginning solve loop." << endl;
   // Now try and force specific cells to be at most highColor
@@ -158,15 +158,15 @@ int main (int argc, char** argv) {
       for ( int col = 0; col < width; col++ ) {
   	auto val = morphism[row][col].modelValue();
   	if ( val <= highColor ) {
-	  manager.require(morphism[row][col] <= highColor);
+	  solver.require(morphism[row][col] <= highColor);
 
   	  // Also make sure that some new cell must be at most highcolor.
-  	  manager.require(reqRow != row | reqCol != col);
+  	  solver.require(reqRow != row | reqCol != col);
   	}
       }
     }
 
-    if ( !manager.solve() ) {
+    if ( !solver.solve() ) {
       break;
     }
 

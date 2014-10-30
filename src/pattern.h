@@ -8,7 +8,7 @@
 
 #include <iostream>
 #include "requirement.h"
-#include "solvermanager.h"
+#include "solver.h"
 #include "array2d.h"
 
 class Pattern {

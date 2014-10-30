@@ -1,35 +1,27 @@
 // -*- Mode:C++ -*-
 //
-// Implementation of the SolverManager class
+// Implementation of the MinisatSolver
 
 #include <algorithm>
 #include <stdexcept>
 #include <sstream>
-#include "solvermanager.h"
+#include "minisatsolver.h"
 
 using namespace std;
-using Minisat::Solver;
 using Minisat::vec;
 using Minisat::var;
 using Minisat::lbool;
 
-unsigned int SolverManager::allocateNew = ~(unsigned int)0;
-
 // Constructor
-SolverManager::SolverManager() :
+MinisatSolver::MinisatSolver() :
   successfulRun(false)
 {
   ;
 }
 
-// Destructor
-SolverManager::~SolverManager() {
-  ;
-}
-
 // Reserve some variables.  Returns a variable corresponding to the literal reserved.
 // Results are undefined if numReservations is less than 0.
-unsigned int SolverManager::newVars(unsigned int numReservations) {
+unsigned int MinisatSolver::newVars(unsigned int numReservations) {
   if ( numReservations <= 0 ) {
     return solver.nVars();
   }
@@ -42,7 +34,7 @@ unsigned int SolverManager::newVars(unsigned int numReservations) {
 }
 
 // Register a single requirement
-void SolverManager::require(const Clause& clause) {
+void MinisatSolver::require(const Clause& clause) {
   vec<Minisat::Lit> vecClause;
   
   for ( auto lit : clause ) {
@@ -60,35 +52,27 @@ void SolverManager::require(const Clause& clause) {
   solver.addClause(vecClause);
 }
 
-
-// Register a single requirement
-void SolverManager::require(const Requirement& req) {
-  for ( auto clause : req ) {
-    require(clause);
-  }
-}
-
 // Solve
-bool SolverManager::solve() {
+bool MinisatSolver::solve() {
   solver.simplify();
   return successfulRun = solver.solve();
 }
-bool SolverManager::solve(Literal lit) {
+bool MinisatSolver::solve(Literal lit) {
   solver.simplify();
   return successfulRun = solver.solve(Minisat::mkLit(lit.getVar(), lit.isPos()));
 }
-bool SolverManager::solve(Literal lit1, Literal lit2) {
+bool MinisatSolver::solve(Literal lit1, Literal lit2) {
   solver.simplify();
   return successfulRun = solver.solve(Minisat::mkLit(lit1.getVar(), lit1.isPos()), 
 				      Minisat::mkLit(lit2.getVar(), lit2.isPos()));
 }
-bool SolverManager::solve(Literal lit1, Literal lit2, Literal lit3) {
+bool MinisatSolver::solve(Literal lit1, Literal lit2, Literal lit3) {
   solver.simplify();
   return successfulRun = solver.solve(Minisat::mkLit(lit1.getVar(), lit1.isPos()), 
 				      Minisat::mkLit(lit2.getVar(), lit2.isPos()), 
 				      Minisat::mkLit(lit3.getVar(), lit3.isPos()));
 }
-bool SolverManager::solve(const DualClause& assumptions) {
+bool MinisatSolver::solve(const DualClause& assumptions) {
   vec<Minisat::Lit> vecAssumps(0);
   for ( auto assump : assumptions ) {
     vecAssumps.push(Minisat::mkLit(assump.getVar(), !assump.isPos()));
@@ -98,18 +82,18 @@ bool SolverManager::solve(const DualClause& assumptions) {
 
 
 // Find out whether the last run was successful
-bool SolverManager::okay() const {
+bool MinisatSolver::okay() const {
   return solver.okay();
 }
 
 // Query the value of a particular variable.
-bool SolverManager::modelValue(unsigned int var) const {
+bool MinisatSolver::modelValue(unsigned int var) const {
   // Check for bad conditions.
   if ( !successfulRun ) {
-    throw logic_error("SolverManager::modelValue called, but no model is ready. Must follow a call to solve() which was satisfiable.");
+    throw logic_error("MinisatSolver::modelValue called, but no model is ready. Must follow a call to solve() which was satisfiable.");
   }
   if ( var >= solver.nVars() || var < 0 ) {
-    throw out_of_range("SolverManager::modelValue called requesting a variable out of range");
+    throw out_of_range("MinisatSolver::modelValue called requesting a variable out of range");
   }
   // Somewhat counterintuitive, but I blame this on minisat's
   // interface.  False is true, and true is false.  I could

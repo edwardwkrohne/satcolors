@@ -11,15 +11,15 @@
 using namespace std;
 
 // Creates an object representing a cardinal.
-Cardinal::Cardinal(SolverManager* _manager, int _min, int _max, unsigned int& _startingVar) :
-  mManager(_manager),
+Cardinal::Cardinal(Solver* _solver, int _min, int _max, unsigned int& _startingVar) :
+  mSolver(_solver),
   mMin(_min),
   mMax(_max),
   inverted(false),
-  mStartingVar(_startingVar == SolverManager::allocateNew ? _manager->newVars(numLiterals()) : _startingVar)
+  mStartingVar(_startingVar == Solver::allocateNew ? _solver->newVars(numLiterals()) : _startingVar)
 {
-  if ( _startingVar == SolverManager::allocateNew ) {
-    mManager->require(typeRequirement());
+  if ( _startingVar == Solver::allocateNew ) {
+    mSolver->require(typeRequirement());
   } else {
     _startingVar += numLiterals();
   }
@@ -166,7 +166,7 @@ Clause operator<=(int lhs, const Cardinal& rhs) {
 
 
 // Requirements that two Cardinals be equal, whatever values they take.  Requires that both Cardinals
-// have the same manager.  Does not require the range for each cardinal to be the same, or even
+// have the same solver.  Does not require the range for each cardinal to be the same, or even
 // overlap.
 Requirement Cardinal::operator==(const Cardinal& rhs) const {
   // Treat lhs and rhs symmetrically.
@@ -192,7 +192,7 @@ Requirement Cardinal::operator==(const Cardinal& rhs) const {
 }
 
 // Requirements that two Cardinals be nonequal, whatever values they take.  Requires that both Cardinals
-// have the same manager.  Does not require the range for each cardinal to be the same, or even
+// have the same solver.  Does not require the range for each cardinal to be the same, or even
 // overlap.
 Requirement Cardinal::operator!=(const Cardinal& rhs) const {
   // Treat lhs and rhs symmetrically.
@@ -213,7 +213,7 @@ Requirement Cardinal::operator!=(const Cardinal& rhs) const {
 // The value assigned in the model, after solving, if a solution is available.
 int Cardinal::modelValue() const {
   for (int value = 0; value < max()-min(); value++ ) {
-    if ( mManager->modelValue(value + mStartingVar ) == true ) {
+    if ( mSolver->modelValue(value + mStartingVar ) == true ) {
       return value+min();
     }
   }

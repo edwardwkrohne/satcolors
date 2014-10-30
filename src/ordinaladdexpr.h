@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include "requirement.h"
-#include "solvermanager.h"
+#include "solver.h"
 #include "ordinal.h"
 
 // Direct addition of two ordinals

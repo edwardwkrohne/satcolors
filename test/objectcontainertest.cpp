@@ -5,6 +5,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include "testglue.h"
+#include "../src/minisatsolver.h"
 #include "../src/objectcontainer.h"
 #include "../src/ordinal.h"
 
@@ -46,16 +47,16 @@ void ObjectContainerTest::testConstruction(void) {
 }
 
 void ObjectContainerTest::testAllocateNewConstruction(void) {
-  SolverManager manager;
+  MinisatSolver solver;
   ObjectContainer<Ordinal> oc;
 
-  oc.emplace_back(&manager, 0, 4);
-  oc.emplace_back(&manager, 0, 4);
-  oc.emplace_back(&manager, 0, 4);
+  oc.emplace_back(&solver, 0, 4);
+  oc.emplace_back(&solver, 0, 4);
+  oc.emplace_back(&solver, 0, 4);
 
   unsigned int numLiterals = oc[0].numLiterals()*3;
 
-  CPPUNIT_ASSERT_EQUAL(numLiterals, manager.newVars(0));
+  CPPUNIT_ASSERT_EQUAL(numLiterals, solver.newVars(0));
 }
 
 void ObjectContainerTest::testCopyConstruction(void) {
@@ -92,14 +93,14 @@ void ObjectContainerTest::testTypeRequirement(void) {
 }
 
 void ObjectContainerTest::testCurrSolnReq(void) {
-  SolverManager manager;
+  MinisatSolver solver;
   ObjectContainer<Ordinal> oc;
 
-  oc.emplace_back(&manager, 0, 4);
-  oc.emplace_back(&manager, 0, 4);
-  oc.emplace_back(&manager, 0, 4);
+  oc.emplace_back(&solver, 0, 4);
+  oc.emplace_back(&solver, 0, 4);
+  oc.emplace_back(&solver, 0, 4);
 
-  ASSERT_SAT(manager);
+  ASSERT_SAT(solver);
 
   DualClause expected =
     oc[0].currSolnReq() &

@@ -125,8 +125,8 @@ CompoundObject<T>::constructorHelper(ArgsT&&... args)
 {
   // If this function is getting called, then the last argument is a unsigned int&.  Check to see if it indicates
   //  we should register requirements.
-  if ( lastArg(args...) == SolverManager::allocateNew ) {
-    T::manager->require(T::typeRequirement());
+  if ( lastArg(args...) == Solver::allocateNew ) {
+    T::solver->require(T::typeRequirement());
   }
 }
 
@@ -137,7 +137,7 @@ CompoundObject<T>::constructorHelper(ArgsT&&... args)
 {
   // If this function is getting called, then the last argument is NOT a unsigned int&.
   // Execute the default behavior of registering requirements anyway.
-  T::manager->require(T::typeRequirement());
+  T::solver->require(T::typeRequirement());
 }
 
 template<class T>

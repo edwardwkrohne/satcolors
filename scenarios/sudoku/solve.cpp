@@ -14,7 +14,7 @@
 #include <random>
 #include "../../src/cardinal.h"
 #include "../../src/matrix.h"
-#include "../../src/solvermanager.h"
+#include "../../src/minisatsolver.h"
 #include "../../src/manipulators.h"
 using namespace std;
 
@@ -24,7 +24,7 @@ using namespace std;
 //  main
 //
 int main (int argc, char** argv) {
-  SolverManager manager;
+  MinisatSolver solver;
 
   if ( argc < 2 ) {
     cerr << "Please specify sudoku data file" << endl;
@@ -40,7 +40,7 @@ int main (int argc, char** argv) {
   cout << timestamp << " Establishing puzzle constraints." << endl;
   
   // Start with a 9x9 grid of numbers 1 through 9 (i.e., numbers in [1,10) )
-  Matrix<Cardinal> puzzle(&manager, 
+  Matrix<Cardinal> puzzle(&solver, 
 			  9, 9, 
 			  1, 10);
 
@@ -56,7 +56,7 @@ int main (int argc, char** argv) {
       if ( elem == 0 ) {
 	continue;
       } else if ( elem <= 9 ) {
-	manager.require(puzzle[row][col] == elem);
+	solver.require(puzzle[row][col] == elem);
       } else {
 	cerr << "Unexpected input '" << elem << "' in sudoku puzzle" << endl;
 	return 1;
@@ -68,7 +68,7 @@ int main (int argc, char** argv) {
   for ( int row = 0; row < 9; row++ ) {
     for ( int elem1 = 0; elem1 < 9; elem1++ ) {
       for ( int elem2 = elem1+1; elem2 < 9; elem2++ ) {
-	manager.require(puzzle[row][elem1] != puzzle[row][elem2]);
+	solver.require(puzzle[row][elem1] != puzzle[row][elem2]);
       }
     }
   }
@@ -77,7 +77,7 @@ int main (int argc, char** argv) {
   for ( int col = 0; col < 9; col++ ) {
     for ( int elem1 = 0; elem1 < 9; elem1++ ) {
       for ( int elem2 = elem1+1; elem2 < 9; elem2++ ) {
-	manager.require(puzzle[elem1][col] != puzzle[elem2][col]);
+	solver.require(puzzle[elem1][col] != puzzle[elem2][col]);
       }
     }
   }
@@ -91,7 +91,7 @@ int main (int argc, char** argv) {
 	  int col1 = boxCol + boxIdx1%3;
 	  int row2 = boxRow + boxIdx2/3;
 	  int col2 = boxCol + boxIdx2%3;
-	  manager.require(puzzle[row1][col1] != puzzle[row2][col2]);
+	  solver.require(puzzle[row1][col1] != puzzle[row2][col2]);
 	}
       }
     }
@@ -100,7 +100,7 @@ int main (int argc, char** argv) {
   cout << timestamp << " Puzzle constraints established.  Solving." << endl;
 
   // See if the problem is solvable
-  if ( !manager.solve() ) {
+  if ( !solver.solve() ) {
     cout << timestamp << " UNSATISFIABLE" << endl;
     return 1;
   } else {  

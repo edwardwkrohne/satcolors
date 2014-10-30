@@ -14,7 +14,7 @@
 #include "requirement.h"
 #include "cardinal.h"
 #include "grid.h"
-#include "solvermanager.h"
+#include "solver.h"
 
 template<class Scalar>
 class MatrixView;
@@ -25,12 +25,12 @@ class PairIndexedScalar;
 template<typename Scalar = Cardinal>
 class Matrix : public Grid<Scalar> {
 public:
-  Matrix(SolverManager* manager, 
+  Matrix(Solver* solver, 
 	 int height, 
 	 int width, 
 	 int min, 
 	 int max, 
-	 unsigned int& startingVar = SolverManager::allocateNew);
+	 unsigned int& startingVar = Solver::allocateNew);
 
   Matrix() = delete;
   Matrix(const Matrix& copy) = default; // deep copy inherited from vector
@@ -52,7 +52,7 @@ public:
 };
 
 template<typename Scalar>
-Matrix<Scalar>::Matrix(SolverManager* _manager, 
+Matrix<Scalar>::Matrix(Solver* _solver, 
 		       int _height, 
 		       int _width, 
 		       int _min, 
@@ -61,7 +61,7 @@ Matrix<Scalar>::Matrix(SolverManager* _manager,
   Grid<Scalar>(_height, 
 	       _width, 
 	       [&] (int row, int col) { 
-		 return Scalar(_manager, _min, _max, _startingVar);
+		 return Scalar(_solver, _min, _max, _startingVar);
 	       })
 
 {

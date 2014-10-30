@@ -20,7 +20,7 @@
 
 #include <iostream>
 #include "requirement.h"
-#include "solvermanager.h"
+#include "solver.h"
 
 class Ordinal {
 public:
@@ -31,10 +31,10 @@ public:
   // created object with the given startingvar, does not register new
   // requirements, and increments allocateNew by the number of
   // literals used.
-  Ordinal(SolverManager* manager,
+  Ordinal(Solver* solver,
 	  int min, 
 	  int max, 
-	  unsigned int& startingVar = SolverManager::allocateNew);
+	  unsigned int& startingVar = Solver::allocateNew);
 
   Ordinal() = delete;
   Ordinal(const Ordinal& copy) = default;
@@ -67,7 +67,7 @@ public:
   Literal operator<=(int rhs) const;
 
   // Requirements that two Ordinals be equal, whatever values they
-  // take.  Requires that both Ordinals have the same manager.  Does
+  // take.  Requires that both Ordinals have the same solver.  Does
   // not require the range for each ordinal to be the same, or even
   // overlap.
   Requirement operator==(const Ordinal& rhs) const;
@@ -96,14 +96,14 @@ public:
   explicit operator int() const;
 
 private:
-  SolverManager* mManager;
+  Solver* mSolver;
   int mMin;
   int mMax;
   int mStartingVar;
 
   bool mNegated;
 
-  Ordinal(SolverManager* manager,
+  Ordinal(Solver* solver,
 	  int min, 
 	  int max,
 	  const unsigned int startingVar,

@@ -6,7 +6,7 @@
 #define OBJECTCONTAINER_H
 
 #include <vector>
-#include "solvermanager.h"
+#include "solver.h"
 #include "requirement.h"
 
 template<typename T>
@@ -26,7 +26,7 @@ public:
   Requirement typeRequirement() const;
 
 private:
-  SolverManager* mManager;
+  Solver* mSolver;
 };
 
 template<class T>

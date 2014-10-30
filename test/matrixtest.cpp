@@ -6,6 +6,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <stdexcept>
 #include "testglue.h"
+#include "../src/minisatsolver.h"
 #include "../src/matrix.h"
 #include "../src/matrixview.h"
 #include "../src/pairindexedscalar.h"
@@ -130,13 +131,13 @@ void MatrixTest::testPairIndexedCardinalEqualsWithRange(void) {
 }
 
 void MatrixTest::test3x3(void) {
-  SolverManager manager;
+  MinisatSolver solver;
 
   // Object under test.
   unsigned int var = 0;
-  Matrix<> matrix(&manager, 3, 3, 0, 2);
+  Matrix<> matrix(&solver, 3, 3, 0, 2);
 
-  ASSERT_SAT(manager);
+  ASSERT_SAT(solver);
 }
 
 void MatrixTest::testRestrict(void) {

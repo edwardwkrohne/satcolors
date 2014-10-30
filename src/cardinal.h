@@ -13,7 +13,7 @@
 
 #include <iostream>
 #include "requirement.h"
-#include "solvermanager.h"
+#include "solver.h"
 
 class Cardinal {
 public:
@@ -25,10 +25,10 @@ public:
   // for a already created object with the given startingvar, does not
   // register new requirements, and increments allocateNew by the
   // number of literals used.
-  Cardinal(SolverManager* manager, 
+  Cardinal(Solver* solver, 
 	   int min, 
 	   int max, 
-	   unsigned int& startingVar = SolverManager::allocateNew);
+	   unsigned int& startingVar = Solver::allocateNew);
 
   Cardinal() = delete;
   Cardinal(const Cardinal& copy) = default;
@@ -61,7 +61,7 @@ public:
   Clause operator<=(int rhs) const;
 
   // Requirements that two Cardinals be equal, whatever values they
-  // take.  Requires that both Cardinals have the same manager.  Does
+  // take.  Requires that both Cardinals have the same solver.  Does
   // not require the range for each cardinal to be the same, or even
   // overlap.
   Requirement operator==(const Cardinal& rhs) const;
@@ -91,7 +91,7 @@ public:
 
 private:
   bool inverted;
-  SolverManager* mManager;
+  Solver* mSolver;
   int mMin;
   int mMax;
   unsigned int mStartingVar;

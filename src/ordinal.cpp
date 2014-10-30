@@ -11,31 +11,31 @@
 using namespace std;
 
 // Creates an object representing an ordinal.
-Ordinal::Ordinal(SolverManager* _manager, int _min, int _max, unsigned int& _startingVar) :
+Ordinal::Ordinal(Solver* _solver, int _min, int _max, unsigned int& _startingVar) :
   mMin(_min),
   mMax(_max),
-  mManager(_manager),
-  mStartingVar(_startingVar == SolverManager::allocateNew ? _manager->newVars(numLiterals()) : _startingVar),
+  mSolver(_solver),
+  mStartingVar(_startingVar == Solver::allocateNew ? _solver->newVars(numLiterals()) : _startingVar),
   mNegated(false)
 {
   if ( max() <= min() ) {
     throw domain_error("Cannot create an ordinal with an empty range of possible values.");
   }
-  if ( _startingVar == SolverManager::allocateNew ) {
-    mManager->require(typeRequirement());
+  if ( _startingVar == Solver::allocateNew ) {
+    mSolver->require(typeRequirement());
   } else {
     _startingVar += numLiterals();
   }
 }
 
-Ordinal::Ordinal(SolverManager* _manager, 
+Ordinal::Ordinal(Solver* _solver, 
 		 int _min, 
 		 int _max, 
 		 const unsigned int _startingVar, 
 		 bool _negated) :
   mMin(_min),
   mMax(_max),
-  mManager(_manager),
+  mSolver(_solver),
   mStartingVar(_startingVar),
   mNegated(_negated)
 {
@@ -71,7 +71,7 @@ int Ordinal::max() const {
 // Uses no additional literals or requirements.
 Ordinal Ordinal::operator+(const int rhs) const {
   unsigned int var = mStartingVar;
-  return Ordinal(mManager, min()+rhs, max()+rhs, var, mNegated);
+  return Ordinal(mSolver, min()+rhs, max()+rhs, var, mNegated);
 }
 Ordinal Ordinal::operator-(const int rhs) const {
   return *this + (-rhs);
@@ -86,7 +86,7 @@ Ordinal operator-(const int lhs, const Ordinal& rhs) {
 
 // Negation of an ordinal.
 Ordinal Ordinal::operator-() const {
-  return Ordinal(mManager, -max()+1, -min()+1, mStartingVar, !mNegated);
+  return Ordinal(mSolver, -max()+1, -min()+1, mStartingVar, !mNegated);
 }
 
 // Simple literals indicating equality with a specific ordinal rhs.  If rhs is out of bounds,
@@ -197,14 +197,14 @@ Requirement Ordinal::operator<=(const Ordinal& rhs) const {
 }
 
 // Requirements that two Numbers be equal, whatever values they take.  Requires that both Numbers
-// have the same manager.  Does not require the range for each ordinal to be the same, or even
+// have the same solver.  Does not require the range for each ordinal to be the same, or even
 // overlap.
 Requirement Ordinal::operator==(const Ordinal& rhs) const {
   return *this <= rhs & *this >= rhs;
 }
 
 // Requirements that two Numbers be nonequal, whatever values they take.  Requires that both Numbers
-// have the same manager.  Does not require the range for each ordinal to be the same, or even
+// have the same solver.  Does not require the range for each ordinal to be the same, or even
 // overlap.
 Requirement Ordinal::operator!=(const Ordinal& rhs) const {
   const Ordinal& lhs = *this;
@@ -230,7 +230,7 @@ Clause operator!=(int lhs, const Ordinal& rhs) {
 int Ordinal::modelValue() const {
   if ( !mNegated ) {
     for ( int i = 0; i < max()-min()-1; i++ ) {
-      if ( mManager->modelValue(mStartingVar + i) == true ) {
+      if ( mSolver->modelValue(mStartingVar + i) == true ) {
 	return min() + i;
       }
     }
@@ -239,7 +239,7 @@ int Ordinal::modelValue() const {
 
   else {
     for ( int i = 0; i < max()-min()-1; i++ ) {
-      if ( mManager->modelValue(mStartingVar + i) == true ) {
+      if ( mSolver->modelValue(mStartingVar + i) == true ) {
 	return (max()-1) - i;
       }
     }

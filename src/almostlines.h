@@ -13,7 +13,7 @@
 #include <iostream>
 #include <functional>
 #include "requirement.h"
-#include "solvermanager.h"
+#include "solver.h"
 #include "compoundobject.h"
 #include "ordinal.h"
 #include "grid.h"
@@ -23,12 +23,12 @@ public:
   typedef int size_type;
 
   // Creates an object representing the marker regions structure.
-  AlmostLinesImpl(SolverManager* manager, 
+  AlmostLinesImpl(Solver* solver, 
 		  size_type height, 
 		  size_type width, 
 		  int minThickness, 
 		  int maxThickness, 
-		  unsigned int& startingVar = SolverManager::allocateNew);
+		  unsigned int& startingVar = Solver::allocateNew);
 
   // The corresponding requirement of being an object of this type.
   Requirement typeRequirement() const;
@@ -40,7 +40,7 @@ public:
   // in the boundary.
   std::function<std::ostream& (std::ostream&)> yesNoMaybeRedBlue(const DualClause& clause, Literal redLit, Literal blueLit) const;
 
-  SolverManager* manager;
+  Solver* solver;
 
   const size_type height;
   const size_type width;

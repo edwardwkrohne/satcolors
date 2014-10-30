@@ -5,6 +5,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <stdexcept>
+#include "../src/minisatsolver.h"
 #include "../src/ordinal.h"
 #include "../src/ordinaladdexpr.h"
 
@@ -233,39 +234,39 @@ void OrdinalTest::testNegation2(void) {
 }
 
 void OrdinalTest::testSolveBug(void) {
-  SolverManager manager;
+  MinisatSolver solver;
 
-  Ordinal ord(&manager,  0,  5);
+  Ordinal ord(&solver,  0,  5);
   
-  CPPUNIT_ASSERT(manager.solve(ord == 2));
+  CPPUNIT_ASSERT(solver.solve(ord == 2));
 }
 
 void OrdinalTest::testModelValue(void) {
-  SolverManager manager;
+  MinisatSolver solver;
 
-  Ordinal ord(&manager,  0,  5);
+  Ordinal ord(&solver,  0,  5);
   Ordinal negOrd = -ord;
 
-  Literal lit = Literal(manager.newVars(1));
-  manager.require(implication(lit, ord == 2));
+  Literal lit = Literal(solver.newVars(1));
+  solver.require(implication(lit, ord == 2));
 
-  CPPUNIT_ASSERT(manager.solve(ord == 0));
+  CPPUNIT_ASSERT(solver.solve(ord == 0));
   CPPUNIT_ASSERT_EQUAL( 0, ord.modelValue());
   CPPUNIT_ASSERT_EQUAL( 0, negOrd.modelValue());
 
-  CPPUNIT_ASSERT(manager.solve(ord == 1));
+  CPPUNIT_ASSERT(solver.solve(ord == 1));
   CPPUNIT_ASSERT_EQUAL( 1, ord.modelValue());
   CPPUNIT_ASSERT_EQUAL(-1, negOrd.modelValue());
 
-  CPPUNIT_ASSERT(manager.solve(ord == 2));
+  CPPUNIT_ASSERT(solver.solve(ord == 2));
   CPPUNIT_ASSERT_EQUAL( 2, ord.modelValue());
   CPPUNIT_ASSERT_EQUAL(-2, negOrd.modelValue());
 
-  CPPUNIT_ASSERT(manager.solve(ord == 3));
+  CPPUNIT_ASSERT(solver.solve(ord == 3));
   CPPUNIT_ASSERT_EQUAL( 3, ord.modelValue());
   CPPUNIT_ASSERT_EQUAL(-3, negOrd.modelValue());
 
-  CPPUNIT_ASSERT(manager.solve(ord == 4));
+  CPPUNIT_ASSERT(solver.solve(ord == 4));
   CPPUNIT_ASSERT_EQUAL( 4, ord.modelValue());
   CPPUNIT_ASSERT_EQUAL(-4, negOrd.modelValue());
 }

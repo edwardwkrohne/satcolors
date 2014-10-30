@@ -6,6 +6,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "testglue.h"
 #include "../src/compoundobject.h"
+#include "../src/minisatsolver.h"
 
 using namespace std;
 
@@ -37,12 +38,12 @@ namespace {
 
 class TestImpl {
 public:
-  TestImpl(SolverManager* manager, unsigned int& var = SolverManager::allocateNew);
+  TestImpl(Solver* solver, unsigned int& var = Solver::allocateNew);
 
   Clause diffSolnReq() const;
   Requirement typeRequirement() const;
 
-  SolverManager* manager;
+  Solver* solver;
   Cardinal cardinal1;
   Cardinal cardinal2;
   Matrix<> matrix1;
@@ -52,11 +53,11 @@ public:
 
 typedef CompoundObject<TestImpl> Test;
 
-TestImpl::TestImpl(SolverManager* _manager, unsigned int& var) :
-  manager(_manager),
-  cardinal1(manager, 0, 5, var),
-  cardinal2(manager, 2, 3, var),
-  matrix1(manager, 3, 5, 0, 2, var),
+TestImpl::TestImpl(Solver* _solver, unsigned int& var) :
+  solver(_solver),
+  cardinal1(solver, 0, 5, var),
+  cardinal2(solver, 2, 3, var),
+  matrix1(solver, 3, 5, 0, 2, var),
   objTuple(cardinal1, cardinal2, matrix1)
 {
 
@@ -97,16 +98,16 @@ void CompoundObjectTest::testLastArg(void) {
 }
 
 void CompoundObjectTest::testExplicitVarConstruction(void) {
-  SolverManager manager;
+  MinisatSolver solver;
   unsigned int var = 0;
-  Test testObj(&manager, var);
+  Test testObj(&solver, var);
 
   // Require the exact opposite of the requirement that testObj would
   // have required, if we had allowed it to.
-  manager.newVars(testObj.numLiterals());
-  manager.require(testObj.cardinal1 != testObj.cardinal2);
+  solver.newVars(testObj.numLiterals());
+  solver.require(testObj.cardinal1 != testObj.cardinal2);
 
-  ASSERT_SAT(manager);
+  ASSERT_SAT(solver);
 }
 
 void CompoundObjectTest::testCopyConstruction(void) {
@@ -122,49 +123,49 @@ void CompoundObjectTest::testCopyConstruction(void) {
   static_assert(!ExplicitVarArgs<TestImpl, Test>::value, "Test failed");
   static_assert(!ImplicitVarArgs<TestImpl, Test>::value, "Test failed");
 
-  SolverManager manager;
+  MinisatSolver solver;
   unsigned int var = 0;
-  Test testObj(&manager, var);
+  Test testObj(&solver, var);
   const Test& testObjConst = testObj;
 
   Test testObjCopy(testObj);
-  CPPUNIT_ASSERT_EQUAL(&manager, testObjCopy.manager);
+  CPPUNIT_ASSERT_EQUAL((Solver*)&solver, testObjCopy.solver);
 
   Test testObjConstCopy(testObjConst);
-  CPPUNIT_ASSERT_EQUAL(&manager, testObjConstCopy.manager);
+  CPPUNIT_ASSERT_EQUAL((Solver*)&solver, testObjConstCopy.solver);
 
   Test testObjMove(move(testObj));
-  CPPUNIT_ASSERT_EQUAL(&manager, testObjMove.manager);
+  CPPUNIT_ASSERT_EQUAL((Solver*)&solver, testObjMove.solver);
 
   // Require the exact opposite of the requirement that testObj or its copies
   // would have required, if any were allowed to.
-  manager.newVars(testObj.numLiterals());
-  manager.require(testObj.cardinal1 != testObj.cardinal2);
+  solver.newVars(testObj.numLiterals());
+  solver.require(testObj.cardinal1 != testObj.cardinal2);
 
-  ASSERT_SAT(manager);
+  ASSERT_SAT(solver);
 }
 
 void CompoundObjectTest::testNoVarConstruction(void) {
-  SolverManager manager;
-  Test testObj(&manager);
+  MinisatSolver solver;
+  Test testObj(&solver);
 
   // Require the exact opposite of the requirement that testObj should
   // have required.
-  manager.require(testObj.cardinal1 != testObj.cardinal2);
+  solver.require(testObj.cardinal1 != testObj.cardinal2);
 
-  ASSERT_UNSAT(manager, "");
+  ASSERT_UNSAT(solver, "");
 }
 
 
 void CompoundObjectTest::testAllocateNewConstruction(void) {
-  SolverManager manager;
-  Test testObj(&manager, SolverManager::allocateNew);
+  MinisatSolver solver;
+  Test testObj(&solver, Solver::allocateNew);
 
   // Require the exact opposite of the requirement that testObj should
   // have required
-  manager.require(testObj.cardinal1 != testObj.cardinal2);
+  solver.require(testObj.cardinal1 != testObj.cardinal2);
 
-  ASSERT_UNSAT(manager, "");
+  ASSERT_UNSAT(solver, "");
 }
 
 void CompoundObjectTest::testGetNumLiterals(void) {
@@ -194,10 +195,10 @@ void CompoundObjectTest::testTypeRequirement(void) {
 }
 
 void CompoundObjectTest::testCurrSolnReq(void) {
-  SolverManager manager;
-  Test testObj(&manager);
+  MinisatSolver solver;
+  Test testObj(&solver);
 
-  ASSERT_SAT(manager);
+  ASSERT_SAT(solver);
 
   DualClause expected = ~testObj.TestImpl::diffSolnReq();
 

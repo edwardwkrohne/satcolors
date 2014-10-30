@@ -12,7 +12,7 @@
 #include <functional>
 #include "array2d.h" // For subscriptwrapper
 #include "requirement.h"
-#include "solvermanager.h"
+#include "solver.h"
 #include "cardinal.h"
 #include "objectcontainer.h"
 

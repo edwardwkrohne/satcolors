@@ -10,16 +10,16 @@
 using namespace std;
 
 // Creates an object representing the marker regions structure.  Registers requirements if
-// var is SolverManager::allocateNew
+// var is Solver::allocateNew
 AlmostLinesImpl::AlmostLinesImpl(
-    SolverManager* _manager,
+    Solver* _solver,
     size_type _height,
     size_type _width,
     int _minThickness,
     int _maxThickness,
     unsigned int& var)
 :
-    manager     (_manager),
+    solver     (_solver),
     height      (_height),
     width       (_width),
     minThickness(_minThickness),
@@ -28,13 +28,13 @@ AlmostLinesImpl::AlmostLinesImpl(
     majorOffsets (_height+2, 
 		  _width+2, 
 		  [&](int row, int col) {
-		    return Ordinal(manager, -height-2, width+height+4, var);
+		    return Ordinal(solver, -height-2, width+height+4, var);
 		  }),
 
     minorOffsets (_height+2, 
 		  _width+2, 
 		  [&](int row, int col) {
-		    return Ordinal(manager, 0, maxThickness, var);
+		    return Ordinal(solver, 0, maxThickness, var);
 		  }),
 
     objTuple(majorOffsets, minorOffsets)
