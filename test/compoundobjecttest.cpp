@@ -103,6 +103,7 @@ void CompoundObjectTest::testExplicitVarConstruction(void) {
 
   // Require the exact opposite of the requirement that testObj would
   // have required, if we had allowed it to.
+  manager.newVars(testObj.numLiterals());
   manager.require(testObj.cardinal1 != testObj.cardinal2);
 
   ASSERT_SAT(manager);
@@ -137,6 +138,7 @@ void CompoundObjectTest::testCopyConstruction(void) {
 
   // Require the exact opposite of the requirement that testObj or its copies
   // would have required, if any were allowed to.
+  manager.newVars(testObj.numLiterals());
   manager.require(testObj.cardinal1 != testObj.cardinal2);
 
   ASSERT_SAT(manager);

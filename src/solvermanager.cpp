@@ -4,12 +4,13 @@
 
 #include <algorithm>
 #include <stdexcept>
+#include <sstream>
 #include "solvermanager.h"
-#include "solveriter.h"
 
 using namespace std;
 using Minisat::Solver;
 using Minisat::vec;
+using Minisat::var;
 using Minisat::lbool;
 
 unsigned int SolverManager::allocateNew = ~(unsigned int)0;
@@ -41,8 +42,30 @@ unsigned int SolverManager::newVars(unsigned int numReservations) {
 }
 
 // Register a single requirement
+void SolverManager::require(const Clause& clause) {
+  vec<Minisat::Lit> vecClause;
+  
+  for ( auto lit : clause ) {
+    if ( solver.nVars() <= abs(lit.getVar()) ) {
+      std::ostringstream sout;
+      sout << "solver's variable space does not accommodate new literal "
+	   << "(" << solver.nVars() << " -> " << abs(lit.getVar()) << ")." << endl
+	   << "This should not be necessary, why is this not already done?.";
+      throw std::out_of_range(sout.str());
+    }
+  
+    vecClause.push(Minisat::mkLit(lit.getVar(), lit.isPos()));
+  }
+  
+  solver.addClause(vecClause);
+}
+
+
+// Register a single requirement
 void SolverManager::require(const Requirement& req) {
-  copy(req.begin(), req.end(), SolverIter(solver));
+  for ( auto clause : req ) {
+    require(clause);
+  }
 }
 
 // Solve

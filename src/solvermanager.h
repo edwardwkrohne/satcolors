@@ -26,8 +26,8 @@ public:
   // Register a single requirement
   virtual void require(const Requirement& req);
   void require(const DualClause& clause) { require(Requirement(clause)); };
-  void require(const Clause& clause) { require(Requirement(clause)); };
-  void require(Literal lit) { require(Requirement(lit)); };
+  void require(const Clause& clause);
+  void require(Literal lit) { require(Clause(lit)); };
 
   // Get an insertion iterator for adding requirements.
   //  virtual SolverIter getIter();
