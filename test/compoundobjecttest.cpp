@@ -4,6 +4,7 @@
 #include <sstream>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include "mocksolver.h"
 #include "testglue.h"
 #include "../src/compoundobject.h"
 #include "../src/minisatsolver.h"
@@ -72,7 +73,7 @@ Requirement TestImpl::typeRequirement() const {
   return cardinal1 == cardinal2;
 }
 
-}
+} // namespace
 
 template<class T, class... U>
 T& testProject(T& t, U&... u) {
@@ -169,8 +170,9 @@ void CompoundObjectTest::testAllocateNewConstruction(void) {
 }
 
 void CompoundObjectTest::testGetNumLiterals(void) {
+  MockSolver solver;
   unsigned int var = 0;
-  Test testObj(nullptr, var);
+  Test testObj(&solver, var);
 
   int expected =
       testObj.cardinal1.numLiterals() +
@@ -182,8 +184,9 @@ void CompoundObjectTest::testGetNumLiterals(void) {
 }
 
 void CompoundObjectTest::testTypeRequirement(void) {
+  MockSolver solver;
   unsigned int var = 0;
-  Test testObj(nullptr, var);
+  Test testObj(&solver, var);
 
   Requirement expected =
       testObj.cardinal1.typeRequirement() &

@@ -5,6 +5,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <stdexcept>
+#include "mocksolver.h"
 #include "../src/ordinal.h"
 #include "../src/ordinaladdexpr.h"
 
@@ -28,10 +29,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION( OrdinalAddExprTest );
 
 void OrdinalAddExprTest::testSummation(void) {
   // Object under test.
+  MockSolver solver;
   unsigned int var = 0;
-  Ordinal ord1(nullptr,  -2,  2, var);
-  Ordinal ord2(nullptr, -10, 10, var);
-  Ordinal ord3(nullptr, -10, 10, var);
+  Ordinal ord1(&solver,  -2,  2, var);
+  Ordinal ord2(&solver, -10, 10, var);
+  Ordinal ord3(&solver, -10, 10, var);
 
   Requirement result = (ord1 + ord2 <= ord3);
   
@@ -70,10 +72,11 @@ void OrdinalAddExprTest::testSummation(void) {
 
 void OrdinalAddExprTest::testSummationOptimization(void) {
   // Object under test.
+  MockSolver solver;
   unsigned int var = 0;
-  Ordinal ord1(nullptr, -10, 10, var);
-  Ordinal ord2(nullptr, -1, 3, var);
-  Ordinal ord3(nullptr, -3, 1, var);
+  Ordinal ord1(&solver, -10, 10, var);
+  Ordinal ord2(&solver, -1, 3, var);
+  Ordinal ord3(&solver, -3, 1, var);
 
   Requirement result = (ord1 + ord2 <= ord3);
 
@@ -117,10 +120,11 @@ void OrdinalAddExprTest::testSummationOptimization(void) {
 
 void OrdinalAddExprTest::testSummationImpossibleInequality(void) {
   // Object under test.
+  MockSolver solver;
   unsigned int var = 0;
-  Ordinal ord1(nullptr,   5, 10, var);
-  Ordinal ord2(nullptr,   5, 10, var);
-  Ordinal ord3(nullptr, -10, -5, var);
+  Ordinal ord1(&solver,   5, 10, var);
+  Ordinal ord2(&solver,   5, 10, var);
+  Ordinal ord3(&solver, -10, -5, var);
 
   Requirement result = (ord1 + ord2 <= ord3);
   
@@ -131,10 +135,11 @@ void OrdinalAddExprTest::testSummationImpossibleInequality(void) {
 
 void OrdinalAddExprTest::testSummationTrivialInequality(void) {
   // Object under test.
+  MockSolver solver;
   unsigned int var = 0;
-  Ordinal ord1(nullptr, -10, -5, var);
-  Ordinal ord2(nullptr, -10, -5, var);
-  Ordinal ord3(nullptr,   5, 10, var);
+  Ordinal ord1(&solver, -10, -5, var);
+  Ordinal ord2(&solver, -10, -5, var);
+  Ordinal ord3(&solver,   5, 10, var);
 
   Requirement result = (ord1 + ord2 <= ord3);
   

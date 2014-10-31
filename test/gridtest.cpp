@@ -5,6 +5,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <stdexcept>
+#include "mocksolver.h"
 #include "testglue.h"
 #include "../src/grid.h"
 
@@ -24,20 +25,21 @@ CPPUNIT_TEST_SUITE_REGISTRATION( GridTest );
 
 namespace {
 
-function<Cardinal(int, int)> getBuilder(unsigned int& var) {
+function<Cardinal(int, int)> getBuilder(Solver* solver, unsigned int& var) {
 
   auto builder2d = [&](int row, int col) {
-    return Cardinal(nullptr, row, row+2*col+1, var);
+    return Cardinal(solver, row, row+2*col+1, var);
   };
 
   return builder2d;
 }
 
-}
+} // namespace
 
 void GridTest::testConstruction2d(void) {
+  MockSolver solver;
   unsigned int var = 0;
-  auto builder2d = getBuilder(var);
+  auto builder2d = getBuilder(&solver, var);
 
   auto list = makeList(3, 4, builder2d);
 
@@ -64,8 +66,9 @@ void GridTest::testConstruction2d(void) {
 
 
 void GridTest::testConstructionFailure(void) {
+  MockSolver solver;
   unsigned int var = 0;
-  auto builder2d = getBuilder(var);
+  auto builder2d = getBuilder(&solver, var);
 
   CPPUNIT_ASSERT_THROW(auto list = makeList(4, -1, builder2d), invalid_argument);
   CPPUNIT_ASSERT_THROW(auto list = makeList(-1, 4, builder2d), invalid_argument);

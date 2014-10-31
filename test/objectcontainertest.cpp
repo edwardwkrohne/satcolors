@@ -4,6 +4,7 @@
 #include <sstream>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include "mocksolver.h"
 #include "testglue.h"
 #include "../src/minisatsolver.h"
 #include "../src/objectcontainer.h"
@@ -30,13 +31,14 @@ protected:
 CPPUNIT_TEST_SUITE_REGISTRATION( ObjectContainerTest );
 
 void ObjectContainerTest::testConstruction(void) {
+  MockSolver solver;
   unsigned int var = 0;
   ObjectContainer<Ordinal> oc;
   CPPUNIT_ASSERT_EQUAL(0, (int)oc.size());
 
-  oc.emplace_back(nullptr, 0, 4, var);
-  oc.emplace_back(nullptr, 0, 4, var);
-  oc.emplace_back(nullptr, 0, 4, var);
+  oc.emplace_back(&solver, 0, 4, var);
+  oc.emplace_back(&solver, 0, 4, var);
+  oc.emplace_back(&solver, 0, 4, var);
 
   CPPUNIT_ASSERT_EQUAL(3, (int)oc.size());
 
@@ -60,12 +62,13 @@ void ObjectContainerTest::testAllocateNewConstruction(void) {
 }
 
 void ObjectContainerTest::testCopyConstruction(void) {
+  MockSolver solver;
   unsigned int var = 0;
   ObjectContainer<Ordinal> oc;
 
-  oc.emplace_back(nullptr, 0, 4, var);
-  oc.emplace_back(nullptr, 0, 4, var);
-  oc.emplace_back(nullptr, 0, 4, var);
+  oc.emplace_back(&solver, 0, 4, var);
+  oc.emplace_back(&solver, 0, 4, var);
+  oc.emplace_back(&solver, 0, 4, var);
 
   ObjectContainer<Ordinal> cpy = oc;
   CPPUNIT_ASSERT_EQUAL(3, (int)cpy.size());
@@ -77,12 +80,13 @@ void ObjectContainerTest::testCopyConstruction(void) {
 }
 
 void ObjectContainerTest::testTypeRequirement(void) {
+  MockSolver solver;
   unsigned int var = 0;
   ObjectContainer<Ordinal> oc;
 
-  oc.emplace_back(nullptr, 0, 4, var);
-  oc.emplace_back(nullptr, 0, 4, var);
-  oc.emplace_back(nullptr, 0, 4, var);
+  oc.emplace_back(&solver, 0, 4, var);
+  oc.emplace_back(&solver, 0, 4, var);
+  oc.emplace_back(&solver, 0, 4, var);
 
   Requirement expected =
     oc[0].typeRequirement() &
@@ -108,4 +112,4 @@ void ObjectContainerTest::testCurrSolnReq(void) {
     oc[2].currSolnReq();
 
   CPPUNIT_ASSERT_EQUAL(expected, oc.currSolnReq());
-}
+ }

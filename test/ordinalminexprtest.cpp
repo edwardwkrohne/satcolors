@@ -5,6 +5,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <stdexcept>
+#include "mocksolver.h"
 #include "../src/ordinal.h"
 #include "../src/ordinalminexpr.h"
 
@@ -27,9 +28,10 @@ protected:
 CPPUNIT_TEST_SUITE_REGISTRATION( OrdinalMinExprTest );
 
 void OrdinalMinExprTest::testMinLessThanValue(void) {
+  MockSolver solver;
   unsigned int var = 0;
-  Ordinal ord1(nullptr, -3, 2, var);
-  Ordinal ord2(nullptr, -1, 4, var);
+  Ordinal ord1(&solver, -3, 2, var);
+  Ordinal ord2(&solver, -1, 4, var);
 
   Requirement result, expected;
 
@@ -47,10 +49,11 @@ void OrdinalMinExprTest::testMinLessThanValue(void) {
 }
 
 void OrdinalMinExprTest::testMinLessThan(void) {
+  MockSolver solver;
   unsigned int var = 0;
-  Ordinal ord1(nullptr, -10, 10, var);
-  Ordinal ord2(nullptr, -10, 10, var);
-  Ordinal ord3(nullptr,  -2,  2, var);
+  Ordinal ord1(&solver, -10, 10, var);
+  Ordinal ord2(&solver, -10, 10, var);
+  Ordinal ord3(&solver,  -2,  2, var);
 
   Requirement result = (min(ord1, ord2) <= ord3);
 
@@ -78,10 +81,11 @@ void OrdinalMinExprTest::testMinLessThan(void) {
 }
 
 void OrdinalMinExprTest::testMinLessThan2(void) {
+  MockSolver solver;
   unsigned int var = 0;
-  Ordinal ord1(nullptr,  -5,  3, var);
-  Ordinal ord2(nullptr,  -1,  5, var);
-  Ordinal ord3(nullptr, -10, 10, var);
+  Ordinal ord1(&solver,  -5,  3, var);
+  Ordinal ord2(&solver,  -1,  5, var);
+  Ordinal ord3(&solver, -10, 10, var);
 
   Requirement result = (min(ord1, ord2) <= ord3);
 
@@ -99,10 +103,11 @@ void OrdinalMinExprTest::testMinLessThan2(void) {
 }
 
 void OrdinalMinExprTest::testMinLessThanImpossible(void) {
+  MockSolver solver;
   unsigned int var = 0;
-  Ordinal ord1(nullptr,  2,  5, var);
-  Ordinal ord2(nullptr,  2,  5, var);
-  Ordinal ord3(nullptr,  0,  2, var);
+  Ordinal ord1(&solver,  2,  5, var);
+  Ordinal ord2(&solver,  2,  5, var);
+  Ordinal ord3(&solver,  0,  2, var);
 
   Requirement result = (min(ord1, ord2) <= ord3);
 
