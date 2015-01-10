@@ -29,8 +29,7 @@ public:
 	 int height, 
 	 int width, 
 	 int min, 
-	 int max, 
-	 unsigned int& startingVar = Solver::allocateNew);
+	 int max);
 
   Matrix() = delete;
   Matrix(const Matrix& copy) = default; // deep copy inherited from vector
@@ -56,12 +55,11 @@ Matrix<Scalar>::Matrix(Solver* _solver,
 		       int _height, 
 		       int _width, 
 		       int _min, 
-		       int _max, 
-		       unsigned int& _startingVar) :
+		       int _max) :
   Grid<Scalar>(_height, 
 	       _width, 
 	       [&] (int row, int col) { 
-		 return Scalar(_solver, _min, _max, _startingVar);
+		 return Scalar(_solver, _min, _max);
 	       })
 
 {

@@ -11,18 +11,14 @@
 using namespace std;
 
 // Creates an object representing a cardinal.
-Cardinal::Cardinal(Solver* _solver, int _min, int _max, unsigned int& _startingVar) :
+Cardinal::Cardinal(Solver* _solver, int _min, int _max) :
   mSolver(_solver),
   mMin(_min),
   mMax(_max),
   inverted(false),
-  mStartingVar(_startingVar == Solver::allocateNew ? _solver->newVars(numLiterals()) : _startingVar)
+  mStartingVar(_solver->newVars(numLiterals()))
 {
-  if ( _startingVar == Solver::allocateNew ) {
-    mSolver->require(typeRequirement());
-  } else {
-    _startingVar += numLiterals();
-  }
+  mSolver->require(typeRequirement());
 }
 
 // The corresponding requirement of being a cardinal --

@@ -50,25 +50,19 @@ CPPUNIT_TEST_SUITE_REGISTRATION( OrdinalTest );
 
 void OrdinalTest::testCopy(void) {
   MockSolver solver;
-  unsigned int var = 0;
-  Ordinal ord(&solver, 0, 4, var);
-  unsigned int expectedVar = var;
+  Ordinal ord(&solver, 0, 4);
   Ordinal cpy(ord);
   Ordinal mv(std::move(ord));
 
   cpy = ord;
   mv = std::move(ord);
-
-  CPPUNIT_ASSERT_EQUAL(expectedVar, var);
 }
 
 void OrdinalTest::testIsOrdinal(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  Ordinal ordinal(&solver, 0, 4, var);
+  Ordinal ordinal(&solver, 0, 4);
   CPPUNIT_ASSERT_EQUAL(3u, ordinal.numLiterals());
-  CPPUNIT_ASSERT_EQUAL(3u, var);
 
   Requirement result = ordinal.typeRequirement();
   
@@ -83,17 +77,15 @@ void OrdinalTest::testIsOrdinal(void) {
 void OrdinalTest::testEmptyConstructorRange(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  CPPUNIT_ASSERT_THROW(Ordinal(&solver, 2, 2, var), domain_error);
-  CPPUNIT_ASSERT_THROW(Ordinal(&solver, 5, 3, var), domain_error);
+  CPPUNIT_ASSERT_THROW(Ordinal(&solver, 2, 2), domain_error);
+  CPPUNIT_ASSERT_THROW(Ordinal(&solver, 5, 3), domain_error);
 }
 
 
 void OrdinalTest::testEquality(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  Ordinal ordinal(&solver, 1, 5, var);
+  Ordinal ordinal(&solver, 1, 5);
 
   typedef decltype(ordinal == 1) eqType;
 
@@ -102,15 +94,14 @@ void OrdinalTest::testEquality(void) {
   CPPUNIT_ASSERT_EQUAL(ordinal <= 3 & ordinal >= 3, ordinal == 3);
   CPPUNIT_ASSERT_EQUAL((eqType)(ordinal >= 4), ordinal == 4);
 
-  Ordinal smallOrd(&solver, 1, 2, var);
+  Ordinal smallOrd(&solver, 1, 2);
   CPPUNIT_ASSERT_EQUAL(eqType(), smallOrd == 1);
 }
 
 void OrdinalTest::testDomainError(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  Ordinal ordinal(&solver, 1, 4, var);
+  Ordinal ordinal(&solver, 1, 4);
 
   CPPUNIT_ASSERT_THROW(ordinal == 4, domain_error);
   CPPUNIT_ASSERT_THROW(ordinal == 0, domain_error);
@@ -134,9 +125,8 @@ void OrdinalTest::testDomainError(void) {
 void OrdinalTest::testLessEq1(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  Ordinal ord1(&solver, -3, 5, var);
-  Ordinal ord2(&solver, -2, 2, var);
+  Ordinal ord1(&solver, -3, 5);
+  Ordinal ord2(&solver, -2, 2);
 
   Requirement result = ord1 <= ord2;
   
@@ -152,9 +142,8 @@ void OrdinalTest::testLessEq1(void) {
 void OrdinalTest::testLessEq2(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  Ordinal ord1(&solver, 3, 7, var);
-  Ordinal ord2(&solver, 1, 10, var);
+  Ordinal ord1(&solver, 3, 7);
+  Ordinal ord2(&solver, 1, 10);
 
   Requirement result = ord1 <= ord2;
   
@@ -170,9 +159,8 @@ void OrdinalTest::testLessEq2(void) {
 void OrdinalTest::testLessEqImpossible(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  Ordinal ord1(&solver, 3, 7, var);
-  Ordinal ord2(&solver, 0, 3, var);
+  Ordinal ord1(&solver, 3, 7);
+  Ordinal ord2(&solver, 0, 3);
 
   Requirement result = ord1 <= ord2;
   
@@ -185,9 +173,8 @@ void OrdinalTest::testLessEqImpossible(void) {
 void OrdinalTest::testLessEqTrivial(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  Ordinal ord1(&solver, 0, 3, var);
-  Ordinal ord2(&solver, 3, 7, var);
+  Ordinal ord1(&solver, 0, 3);
+  Ordinal ord2(&solver, 3, 7);
 
   Requirement result = ord1 <= ord2;
   
@@ -199,9 +186,8 @@ void OrdinalTest::testLessEqTrivial(void) {
 void OrdinalTest::testNotEq(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  Ordinal ord1(&solver, -1, 4, var);
-  Ordinal ord2(&solver, 1, 7, var);
+  Ordinal ord1(&solver, -1, 4);
+  Ordinal ord2(&solver, 1, 7);
 
   Requirement result = ord1 != ord2;
   
@@ -217,8 +203,7 @@ void OrdinalTest::testNotEq(void) {
 void OrdinalTest::testNegation(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  Ordinal ord(&solver,  0,  5, var);
+  Ordinal ord(&solver,  0,  5);
   Ordinal negOrd = -ord;
 
   CPPUNIT_ASSERT_EQUAL(-4, negOrd.min());
@@ -237,8 +222,7 @@ void OrdinalTest::testNegation(void) {
 void OrdinalTest::testNegation2(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  Ordinal ord(&solver,  0,  5, var);
+  Ordinal ord(&solver,  0,  5);
   Ordinal negOrdPlusOne = -ord + 1;
   
   CPPUNIT_ASSERT_EQUAL(ord <  1, negOrdPlusOne >  -1+1);

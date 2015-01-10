@@ -11,21 +11,18 @@
 using namespace std;
 
 // Creates an object representing an ordinal.
-Ordinal::Ordinal(Solver* _solver, int _min, int _max, unsigned int& _startingVar) :
+Ordinal::Ordinal(Solver* _solver, int _min, int _max) :
   mMin(_min),
   mMax(_max),
   mSolver(_solver),
-  mStartingVar(_startingVar == Solver::allocateNew ? _solver->newVars(numLiterals()) : _startingVar),
+  mStartingVar(_solver->newVars(numLiterals())),
   mNegated(false)
 {
   if ( max() <= min() ) {
     throw domain_error("Cannot create an ordinal with an empty range of possible values.");
   }
-  if ( _startingVar == Solver::allocateNew ) {
-    mSolver->require(typeRequirement());
-  } else {
-    _startingVar += numLiterals();
-  }
+  
+  mSolver->require(typeRequirement());
 }
 
 Ordinal::Ordinal(Solver* _solver, 

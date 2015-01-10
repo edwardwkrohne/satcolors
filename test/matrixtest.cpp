@@ -54,8 +54,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MatrixTest );
 void MatrixTest::testIsMatrix(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  Matrix<> matrix(&solver, 2, 2, 0, 3, var);
+  Matrix<> matrix(&solver, 2, 2, 0, 3);
 
   Requirement expected;
   expected &= matrix[0][0].typeRequirement();
@@ -69,10 +68,9 @@ void MatrixTest::testIsMatrix(void) {
 void MatrixTest::testPairIndexedCardinalEquals(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  Matrix<> matrix(&solver, 2, 2, 0, 3, var);
-  Cardinal row(&solver, 0, 2, var);
-  Cardinal col(&solver, 0, 2, var);
+  Matrix<> matrix(&solver, 2, 2, 0, 3);
+  Cardinal row(&solver, 0, 2);
+  Cardinal col(&solver, 0, 2);
 
   // Require (row == 0 & col == 0) implies matrix[0][0] == 1, etc.
   Requirement expectedReq;
@@ -91,10 +89,9 @@ void MatrixTest::testPairIndexedCardinalEquals(void) {
 void MatrixTest::testPairIndexedCardinalNotEquals(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  Matrix<> matrix(&solver, 2, 2, 0, 3, var); // values are in [0,3)
-  Cardinal row(&solver, 0, 2, var);
-  Cardinal col(&solver, 0, 2, var);
+  Matrix<> matrix(&solver, 2, 2, 0, 3); // values are in [0,3)
+  Cardinal row(&solver, 0, 2);
+  Cardinal col(&solver, 0, 2);
 
   // Require (row == 0 & col == 0) implies matrix[0][0] == 1, etc.
   Requirement expectedReq;
@@ -113,10 +110,9 @@ void MatrixTest::testPairIndexedCardinalNotEquals(void) {
 void MatrixTest::testPairIndexedCardinalEqualsWithRange(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  Matrix<> matrix(&solver, 3, 3, 0, 3, var);
-  Cardinal row(&solver,  1, 4, var);
-  Cardinal col(&solver, -1, 2, var);
+  Matrix<> matrix(&solver, 3, 3, 0, 3);
+  Cardinal row(&solver,  1, 4);
+  Cardinal col(&solver, -1, 2);
 
   Requirement expectedReq;
 
@@ -138,7 +134,6 @@ void MatrixTest::testPairIndexedCardinalEqualsWithRange(void) {
 void MatrixTest::test3x3(void) {
   // Object under test.
   MinisatSolver solver;
-  unsigned int var = 0;
   Matrix<> matrix(&solver, 3, 3, 0, 2);
 
   ASSERT_SAT(solver);
@@ -148,7 +143,7 @@ void MatrixTest::testRestrict(void) {
   // Object under test.
   MockSolver solver;
   unsigned int var = 5;
-  Matrix<> matrix(&solver, 4, 6, 0, 3, var);  // values are in [0,3)
+  Matrix<> matrix(&solver, 4, 6, 0, 3);  // values are in [0,3)
   auto view = matrix.restrict(1, 2, 3, 4); // Get a 2x2 view corresponding to [1,3)x[2,4).
 
   CPPUNIT_ASSERT_EQUAL(2u, view.width());
@@ -162,8 +157,7 @@ void MatrixTest::testRestrict(void) {
 void MatrixTest::testOutOfRange(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  Matrix<> matrix(&solver, 4, 4, 0, 3, var);
+  Matrix<> matrix(&solver, 4, 4, 0, 3);
 
   CPPUNIT_ASSERT_THROW(matrix[-1][0], out_of_range);
   CPPUNIT_ASSERT_THROW(matrix[0][-1], out_of_range);
@@ -174,8 +168,7 @@ void MatrixTest::testOutOfRange(void) {
 void MatrixTest::testRestrictErrors(void) {
   // Object under test.
   MockSolver solver;
-  unsigned int var = 0;
-  Matrix<> matrix(&solver, 4, 4, 0, 3, var);
+  Matrix<> matrix(&solver, 4, 4, 0, 3);
 
   CPPUNIT_ASSERT_THROW(matrix.restrict(-1, 0, 2, 2), out_of_range);
   CPPUNIT_ASSERT_THROW(matrix.restrict(0, -1, 2, 2), out_of_range);
@@ -188,8 +181,7 @@ void MatrixTest::testRestrictErrors(void) {
 
 void MatrixTest::testRotate(void) {
   MockSolver solver;
-  unsigned int var = 0;
-  Matrix<> matrix(&solver, 4, 3, 0, 3, var);
+  Matrix<> matrix(&solver, 4, 3, 0, 3);
   
   auto rot90  = matrix.rotCW();
   auto rot180 = rot90.rotCW();
@@ -225,8 +217,7 @@ void MatrixTest::testRotate(void) {
 
 void MatrixTest::testReflect(void) {
   MockSolver solver;
-  unsigned int var = 0;
-  Matrix<> matrix(&solver, 10, 10, 0, 3, var);
+  Matrix<> matrix(&solver, 10, 10, 0, 3);
   
   auto reflH  = matrix.reflectH();
   auto reflV  = matrix.reflectV();
@@ -241,8 +232,7 @@ void MatrixTest::testReflect(void) {
 
 void MatrixTest::testTranspose(void) {
   MockSolver solver;
-  unsigned int var = 0;
-  Matrix<> matrix(&solver, 4, 3, 0, 3, var);
+  Matrix<> matrix(&solver, 4, 3, 0, 3);
   
   auto transp  = matrix.transpose();
   CPPUNIT_ASSERT_EQUAL(matrix[1][2] == 0, transp[2][1] == 0);
@@ -250,10 +240,9 @@ void MatrixTest::testTranspose(void) {
 
 void MatrixTest::testRotatePairIndex(void) {
   MockSolver solver;
-  unsigned int var = 0;
-  Matrix<> matrix(&solver, 10, 10, 0, 3, var);
-  Cardinal row(&solver, 10, 10, var);
-  Cardinal col(&solver, 10, 10, var);
+  Matrix<> matrix(&solver, 10, 10, 0, 3);
+  Cardinal row(&solver, 10, 10);
+  Cardinal col(&solver, 10, 10);
 
   auto rot90  = matrix.rotCW();
 
@@ -262,8 +251,7 @@ void MatrixTest::testRotatePairIndex(void) {
 
 void MatrixTest::testRestrictedTransposedView() {
   MockSolver solver;
-  unsigned int var = 0;
-  Matrix<> matrix(&solver, 10, 10, 0, 3, var);
+  Matrix<> matrix(&solver, 10, 10, 0, 3);
   auto view = matrix.restrict(1,3,5,5);
   auto transp = view.transpose();
 
@@ -275,8 +263,7 @@ void MatrixTest::testRestrictedTransposedView() {
 
 void MatrixTest::testRotatedRestrictedView() {
   MockSolver solver;
-  unsigned int var = 0;
-  Matrix<> matrix(&solver, 10, 10, 0, 3, var);
+  Matrix<> matrix(&solver, 10, 10, 0, 3);
   auto rot = matrix.rotCW();
   auto restrict1 = rot.restrict(0,0,10,10);
 

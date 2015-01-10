@@ -29,9 +29,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( OrdinalMinExprTest );
 
 void OrdinalMinExprTest::testMinLessThanValue(void) {
   MockSolver solver;
-  unsigned int var = 0;
-  Ordinal ord1(&solver, -3, 2, var);
-  Ordinal ord2(&solver, -1, 4, var);
+  Ordinal ord1(&solver, -3, 2);
+  Ordinal ord2(&solver, -1, 4);
 
   Requirement result, expected;
 
@@ -50,10 +49,9 @@ void OrdinalMinExprTest::testMinLessThanValue(void) {
 
 void OrdinalMinExprTest::testMinLessThan(void) {
   MockSolver solver;
-  unsigned int var = 0;
-  Ordinal ord1(&solver, -10, 10, var);
-  Ordinal ord2(&solver, -10, 10, var);
-  Ordinal ord3(&solver,  -2,  2, var);
+  Ordinal ord1(&solver, -10, 10);
+  Ordinal ord2(&solver, -10, 10);
+  Ordinal ord3(&solver,  -2,  2);
 
   Requirement result = (min(ord1, ord2) <= ord3);
 
@@ -82,10 +80,9 @@ void OrdinalMinExprTest::testMinLessThan(void) {
 
 void OrdinalMinExprTest::testMinLessThan2(void) {
   MockSolver solver;
-  unsigned int var = 0;
-  Ordinal ord1(&solver,  -5,  3, var);
-  Ordinal ord2(&solver,  -1,  5, var);
-  Ordinal ord3(&solver, -10, 10, var);
+  Ordinal ord1(&solver,  -5,  3);
+  Ordinal ord2(&solver,  -1,  5);
+  Ordinal ord3(&solver, -10, 10);
 
   Requirement result = (min(ord1, ord2) <= ord3);
 
@@ -104,10 +101,9 @@ void OrdinalMinExprTest::testMinLessThan2(void) {
 
 void OrdinalMinExprTest::testMinLessThanImpossible(void) {
   MockSolver solver;
-  unsigned int var = 0;
-  Ordinal ord1(&solver,  2,  5, var);
-  Ordinal ord2(&solver,  2,  5, var);
-  Ordinal ord3(&solver,  0,  2, var);
+  Ordinal ord1(&solver,  2,  5);
+  Ordinal ord2(&solver,  2,  5);
+  Ordinal ord3(&solver,  0,  2);
 
   Requirement result = (min(ord1, ord2) <= ord3);
 

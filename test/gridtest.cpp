@@ -25,10 +25,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( GridTest );
 
 namespace {
 
-function<Cardinal(int, int)> getBuilder(Solver* solver, unsigned int& var) {
+function<Cardinal(int, int)> getBuilder(Solver* solver) {
 
-  auto builder2d = [&](int row, int col) {
-    return Cardinal(solver, row, row+2*col+1, var);
+  auto builder2d = [=](int row, int col) {
+    return Cardinal(solver, row, row+2*col+1);
   };
 
   return builder2d;
@@ -38,8 +38,7 @@ function<Cardinal(int, int)> getBuilder(Solver* solver, unsigned int& var) {
 
 void GridTest::testConstruction2d(void) {
   MockSolver solver;
-  unsigned int var = 0;
-  auto builder2d = getBuilder(&solver, var);
+  auto builder2d = getBuilder(&solver);
 
   auto list = makeList(3, 4, builder2d);
 
@@ -55,7 +54,6 @@ void GridTest::testConstruction2d(void) {
   CPPUNIT_ASSERT_EQUAL(8, list[1][3].max());
 
   CPPUNIT_ASSERT_EQUAL(list.data().numLiterals(), list.numLiterals());
-  CPPUNIT_ASSERT_EQUAL(list.numLiterals(), (unsigned int)var);
 
   CPPUNIT_ASSERT_THROW(list[-1], out_of_range);
   CPPUNIT_ASSERT_THROW(list[3], out_of_range);
@@ -67,8 +65,7 @@ void GridTest::testConstruction2d(void) {
 
 void GridTest::testConstructionFailure(void) {
   MockSolver solver;
-  unsigned int var = 0;
-  auto builder2d = getBuilder(&solver, var);
+  auto builder2d = getBuilder(&solver);
 
   CPPUNIT_ASSERT_THROW(auto list = makeList(4, -1, builder2d), invalid_argument);
   CPPUNIT_ASSERT_THROW(auto list = makeList(-1, 4, builder2d), invalid_argument);

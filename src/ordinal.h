@@ -33,8 +33,7 @@ public:
   // literals used.
   Ordinal(Solver* solver,
 	  int min, 
-	  int max, 
-	  unsigned int& startingVar = Solver::allocateNew);
+	  int max);
 
   Ordinal() = delete;
   Ordinal(const Ordinal& copy) = default;

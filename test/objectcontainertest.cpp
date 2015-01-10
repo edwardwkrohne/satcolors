@@ -32,20 +32,18 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ObjectContainerTest );
 
 void ObjectContainerTest::testConstruction(void) {
   MockSolver solver;
-  unsigned int var = 0;
   ObjectContainer<Ordinal> oc;
   CPPUNIT_ASSERT_EQUAL(0, (int)oc.size());
 
-  oc.emplace_back(&solver, 0, 4, var);
-  oc.emplace_back(&solver, 0, 4, var);
-  oc.emplace_back(&solver, 0, 4, var);
+  oc.emplace_back(&solver, 0, 4);
+  oc.emplace_back(&solver, 0, 4);
+  oc.emplace_back(&solver, 0, 4);
 
   CPPUNIT_ASSERT_EQUAL(3, (int)oc.size());
 
   unsigned int numLiterals = oc[0].numLiterals()*3;
 
   CPPUNIT_ASSERT_EQUAL(numLiterals, oc.numLiterals());
-  CPPUNIT_ASSERT_EQUAL(numLiterals, var);
 }
 
 void ObjectContainerTest::testAllocateNewConstruction(void) {
@@ -63,12 +61,11 @@ void ObjectContainerTest::testAllocateNewConstruction(void) {
 
 void ObjectContainerTest::testCopyConstruction(void) {
   MockSolver solver;
-  unsigned int var = 0;
   ObjectContainer<Ordinal> oc;
 
-  oc.emplace_back(&solver, 0, 4, var);
-  oc.emplace_back(&solver, 0, 4, var);
-  oc.emplace_back(&solver, 0, 4, var);
+  oc.emplace_back(&solver, 0, 4);
+  oc.emplace_back(&solver, 0, 4);
+  oc.emplace_back(&solver, 0, 4);
 
   ObjectContainer<Ordinal> cpy = oc;
   CPPUNIT_ASSERT_EQUAL(3, (int)cpy.size());
@@ -81,12 +78,11 @@ void ObjectContainerTest::testCopyConstruction(void) {
 
 void ObjectContainerTest::testTypeRequirement(void) {
   MockSolver solver;
-  unsigned int var = 0;
   ObjectContainer<Ordinal> oc;
 
-  oc.emplace_back(&solver, 0, 4, var);
-  oc.emplace_back(&solver, 0, 4, var);
-  oc.emplace_back(&solver, 0, 4, var);
+  oc.emplace_back(&solver, 0, 4);
+  oc.emplace_back(&solver, 0, 4);
+  oc.emplace_back(&solver, 0, 4);
 
   Requirement expected =
     oc[0].typeRequirement() &

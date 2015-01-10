@@ -7,8 +7,6 @@
 #include <sstream>
 #include "solver.h"
 
-unsigned int Solver::allocateNew = ~(unsigned int)0;
-
 // Register a single requirement
 void Solver::require(const Requirement& req) {
   for ( auto clause : req ) {

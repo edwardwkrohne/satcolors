@@ -40,11 +40,6 @@ public:
 
   // Query the value of a particular variable.
   virtual bool modelValue(unsigned int var) const = 0;
-
-  // Use this as startingVar when you want to allocate new variables.  Objects that take
-  //  this shouldn't update it.  If bugs crop up where they do, I can replace this
-  //  relatively easily with an object that disallows writing.
-  static unsigned int allocateNew;
 };
 
 #endif // SOLVER_H

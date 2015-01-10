@@ -27,8 +27,7 @@ public:
   // number of literals used.
   Cardinal(Solver* solver, 
 	   int min, 
-	   int max, 
-	   unsigned int& startingVar = Solver::allocateNew);
+	   int max);
 
   Cardinal() = delete;
   Cardinal(const Cardinal& copy) = default;
