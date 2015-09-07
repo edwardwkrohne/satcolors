@@ -119,13 +119,13 @@ void CardinalTest::testEqualsValue(void) {
   MockSolver solver;
   Cardinal cardinal(&solver, 0, 3);
 
-  CPPUNIT_ASSERT_EQUAL(Literal(0), cardinal == 0);
-  CPPUNIT_ASSERT_EQUAL(Literal(1), cardinal == 1);
-  CPPUNIT_ASSERT_EQUAL(Literal(2), cardinal == 2);
+  CPPUNIT_ASSERT_EQUAL(Atom(Literal(0)), cardinal == 0);
+  CPPUNIT_ASSERT_EQUAL(Atom(Literal(1)), cardinal == 1);
+  CPPUNIT_ASSERT_EQUAL(Atom(Literal(2)), cardinal == 2);
 
-  CPPUNIT_ASSERT_EQUAL(~Literal(0), cardinal != 0);
-  CPPUNIT_ASSERT_EQUAL(~Literal(1), cardinal != 1);
-  CPPUNIT_ASSERT_EQUAL(~Literal(2), cardinal != 2);
+  CPPUNIT_ASSERT_EQUAL(Atom(~Literal(0)), cardinal != 0);
+  CPPUNIT_ASSERT_EQUAL(Atom(~Literal(1)), cardinal != 1);
+  CPPUNIT_ASSERT_EQUAL(Atom(~Literal(2)), cardinal != 2);
 }
 
 void CardinalTest::testEqualsCardinal(void) {
@@ -300,10 +300,13 @@ void CardinalTest::testDomainError(void) {
   MockSolver solver;
   Cardinal cardinal(&solver, 1, 4);
 
-  CPPUNIT_ASSERT_THROW(cardinal == 4, domain_error);
-  CPPUNIT_ASSERT_THROW(cardinal == 0, domain_error);
-  CPPUNIT_ASSERT_THROW(cardinal != 4, domain_error);
-  CPPUNIT_ASSERT_THROW(cardinal != 0, domain_error);
+  // These were originally "assert throws" -- changed to "assert no
+  // throw" when cardinals gained the capability to handle
+  // out-of-domain requests gracefully through atoms.
+  CPPUNIT_ASSERT_NO_THROW(cardinal == 4);
+  CPPUNIT_ASSERT_NO_THROW(cardinal == 0);
+  CPPUNIT_ASSERT_NO_THROW(cardinal != 4);
+  CPPUNIT_ASSERT_NO_THROW(cardinal != 0);
 
 }
 

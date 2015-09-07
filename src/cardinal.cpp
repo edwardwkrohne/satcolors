@@ -83,14 +83,6 @@ unsigned int Cardinal::startingVar() const {
   return mStartingVar;
 }
 
-void Cardinal::checkDomain(const int arg) const {
-  if ( arg < min() || arg >= max() ) {
-    ostringstream sout;
-    sout << "Incorrect value comparison for Cardinal.  This cardinal min=" << min() << " and max=" << max() << " but " << arg << " requested.";
-    throw domain_error(sout.str());
-  }
-}
-
 // Negation. If idx is a Cardinal, then -idx returns a cardinal that is
 // equal to n iff idx is equal to -n.
 Cardinal Cardinal::operator-() const {
@@ -126,16 +118,19 @@ Cardinal Cardinal::operator-(const int rhs) const {
 
 // Simple literals indicating equality with a specific cardinal rhs.  If rhs is out of bounds,
 // behavior is undefined.
-Literal Cardinal::operator==(int rhs) const {
-  checkDomain(rhs);
+Atom Cardinal::operator==(int rhs) const {
+  // On out-of-bounds, return falsity
+  if ( rhs < min() || rhs >= max() ) {
+    return Atom::falsity;
+  }
+
   if ( !inverted ) {
-    return Literal( rhs - min() + mStartingVar);
+    return Atom(Literal( rhs - min() + mStartingVar));
   } else {
-    return Literal( max()-1-rhs + mStartingVar);
+    return Atom(Literal( max()-1-rhs + mStartingVar));
   }
 }
-Literal Cardinal::operator!=(int rhs) const {
-  checkDomain(rhs);
+Atom Cardinal::operator!=(int rhs) const {
   return ~(*this == rhs);
 }
 
@@ -242,21 +237,26 @@ int Cardinal::modelValue() const {
 
 // After a solution has been found, a requirement for a different solution
 Literal Cardinal::diffSolnReq() const {
-  return (*this) != this->modelValue();
+  return ~(currSolnReq());
 }
 Literal Cardinal::currSolnReq() const {
-  return (*this) == this->modelValue();
+  Atom atm = (*this) == this->modelValue();
+  if ( !atm.isLiteral() ) {
+    throw std::logic_error("In Cardinal::currSolnReq(), modelValue() seems not to be a valid model value.");
+  }
+
+  return ((*this) == this->modelValue()).getLiteral();
 }
 
 Cardinal::operator int() const {
   return modelValue();
 }
 
-Literal operator==(int lhs, const Cardinal& rhs) {
+Atom operator==(int lhs, const Cardinal& rhs) {
   return rhs == lhs;
 }
 
-Literal operator!=(int lhs, const Cardinal& rhs) {
+Atom operator!=(int lhs, const Cardinal& rhs) {
   return rhs == lhs;
 }
 

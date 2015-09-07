@@ -125,10 +125,12 @@ void OrdinalTest::testDomainError(void) {
   MockSolver solver;
   Ordinal ordinal(&solver, 1, 4);
 
-  CPPUNIT_ASSERT_THROW(ordinal == 4, domain_error);
-  CPPUNIT_ASSERT_THROW(ordinal == 0, domain_error);
-  CPPUNIT_ASSERT_THROW(ordinal != 4, domain_error);
-  CPPUNIT_ASSERT_THROW(ordinal != 0, domain_error);
+  // These used to be ASSERT_THROW, but then Atoms were implemented
+  // and the requirements were relaxed.
+  CPPUNIT_ASSERT_NO_THROW(ordinal == 4);
+  CPPUNIT_ASSERT_NO_THROW(ordinal == 0);
+  CPPUNIT_ASSERT_NO_THROW(ordinal != 4);
+  CPPUNIT_ASSERT_NO_THROW(ordinal != 0);
 
   CPPUNIT_ASSERT_NO_THROW(ordinal == 3);
   CPPUNIT_ASSERT_NO_THROW(ordinal != 3);

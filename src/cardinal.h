@@ -72,8 +72,8 @@ public:
   
   // Simple literals indicating equality with a specific cardinal rhs.  If rhs is out of bounds,
   // behavior is undefined.
-  Literal operator==(int rhs) const;
-  Literal operator!=(int rhs) const;
+  Atom operator==(int rhs) const;
+  Atom operator!=(int rhs) const;
 
   // Ordering requirements
   Clause operator>(int rhs) const;
@@ -131,8 +131,8 @@ Clause operator<(int lhs, const Cardinal& rhs);
 Clause operator<=(int lhs, const Cardinal& rhs);
 
 // Comparison operators
-Literal operator==(int lhs, const Cardinal& rhs);
-Literal operator!=(int lhs, const Cardinal& rhs);
+Atom operator==(int lhs, const Cardinal& rhs);
+Atom operator!=(int lhs, const Cardinal& rhs);
 
 std::ostream& operator << (std::ostream& lhs, const Cardinal& rhs);
 

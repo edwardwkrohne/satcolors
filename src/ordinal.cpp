@@ -111,14 +111,17 @@ Ordinal Ordinal::operator-() const {
 // Simple literals indicating equality with a specific ordinal rhs.  If rhs is out of bounds,
 // behavior is undefined.
 DualClause Ordinal::operator==(int rhs) const {
+  // If out of bounds, just return falsity
   if ( rhs < min() || rhs >= max() ) {
-    ostringstream sout;
-    sout << "Incorrect value comparison for Ordinal.  This ordinal min=" << min() << " and max=" << max() << " but " << rhs << " requested.";
-    throw domain_error(sout.str());
+    return DualClause::falsity;
   }
 
   DualClause result;
 
+  // This kind of fiddling, ensuring that rhs is in range before
+  // grabbing specific parts of the clause, is probably no longer
+  // necessary now that operator< returns atoms, but no reason not to
+  // leave it in.
   if ( rhs > min() )
     result &= *this >= rhs;
 
