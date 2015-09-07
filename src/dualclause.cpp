@@ -30,31 +30,33 @@
 
 using namespace std;
 
+const DualClause DualClause::truth;
+const DualClause DualClause::falsity(true); // Use the special private constructor
+
 // Default constructor
-DualClause::DualClause() {
+DualClause::DualClause(void) :
+  falsityFlag(false)
+{
 
 }
 
 // Constructor from one literal
-DualClause::DualClause(const Literal lit) {
-  push_back(~lit);
-}
-
-// Copy constructor
-DualClause::DualClause(const DualClause& other) :
-  list<Literal>(other)
+DualClause::DualClause(const Literal lit) :
+  falsityFlag(false)
 {
+  *this &= lit;
 }
 
-// Move constructor
-DualClause::DualClause(DualClause&& other) :
-  list<Literal>(move(other))
+// Constructor from one atom
+DualClause::DualClause(const Atom at) :
+  falsityFlag(false)
 {
+  *this &= at;
 }
 
-// Constructor from a set
-DualClause::DualClause(std::list<Literal>&& other) :
-    list<Literal>(move(other))
+// Construct a truth/falsity
+DualClause::DualClause(bool _falsityFlag) :
+  falsityFlag(_falsityFlag)
 {
 }
 
@@ -64,9 +66,32 @@ DualClause& DualClause::operator&=(const Literal rhs) {
   return *this;
 }
 
+// Concatenation of a clause and an atom
+DualClause& DualClause::operator&=(const Atom rhs) {
+  // falsity dominates a conjunction
+  if ( *this == DualClause::falsity || rhs == Atom::falsity ) {
+    return *this = DualClause::falsity;
+  } 
+
+  // truth preserves a conjunction
+  else if ( rhs == Atom::truth ) {
+    return *this;
+  }
+
+  // Atoms that are literals can be handed normally
+  else {
+    return *this &= rhs.getLiteral();
+  }
+}
+
 // Concatenation of a clause and a clause
 DualClause& DualClause::operator&=(DualClause rhs) {
-  splice(end(), rhs);
+  // falsity dominates a conjunction
+  if ( *this == DualClause::falsity || rhs == DualClause::falsity ) {
+    return *this = DualClause::falsity;
+  } else {
+    splice(end(), rhs);
+  }
   return *this;
 }
 
@@ -82,35 +107,68 @@ DualClause operator&(Literal lhs, DualClause rhs) {
   return move(rhs);
 }
 
-// Concatenation of a clause and a literal
+// Concatenation of a clause and a atom
 DualClause operator&(DualClause lhs, Literal rhs) {
   lhs &= rhs;
   return move(lhs);
 }
 
-// Concatenation of literals
+DualClause operator&(DualClause lhs, Atom rhs) {
+  lhs &= rhs;
+  return move(lhs);
+}
+
+// Concatenation of literals and/or atoms
 DualClause operator&(Literal lhs, Literal rhs) {
   DualClause dClause(lhs);
   dClause &= rhs;
   return dClause;
 }
 
-DualClause& DualClause::operator=(DualClause other) {
-  swap(other);
-  return *this;
+DualClause operator&(Atom lhs, Literal rhs) {
+  DualClause dClause(lhs);
+  dClause &= rhs;
+  return dClause;
+}
+
+DualClause operator&(Literal lhs, Atom rhs) {
+  DualClause dClause(lhs);
+  dClause &= rhs;
+  return dClause;
+}
+
+DualClause operator&(Atom lhs, Atom rhs) {
+  DualClause dClause(lhs);
+  dClause &= rhs;
+  return dClause;
 }
 
 Clause operator~(DualClause dual) {
-  Clause clause(move(dual));
+  Clause clause;
+  // Assign and negate the flag
+  clause.truthFlag = dual.falsityFlag;
+
+  // Assign the clause to the dual clause as lists.  Dualclauses store
+  // their literals negated, so this "just works".
+  ((list<Literal>&)clause) = move((list<Literal>&)dual);
   return clause;
 }
 
 DualClause operator~(Clause clause) {
-  DualClause dual(move(clause));
+  DualClause dual;
+  // Assign and negate the flag
+  dual.falsityFlag = clause.truthFlag;
+
+  // Assign the clause to the dual clause as lists.  Dualclauses store
+  // their literals negated, so this "just works".
+  ((list<Literal>&)dual) = move((list<Literal>&)clause);
   return dual;
 }
 
 bool operator==(DualClause rhs, DualClause lhs) {
+  if ( rhs.falsityFlag || lhs.falsityFlag ) {
+    return rhs.falsityFlag == lhs.falsityFlag;
+  }
   rhs.sort();
   rhs.unique();
   lhs.sort();
@@ -123,6 +181,9 @@ bool operator!=(DualClause rhs, DualClause lhs) {
   return ~(rhs == lhs);
 }
 bool operator<(DualClause rhs, DualClause lhs) {
+  if ( rhs.falsityFlag || lhs.falsityFlag ) {
+    return rhs.falsityFlag < lhs.falsityFlag;
+  }
   rhs.sort();
   rhs.unique();
   lhs.sort();

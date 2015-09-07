@@ -38,6 +38,7 @@ class ClauseTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST(testOperatorOrEqualsClause);
   CPPUNIT_TEST(testOperatorOrClauseLit);
   CPPUNIT_TEST(testOperatorOrClauseClause);
+  CPPUNIT_TEST(testDisjoinTrueFalseClause);
   CPPUNIT_TEST(testOutputLitPositive);
   CPPUNIT_TEST(testOutputLitNegative);
   CPPUNIT_TEST(testOutputClauseEmpty);
@@ -52,6 +53,7 @@ protected:
   void testOperatorOrEqualsClause(void);
   void testOperatorOrClauseLit(void);
   void testOperatorOrClauseClause(void);
+  void testDisjoinTrueFalseClause(void);
   void testOutputLitPositive(void);
   void testOutputLitNegative(void);
   void testOutputClauseEmpty(void);
@@ -116,7 +118,8 @@ void ClauseTest::testOperatorOrClauseLit(void) {
   expected |= Literal(2);
   expected |= ~Literal(3);
 
-  const Clause lhs = ~Literal(1) | Literal(2);
+  // test interaction with atoms while we're doing this; lazy hack onto an old test.
+  const Clause lhs = ~Literal(1) | Atom(Literal(2));
   Clause result = lhs | ~Literal(3);
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
@@ -136,13 +139,29 @@ void ClauseTest::testOperatorOrClauseClause(void) {
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
+void ClauseTest::testDisjoinTrueFalseClause(void) {
+  Clause clause = Literal(1) | Literal(2);
+
+  // Truth dominates the clause
+  CPPUNIT_ASSERT_EQUAL(Clause::truth, clause | Clause::truth);
+  CPPUNIT_ASSERT_EQUAL(Clause::truth, clause | Atom::truth);
+  CPPUNIT_ASSERT_EQUAL(Clause::truth, Clause::truth | clause);
+  CPPUNIT_ASSERT_EQUAL(Clause::truth, Clause::truth | Literal(3));
+  CPPUNIT_ASSERT_EQUAL(Clause::truth, Atom::truth | Literal(3));
+
+  // Falsity preserves the clause
+  CPPUNIT_ASSERT_EQUAL(clause,        clause | Clause::falsity);
+  CPPUNIT_ASSERT_EQUAL(clause,        clause | Atom::falsity);
+
+}
+
 void ClauseTest::testOutputLitPositive(void) {
   string expected = "1";
 
   ostringstream resultStream;
   resultStream << Literal(1);
   
-  CPPUNIT_ASSERT_EQUAL(expected, resultStream.str());  
+  CPPUNIT_ASSERT_EQUAL(expected, resultStream.str());
 }
 
 void ClauseTest::testOutputLitNegative(void) {

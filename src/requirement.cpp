@@ -52,6 +52,10 @@ Requirement::Requirement(Clause clause) {
   *this &= move(clause);
 }
 
+Requirement::Requirement(Atom at) {
+  *this &= at;
+}
+
 Requirement::Requirement(Literal lit) {
   *this &= lit;
 }
@@ -67,6 +71,13 @@ Requirement& Requirement::operator&=(Requirement rhs) {
 }
 
 Requirement& Requirement::operator&=(DualClause rhs) {
+  // Treat "falsity" like an empty clause
+  if ( rhs == DualClause::falsity ) {
+    return *this &= Clause();
+  }
+
+  // Now we can go through the dualclause like a
+  // list. (DualClause::truth is just an empty DualClause)
   while ( rhs.size() != 0 ) {
     // Carefully preserve (steal) the allocated memory for *rhs.begin().
     Clause unitClause;
@@ -83,7 +94,18 @@ Requirement& Requirement::operator&=(DualClause rhs) {
 }
 
 Requirement& Requirement::operator&=(Clause rhs) {
+  // Treat "truth" is the identity for conjunction
+  if ( rhs == Clause::truth ) {
+    return *this;
+  }
+
+  // Clause::falsity is just an empty clause.
   push_back(move(rhs));
+  return *this;
+}
+
+Requirement& Requirement::operator&=(Atom rhs) {
+  *this &= (Clause)move(rhs);
   return *this;
 }
 
@@ -98,9 +120,21 @@ Requirement operator&(Literal lhs, Clause rhs) {
   return req;
 }
 
+Requirement operator&(Atom lhs, Clause rhs) {
+  Requirement req(move(rhs));
+  req &= move(lhs);
+  return req;
+}
+
 Requirement operator&(Literal lhs, Requirement rhs) {
   rhs &= move(lhs);
   return move(rhs);
+}
+
+Requirement operator&(Clause lhs, Atom rhs) {
+  Requirement req(move(lhs));
+  req &= move(rhs);
+  return req;
 }
 
 Requirement operator&(Clause lhs, Literal rhs) {
@@ -138,6 +172,11 @@ Requirement operator&(DualClause lhs, Requirement rhs) {
 }
 
 Requirement operator&(Requirement lhs, Literal rhs) {
+  lhs &= move(rhs);
+  return move(lhs);
+}
+
+Requirement operator&(Requirement lhs, Atom rhs) {
   lhs &= move(rhs);
   return move(lhs);
 }
@@ -190,6 +229,12 @@ Requirement& Requirement::operator|=(DualClause rhs) {
 }
 
 Requirement& Requirement::operator|=(Clause rhs) {
+  // If disjoining truth, just clear the requirement, making the requirement "always-true".
+  if ( rhs == Clause::truth ) {
+    clear();
+    return *this;
+  }
+
   // Don't even mess with possibly invalid iterators if there's nothing here.
   if ( size() == 0 )
     return *this;
@@ -212,6 +257,12 @@ Requirement& Requirement::operator|=(Clause rhs) {
 }
 
 Requirement& Requirement::operator|=(Literal rhs) {
+  Clause clause(rhs);
+  *this |= move(clause);
+  return *this;
+}
+
+Requirement& Requirement::operator|=(Atom rhs) {
   Clause clause(rhs);
   *this |= move(clause);
   return *this;
@@ -242,6 +293,11 @@ Requirement operator|(Requirement lhs, Literal rhs) {
   return move(lhs);
 }
 
+Requirement operator|(Requirement lhs, Atom rhs) {
+  lhs |= move(rhs);
+  return move(lhs);
+}
+
 Requirement operator|(DualClause lhs, DualClause rhs) {
   Requirement req(move(lhs));
   req |= move(rhs);
@@ -249,6 +305,12 @@ Requirement operator|(DualClause lhs, DualClause rhs) {
 }
 
 Requirement operator|(DualClause lhs, Clause rhs) {
+  Requirement req(move(lhs));
+  req |= move(rhs);
+  return req;
+}
+
+Requirement operator|(DualClause lhs, Atom rhs) {
   Requirement req(move(lhs));
   req |= move(rhs);
   return req;
@@ -272,6 +334,11 @@ Requirement operator|(DualClause lhs, Requirement rhs) {
 }
 
 Requirement operator|(Clause lhs, Requirement rhs) {
+  rhs |= move(lhs);
+  return move(rhs);
+}
+
+Requirement operator|(Atom lhs, Requirement rhs) {
   rhs |= move(lhs);
   return move(rhs);
 }
@@ -321,7 +388,7 @@ ostream& operator<<(ostream& out, Requirement rhs) {
   typedef Requirement::iterator iterator;
   // An empty requirement is always "TRUE"
   if ( rhs.empty() ) {
-    return out << " TRUE ";
+    return out << "truth";
   }
 
   // Normalize output to make the output easier to read and test
@@ -337,9 +404,9 @@ ostream& operator<<(ostream& out, Requirement rhs) {
       out << " & ";
     }
 
-    // An empty clause is always "FALSE"
-    if ( iter->empty() ) {
-      out << "FALSE";
+    // Empty clauses are special
+    if ( *iter == Clause::truth || *iter == Clause::falsity ) {
+      out << *iter;
       continue;
     }
 

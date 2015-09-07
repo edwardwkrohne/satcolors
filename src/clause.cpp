@@ -30,32 +30,35 @@
 
 using namespace std;
 
+const Clause Clause::truth(true); // Use the special private constructor to construct "truth"
+const Clause Clause::falsity;   // Falsity is just an empty clause
+
 // Default constructor
-Clause::Clause() {
+Clause::Clause(void) :
+  truthFlag(false)
+{
 
 }
 
 // Constructor from one literal
-Clause::Clause(const Literal lit) {
-  push_back(lit);
+Clause::Clause(const Literal lit) :
+  truthFlag(false)
+{
+  *this |= lit;
 }
 
-// Copy onstructor
-Clause::Clause(const Clause& other) :
-  list<Literal>(other)
+// Constructor from one atom
+Clause::Clause(const Atom at) :
+  truthFlag(false)
 {
+  *this |= at;
 }
 
-// Move constructor
-Clause::Clause(Clause&& other) :
-  list<Literal>(move(other))
+// Construct a truth/falsity clause
+Clause::Clause(bool _truthFlag) :
+  truthFlag(_truthFlag)
 {
-}
 
-// Constructor from another list of literals (like a dualClause)
-Clause::Clause(std::list<Literal>&& other) :
-  list<Literal>(move(other))
-{
 }
 
 // Concatenation of two clauses
@@ -76,8 +79,42 @@ Clause operator|(Clause lhs, Literal rhs) {
   return move(lhs);
 }
 
-// Concatenation of two literals
+// Concatenation of a clause and an atom
+Clause operator|(Atom lhs, Clause rhs) {
+  rhs |= lhs;
+  return move(rhs);
+}
+
+// Concatenation of a clause and an atom
+Clause operator|(Clause lhs, Atom rhs) {
+  lhs |= rhs;
+  return move(lhs);
+}
+
+
+// Concatenation of two literals and/or atoms
 Clause operator|(Literal lhs, Literal rhs) {
+  Clause clause(rhs);
+  clause |= move(lhs);
+  return move(clause);
+}
+
+// Concatenation of two literals and/or atoms
+Clause operator|(Atom lhs, Literal rhs) {
+  Clause clause(rhs);
+  clause |= move(lhs);
+  return move(clause);
+}
+
+// Concatenation of two literals and/or atoms
+Clause operator|(Literal lhs, Atom rhs) {
+  Clause clause(rhs);
+  clause |= move(lhs);
+  return move(clause);
+}
+
+// Concatenation of two literals and/or atoms
+Clause operator|(Atom lhs, Atom rhs) {
   Clause clause(rhs);
   clause |= move(lhs);
   return move(clause);
@@ -89,19 +126,38 @@ Clause& Clause::operator|=(const Literal rhs) {
   return *this;
 }
 
+// Concatenation of a clause and an atom
+Clause& Clause::operator|=(const Atom rhs) {
+  // Truth dominates a disjunction
+  if ( *this == Clause::truth || rhs == Atom::truth ) {
+    return *this = Clause::truth;
+  } 
+  
+  // Falsity preserves a disjunction
+  else if ( rhs == Atom::falsity ) {
+    return *this;
+  } 
+
+  // We're dealing wiht a literal, so treat it like one.
+  else {
+    return *this |= rhs.getLiteral();
+  }
+}
+
 // Concatenation of a clause and a clause
 Clause& Clause::operator|=(Clause rhs) {
-  splice(end(), rhs);
+  if ( *this == Clause::truth || rhs == Clause::truth ) { // Truth dominates a disjunction
+    return *this = Clause::truth;
+  } else {
+    splice(end(), rhs);
+  }
   return *this;
 }
 
-// Assignment
-Clause& Clause::operator=(Clause rhs) {
-  swap(rhs);
-  return *this;
-}
-
-bool operator==(Clause rhs, Clause lhs) {
+bool operator==(Clause lhs, Clause rhs) {
+  if ( rhs.truthFlag || lhs.truthFlag ) {
+    return rhs.truthFlag == lhs.truthFlag;
+  }
   rhs.sort();
   rhs.unique();
   lhs.sort();
@@ -116,6 +172,9 @@ bool operator!=(Clause rhs, Clause lhs)  {
 }
 
 bool operator<(Clause rhs, Clause lhs)  {
+  if ( rhs.truthFlag || lhs.truthFlag ) {
+    return rhs.truthFlag < lhs.truthFlag;
+  }
   rhs.sort();
   rhs.unique();
   lhs.sort();
@@ -127,6 +186,10 @@ bool operator<(Clause rhs, Clause lhs)  {
 
 // Output a clause
 ostream& operator<<(ostream& out, Clause rhs) {
+  if ( rhs == Clause::truth ) {
+    return out << "truth";
+  }
+
   // Do nothing for an empty list.
   if ( rhs.begin() == rhs.end() ) return out;
 

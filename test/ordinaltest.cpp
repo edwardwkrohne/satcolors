@@ -135,13 +135,11 @@ void OrdinalTest::testDomainError(void) {
   CPPUNIT_ASSERT_NO_THROW(ordinal == 1);
   CPPUNIT_ASSERT_NO_THROW(ordinal != 1);
 
-  CPPUNIT_ASSERT_THROW   (ordinal >= 1, domain_error);
+  CPPUNIT_ASSERT_NO_THROW(ordinal > -2);
   CPPUNIT_ASSERT_NO_THROW(ordinal >= 2);
   CPPUNIT_ASSERT_NO_THROW(ordinal <= 1);
-
-  CPPUNIT_ASSERT_THROW   (ordinal <= 3, domain_error);
   CPPUNIT_ASSERT_NO_THROW(ordinal <= 2);
-  CPPUNIT_ASSERT_NO_THROW(ordinal >= 2);
+  CPPUNIT_ASSERT_NO_THROW(ordinal < 10);
 }
 
 void OrdinalTest::testLessEq1(void) {

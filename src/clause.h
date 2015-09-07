@@ -46,45 +46,60 @@
 #include <list>
 #include <iostream>
 #include "literal.h"
+#include "atom.h"
 
 class DualClause;
 
 class Clause : public std::list<Literal> {
 public:
-  // Default constructor
+  // Usual constructors
   Clause();
-
-  // Copy constructor
-  Clause(const Clause& other);
-
-  // Move constructor
-  Clause(Clause&& other);
+  Clause(const Clause& other) = default;
+  Clause(Clause&& other) = default;
+  Clause& operator=(const Clause& other) = default;
+  Clause& operator=(Clause&& other) = default;
 
   // Create a clause from a single element
   Clause(Literal lit);
+  Clause(Atom at);
 
   // Assignment
-  Clause& operator=(Clause rhs);
+  //Clause& operator=(Literal lit); // Not yet implemented (but trivial)
+  //Clause& operator=(Atom at);     
 
   // Concatenate and assign
   Clause& operator|=(Clause rhs);
-
-  // Concatenate and assign
+  Clause& operator|=(Atom rhs);
   Clause& operator|=(Literal rhs);
 
-  friend Clause operator~(DualClause dual);
+  friend Clause     operator~(DualClause dual);
+  friend DualClause operator~(Clause clause);
+  friend bool operator==(Clause lhs, Clause rhs);
+  friend bool operator<(Clause lhs, Clause rhs);
+
+  static const Clause truth;
+  static const Clause falsity;
 
 private:
-  // Fast way of manufacturing a clause from a DualClause
-  Clause(std::list<Literal>&& dual);
+  bool truthFlag; // Whether this clause represents just "truth", in
+		  // which case its contents are irrelevant
+
+  // For the "truth" clause
+  Clause(bool truthFlag);
 };
 
 // Operator | for concatenation (disjunction)
 // Concatenate two Clauses to produce a third
+// Obviously these should be templates, but I can't quite get that to work. -- EK 9/15
 Clause operator|(Literal rhs, Literal lhs);
-Clause operator|(Clause rhs, Literal lhs);
+Clause operator|(Atom rhs,    Literal lhs);
+Clause operator|(Clause rhs,  Literal lhs);
+Clause operator|(Literal rhs, Atom lhs);
+Clause operator|(Atom rhs,    Atom lhs);
+Clause operator|(Clause rhs,  Atom lhs);
 Clause operator|(Literal rhs, Clause lhs);
-Clause operator|(Clause rhs, Clause lhs);
+Clause operator|(Atom rhs,    Clause lhs);
+Clause operator|(Clause rhs,  Clause lhs);
 
 // Clauses are equal if they have the same elements
 // N log N + M log M complexity, where N is the size of lhs and M is the size of rhs.

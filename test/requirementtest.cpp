@@ -42,10 +42,13 @@ class RequirementTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST(testDualClauseAndDualClauseDisjunction);
   CPPUNIT_TEST(testDualClauseAndClauseConjunction);
   CPPUNIT_TEST(testRequirementDisjunction);
+  CPPUNIT_TEST(testRequirementDisjunctionAssignment);
   CPPUNIT_TEST(testClauseNegation);
   CPPUNIT_TEST(testMoveConstruction);
   CPPUNIT_TEST(testImplication);
   CPPUNIT_TEST(testEquivalence);
+  CPPUNIT_TEST(testConjoinTrueFalseClauses);
+  CPPUNIT_TEST(testDisjoinTrueFalseClauses);
   CPPUNIT_TEST(testOutput);
   CPPUNIT_TEST(testOutput2);
   CPPUNIT_TEST_SUITE_END();
@@ -59,10 +62,13 @@ protected:
   void testDualClauseAndDualClauseDisjunction(void);
   void testDualClauseAndClauseConjunction(void);
   void testRequirementDisjunction(void);
+  void testRequirementDisjunctionAssignment(void);
   void testClauseNegation(void);
   void testMoveConstruction(void);
   void testEquivalence(void);
   void testImplication(void);
+  void testConjoinTrueFalseClauses(void);
+  void testDisjoinTrueFalseClauses(void);
   void testOutput(void);
   void testOutput2(void);
 };
@@ -236,6 +242,28 @@ void RequirementTest::testRequirementDisjunction(void) {
   CPPUNIT_ASSERT_EQUAL(expected, (clause1 & clause2) | (clause3 & clause4));
 }
 
+// Had some trouble with disjunction-assignment (|=); thought it might
+// be a bug, but I was using it wrong.  I'm leaving the "good" test
+// in.
+void RequirementTest::testRequirementDisjunctionAssignment(void) {
+  Clause clause1 = Literal(1) | Literal(2);
+  Clause clause2 = Literal(3) | Literal(4);
+  Clause clause3 = Literal(5) | Literal(6);
+  Clause clause4 = Literal(7) | Literal(8);
+
+  Requirement expected;
+  expected &= clause1 | clause3;
+  expected &= clause1 | clause4;
+  expected &= clause2 | clause3;
+  expected &= clause2 | clause4;
+
+  Requirement result = Clause(); // Has to start out "false"
+  result |= (clause1 & clause2);
+  result |= (clause3 & clause4);
+
+  CPPUNIT_ASSERT_EQUAL(expected, result);
+}
+
 void RequirementTest::testClauseNegation(void) {
   Literal lit1 = Literal(1);
   Literal lit2 = Literal(2);
@@ -278,6 +306,31 @@ void RequirementTest::testEquivalence(void) {
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
 
+void RequirementTest::testConjoinTrueFalseClauses(void) {
+  Requirement req = 
+    (Literal(1) | Literal(2)) &
+    (Literal(3) | Literal(4));
+  
+  CPPUNIT_ASSERT_EQUAL(req, req & Clause::truth);     // Truth adds nothing
+  CPPUNIT_ASSERT_EQUAL(req, req & DualClause::truth);
+  CPPUNIT_ASSERT_EQUAL(req & Clause(), req & Clause::falsity);     // Falsity adds an empty clause
+  CPPUNIT_ASSERT_EQUAL(req & Clause(), req & DualClause::falsity); 
+}
+
+void RequirementTest::testDisjoinTrueFalseClauses(void) {
+  Requirement req = 
+    (Literal(1) | Literal(2)) &
+    (Literal(3) | Literal(4));
+
+  Requirement expected = req | DualClause();
+
+  CPPUNIT_ASSERT_EQUAL(Requirement(), req | Clause::truth);     // Truth collapses the requirement
+  CPPUNIT_ASSERT_EQUAL(Requirement(), req | DualClause::truth);
+  CPPUNIT_ASSERT_EQUAL(req, req | Clause::falsity);      // Falsity adds nothing
+  CPPUNIT_ASSERT_EQUAL(req, req | DualClause::falsity); 
+
+  
+}
 
 void RequirementTest::testOutput(void) {
   ostringstream sout;

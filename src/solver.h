@@ -48,6 +48,7 @@ public:
   virtual void require(const Requirement& req);
   virtual void require(const DualClause& dClause);
   virtual void require(Literal lit);
+  virtual void require(Atom atm);
   virtual void require(const Clause& clause) = 0;
 
   // Solve

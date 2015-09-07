@@ -82,10 +82,10 @@ public:
   Clause     operator!=(int rhs) const;
 
   // Ordering requirements
-  Literal operator>(int rhs) const;
-  Literal operator>=(int rhs) const;
-  Literal operator<(int rhs) const;
-  Literal operator<=(int rhs) const;
+  Atom operator>(int rhs) const;
+  Atom operator>=(int rhs) const;
+  Atom operator<(int rhs) const;
+  Atom operator<=(int rhs) const;
 
   // Requirements that two Ordinals be equal, whatever values they
   // take.  Requires that both Ordinals have the same solver.  Does
@@ -137,10 +137,10 @@ Ordinal operator+(const int rhs, const Ordinal& lhs);
 Ordinal operator-(const int rhs, const Ordinal& lhs);
 
 // Ordering requirements
-Literal operator>(int lhs, const Ordinal& rhs);
-Literal operator>=(int lhs, const Ordinal& rhs);
-Literal operator<(int lhs, const Ordinal& rhs);
-Literal operator<=(int lhs, const Ordinal& rhs);
+Atom operator>(int lhs, const Ordinal& rhs);
+Atom operator>=(int lhs, const Ordinal& rhs);
+Atom operator<(int lhs, const Ordinal& rhs);
+Atom operator<=(int lhs, const Ordinal& rhs);
 
 // Comparison operators
 DualClause operator==(int lhs, const Ordinal& rhs);

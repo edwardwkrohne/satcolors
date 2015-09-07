@@ -70,8 +70,8 @@ public:
   // Output a "nice" representation (for debugging, primarily)
   friend std::ostream& operator<<(std::ostream& out, Atom rhs);
 
-  const static Atom truth;
-  const static Atom falsity;
+  static const Atom truth;
+  static const Atom falsity;
 private:
   enum EAtomType {
     falsityType,

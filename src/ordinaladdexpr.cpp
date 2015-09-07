@@ -23,7 +23,10 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Implementation of the OrdinalAddExpr class
-
+//
+// Implementation may be greatly simplified by using the Atom class, which I
+//  just wrote.  The code, as it stands, assumes everything is Literals, which
+//  are less powerful.  This results in extreme extra intricacy. -- EK 9/15
 #include <algorithm>
 #include "ordinaladdexpr.h"
 

@@ -44,6 +44,10 @@ void Solver::require(Literal lit) {
   require(Clause(lit));
 }
 
+void Solver::require(Atom atm) {
+  require(Clause(atm));
+}
+
 // Solve
 bool Solver::solve() {
   solve(DualClause());

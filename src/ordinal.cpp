@@ -132,45 +132,42 @@ Clause Ordinal::operator!=(int rhs) const {
 }
 
 // Comparison operators
-Literal Ordinal::operator>(int rhs) const {
+Atom Ordinal::operator>(int rhs) const {
   return ~(*this <= rhs);
 }
 
-Literal Ordinal::operator>=(int rhs) const {
+Atom Ordinal::operator>=(int rhs) const {
   return ~(*this < rhs);
 }
 
-Literal Ordinal::operator<(int rhs) const {
-  if ( rhs <= min() || rhs >= max() ) {
-    ostringstream sout;
-    sout << "Incorrect value comparison for Ordinal.  This ordinal is in the interval [" << min() << ", " << max() << ") but less than " << rhs << " requested.";
-    throw domain_error(sout.str());
-  }
-
+Atom Ordinal::operator<(int rhs) const {
+  if ( rhs <= min() ) return Atom::falsity;
+  if ( rhs >= max() ) return Atom::truth;
+  
   if ( !mNegated ) {
-    return  Literal(rhs-1-min()+mStartingVar);
+    return  Atom(Literal(rhs-1-min()+mStartingVar));
   } else {
-    return ~Literal(max()-rhs-1+mStartingVar);
+    return Atom(~Literal(max()-rhs-1+mStartingVar));
   }
 }
 
-Literal Ordinal::operator<=(int rhs) const {
+Atom Ordinal::operator<=(int rhs) const {
   return *this < rhs+1;
 }
 
-Literal operator>(int lhs, const Ordinal& rhs) {
+Atom operator>(int lhs, const Ordinal& rhs) {
   return rhs < lhs;
 }
 
-Literal operator>=(int lhs, const Ordinal& rhs) {
+Atom operator>=(int lhs, const Ordinal& rhs) {
   return rhs <= lhs;
 }
 
-Literal operator<(int lhs, const Ordinal& rhs) {
+Atom operator<(int lhs, const Ordinal& rhs) {
   return rhs > lhs;
 }
 
-Literal operator<=(int lhs, const Ordinal& rhs) {
+Atom operator<=(int lhs, const Ordinal& rhs) {
   return rhs >= lhs;
 }
 

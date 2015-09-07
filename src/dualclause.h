@@ -34,32 +34,33 @@
 
 class DualClause : public std::list<Literal> {
 public:
-  // Default constructor
+  // Usual constructors
   DualClause();
-
-  // Copy constructor
-  DualClause(const DualClause& other);
-
-  // Move constructor
-  DualClause(DualClause&& other);
+  DualClause(const DualClause& other) = default;
+  DualClause(DualClause&& other) = default;
+  DualClause& operator=(const DualClause& other) = default;
+  DualClause& operator=(DualClause&& other) = default;
 
   // Create a clause from a single element
   DualClause(Literal lit);
-
-  // Concatenate and assign
-  DualClause& operator&=(DualClause rhs);
+  DualClause(Atom at);
 
   // Concatenate and assign
   DualClause& operator&=(Literal rhs);
+  DualClause& operator&=(Atom rhs);
+  DualClause& operator&=(DualClause rhs);
 
-  // Assignment operator
-  DualClause& operator=(DualClause rhs);
+  friend DualClause operator~(Clause clause);
+  friend Clause     operator~(DualClause dual);
+  friend bool operator==(DualClause lhs, DualClause rhs);
+  friend bool operator<(DualClause lhs, DualClause rhs);
 
-  friend DualClause operator~(Clause dual);
-
+  static const DualClause truth;
+  static const DualClause falsity;
 private:
-  // Fast way of manufacturing a dualClause from a Clause
-  DualClause(std::list<Literal>&& other);
+  DualClause(bool falsityFlag);
+
+  bool falsityFlag; // True if this dualclause represents "falsity".
 };
 
 // Negate a clause to get a dual clause.
@@ -69,9 +70,14 @@ DualClause operator~(Clause dual);
 Clause operator~(DualClause dual);
 
 // Operator & for conjoining two literals or dualclauses
-DualClause operator&(Literal lhs, Literal rhs);
-DualClause operator&(Literal lhs, DualClause rhs);
+DualClause operator&(Literal lhs,    Literal rhs);
+DualClause operator&(Literal lhs,    Atom rhs);
+DualClause operator&(Literal lhs,    DualClause rhs);
+DualClause operator&(Atom lhs,       Literal rhs);
+DualClause operator&(Atom lhs,       Atom rhs);
+DualClause operator&(Atom lhs,       DualClause rhs);
 DualClause operator&(DualClause lhs, Literal rhs);
+DualClause operator&(DualClause lhs, Atom rhs);
 DualClause operator&(DualClause lhs, DualClause rhs);
 
 // Clauses are equal if they have the same elements

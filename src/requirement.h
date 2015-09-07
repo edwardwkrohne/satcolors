@@ -41,6 +41,7 @@
 
 #include "clause.h"
 #include "dualclause.h"
+#include "atom.h"
 
 class Requirement : public std::list<Clause> {
 public:
@@ -55,6 +56,7 @@ public:
 
   // Create a requirement from a single element
   Requirement(Literal lit);
+  Requirement(Atom at);
   Requirement(Clause clause);
   Requirement(DualClause clause);
 
@@ -63,41 +65,55 @@ public:
 
   // Conjoin and assign
   Requirement& operator&=(Literal rhs);
+  Requirement& operator&=(Atom rhs);
   Requirement& operator&=(Clause rhs);
   Requirement& operator&=(DualClause rhs);
   Requirement& operator&=(Requirement rhs);
 
   // Disjoin and assign
   Requirement& operator|=(Literal rhs);
+  Requirement& operator|=(Atom rhs);
   Requirement& operator|=(Clause rhs);
   Requirement& operator|=(DualClause rhs);
   Requirement& operator|=(Requirement rhs);
 };
 
+// The following should clearly be templates, or something better with
+// less repetition, but I DO like the control I get from being so
+// explicit. -- EK 9/15
+
 // Operator & for conjunction
-Requirement operator&(Literal lhs, Clause rhs);
-Requirement operator&(Literal lhs, Requirement rhs);
+Requirement operator&(Literal lhs,      Clause rhs);
+Requirement operator&(Literal lhs,      Requirement rhs);
+Requirement operator&(Atom lhs,         Clause rhs);
+Requirement operator&(Atom lhs,         Requirement rhs);
 Requirement operator&(Clause lhs,       Literal rhs);
+Requirement operator&(Clause lhs,       Atom rhs);
 Requirement operator&(Clause lhs,       Clause rhs);
 Requirement operator&(Clause lhs,       DualClause rhs);
 Requirement operator&(Clause lhs,       Requirement rhs);
 Requirement operator&(DualClause lhs,   Clause rhs);
 Requirement operator&(DualClause lhs,   Requirement rhs);
 Requirement operator&(Requirement lhs,  Literal rhs);
+Requirement operator&(Requirement lhs,  Atom rhs);
 Requirement operator&(Requirement lhs,  Clause rhs);
 Requirement operator&(Requirement lhs,  DualClause rhs);
 Requirement operator&(Requirement lhs,  Requirement rhs);
 
 // Operator | for disjunction
-Requirement operator|(Literal lhs, DualClause rhs);
-Requirement operator|(Literal lhs, Requirement rhs);
+Requirement operator|(Literal lhs,      DualClause rhs);
+Requirement operator|(Literal lhs,      Requirement rhs);
+Requirement operator|(Atom lhs,         DualClause rhs);
+Requirement operator|(Atom lhs,         Requirement rhs);
 Requirement operator|(Clause lhs,       DualClause rhs);
 Requirement operator|(Clause lhs,       Requirement rhs);
 Requirement operator|(DualClause lhs,   Literal rhs);
+Requirement operator|(DualClause lhs,   Atom rhs);
 Requirement operator|(DualClause lhs,   Clause rhs);
 Requirement operator|(DualClause lhs,   DualClause rhs);
 Requirement operator|(DualClause lhs,   Requirement rhs);
 Requirement operator|(Requirement lhs,  Literal rhs);
+Requirement operator|(Requirement lhs,  Atom rhs);
 Requirement operator|(Requirement lhs,  Clause rhs);
 Requirement operator|(Requirement lhs,  DualClause rhs);
 Requirement operator|(Requirement lhs,  Requirement rhs);

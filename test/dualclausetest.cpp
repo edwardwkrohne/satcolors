@@ -41,6 +41,8 @@ class DualClauseTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST(testOperatorAndDualClauseDualClause);
   CPPUNIT_TEST(testClauseNegation);
   CPPUNIT_TEST(testDualClauseNegation);
+  CPPUNIT_TEST(testConjoinTrueFalseClause);
+  CPPUNIT_TEST(testNegateTrueFalseClause);
   CPPUNIT_TEST(testOutputDualClauseEmpty);
   CPPUNIT_TEST(testOutputDualClauseSingleton);
   CPPUNIT_TEST(testOutputDualClause);
@@ -56,6 +58,8 @@ protected:
   void testOperatorAndDualClauseDualClause(void);
   void testClauseNegation(void);
   void testDualClauseNegation(void);
+  void testConjoinTrueFalseClause(void);
+  void testNegateTrueFalseClause(void);
   void testOutputDualClauseEmpty(void);
   void testOutputDualClauseSingleton(void);
   void testOutputDualClause(void);
@@ -148,12 +152,42 @@ void DualClauseTest::testOperatorAndDualClauseDualClause(void) {
   expected &= ~Literal(3);
   expected &= ~Literal(4);
 
-  const DualClause lhs = ~Literal(1) & Literal(2);
+  // Throw in a quick test of Atom -- lazy hack onto an old test
+  const DualClause lhs = ~Literal(1) & Atom(Literal(2));
   const DualClause rhs = ~Literal(3) & ~Literal(4);
   DualClause result = lhs & rhs;
 
   CPPUNIT_ASSERT_EQUAL(expected, result);
 }
+
+void DualClauseTest::testConjoinTrueFalseClause(void) {
+  DualClause dc = Literal(1) & Literal(2);
+
+  // Truth preserves the dualclause
+  CPPUNIT_ASSERT(DualClause::truth.empty());
+  CPPUNIT_ASSERT_EQUAL(dc,                  dc & DualClause::truth);
+  CPPUNIT_ASSERT_EQUAL(dc,                  dc & Atom::truth);
+
+   // Falsity dominates the dualclause
+  CPPUNIT_ASSERT_EQUAL(DualClause::falsity, dc & DualClause::falsity);
+  CPPUNIT_ASSERT_EQUAL(DualClause::falsity, dc & Atom::falsity);
+  CPPUNIT_ASSERT_EQUAL(DualClause::falsity, DualClause::falsity & dc);
+  CPPUNIT_ASSERT_EQUAL(DualClause::falsity, DualClause::falsity & Literal(3));
+  CPPUNIT_ASSERT_EQUAL(DualClause::falsity, Atom::falsity & Literal(3));
+
+}
+
+void DualClauseTest::testNegateTrueFalseClause(void) {
+  CPPUNIT_ASSERT_EQUAL(Clause(), Clause::falsity);
+  CPPUNIT_ASSERT_EQUAL(DualClause(), DualClause::truth);
+
+  CPPUNIT_ASSERT_EQUAL(DualClause::falsity, ~Clause::truth);
+  CPPUNIT_ASSERT_EQUAL(Clause::truth, ~DualClause::falsity);
+
+  CPPUNIT_ASSERT_EQUAL(DualClause::truth, ~Clause::falsity);
+  CPPUNIT_ASSERT_EQUAL(Clause::falsity, ~DualClause::truth);
+}
+
 
 void DualClauseTest::testOutputDualClauseEmpty(void) {
   string expected = "";
