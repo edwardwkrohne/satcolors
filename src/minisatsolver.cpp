@@ -24,6 +24,7 @@
 //
 // Implementation of the MinisatSolver
 
+#include <cmath>
 #include <algorithm>
 #include <stdexcept>
 #include <sstream>
@@ -33,6 +34,8 @@ using namespace std;
 using Minisat::vec;
 using Minisat::var;
 using Minisat::lbool;
+using Minisat::l_False;
+using Minisat::l_True;
 
 // Constructor
 MinisatSolver::MinisatSolver() :

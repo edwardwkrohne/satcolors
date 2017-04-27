@@ -6,7 +6,7 @@ TESTSRC:=test
 BIN:=bin
 DATA:=data
 PYTHONDIR:=python
-CPPFLAGS:=-g -std=c++0x -D__STDC_FORMAT_MACROS -MMD -MP
+CPPFLAGS:=-g -std=c++0x -D__STDC_FORMAT_MACROS -MMD -MP -I/usr/i686-pc-cygwin/sys-root/usr/include/
 LIBCPPUNIT:=-lcppunit -ldl
 LIBMINISAT:=-lminisat
 SCENARIOS:=scenarios
@@ -40,7 +40,7 @@ ${SCENARIOS}/$(1)/Makefile.gen.$(1): ${SCENARIOS}/$(1)/Makefile
 solve-$(1): $${DEPENDENCIES-$(1)} archive/archive-up-to-date-$(1).touch
 
 archive/archive-up-to-date-$(1).touch: $${DEPENDENCIES-$(1)}
-	mkdir archive/tempdir
+	mkdir -p archive/tempdir
 	cp -R ${SCENARIOS}/$(1) archive/tempdir/scenario
 	cp -R ${SOLUTIONS}/$(1) archive/tempdir/solution
 	cp -R ${DATA} archive/tempdir/data
