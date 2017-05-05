@@ -6,7 +6,7 @@ TESTSRC:=test
 BIN:=bin
 DATA:=data
 PYTHONDIR:=python
-CPPFLAGS:=-g -std=c++0x -D__STDC_FORMAT_MACROS -MMD -MP -I/usr/i686-pc-cygwin/sys-root/usr/include/
+CPPFLAGS:=-g -std=c++0x -D__STDC_FORMAT_MACROS -MMD -MP
 LIBCPPUNIT:=-lcppunit -ldl
 LIBMINISAT:=-lminisat
 SCENARIOS:=scenarios

@@ -65,6 +65,9 @@ public:
   MatrixView reflectV() const;
   MatrixView transpose() const;
 
+  template<typename LhsMatrixType>
+  Requirement operator==(const LhsMatrixType& lhs);
+  
   // Return a vector representing a row of the matrix.  Can be used to double-index the matrix.
   SubscriptWrapper<Scalar> operator[](int index) const;
 
@@ -273,6 +276,25 @@ unsigned int MatrixView<Scalar>::width() const {
   } else {
     return mEndRow - mStartRow;
   }
+}
+
+template<typename Scalar>
+template<typename LhsMatrixType>
+Requirement MatrixView<Scalar>::operator==(const LhsMatrixType& lhs) {
+  if ( height() != lhs.height() || width() != lhs.width() ) {
+      return Atom::falsity;
+  }
+
+  Requirement req;
+  
+  for (int row = 0; row < height(); row++ ) {
+    for (int col = 0; col < width(); col++ ) {
+      req &= (*this)[row][col] == lhs[row][col];
+    }
+  }
+
+  return req;
+
 }
 
 #endif // MATRIXVIEW_H
