@@ -40,9 +40,11 @@ using namespace std;
 class TwelveTilesTest : public CPPUNIT_NS::TestFixture {
   CPPUNIT_TEST_SUITE(TwelveTilesTest);
   CPPUNIT_TEST(testTilesLinked);
+  CPPUNIT_TEST(testIterateViews);
   CPPUNIT_TEST_SUITE_END();
 protected:
   void testTilesLinked(void);
+  void testIterateViews(void);
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( TwelveTilesTest );
@@ -119,4 +121,24 @@ void TwelveTilesTest::testTilesLinked(void) {
   ASSERT_UNSAT_ASSUMP(solver, (tt.Tcaqcbp[2][3] == 0) & (tt.Tcaqcbp[5] [3] == 1), tt);
   ASSERT_UNSAT_ASSUMP(solver, (tt.Tcaqcbp[5][3] == 0) & (tt.Tcaqcbp[8] [3] == 1), tt);
   ASSERT_UNSAT_ASSUMP(solver, (tt.Tcaqcbp[0][2] == 0) & (tt.Tcaqcbp[15][2] == 1), tt);  
+}
+
+
+void TwelveTilesTest::testIterateViews(void) {
+  // Object under test.
+  MinisatSolver solver;
+  TwelveTiles<> tt(&solver, 3, 5, 2, 10);
+  
+  ASSERT_SAT(solver);
+  ASSERT_SAT_ASSUMP(solver, (tt.Tdpacqa[2][3] == 1));
+  
+  // Require that each node in the entire graph be 0.
+  for ( auto view : tt ) {
+    solver.require(view[0][0] == 0);
+  }
+
+  // Should be possible, not not if a node is required to be 1.
+  ASSERT_SAT(solver);
+  ASSERT_UNSAT_ASSUMP(solver, (tt.Tdpacqa[2][3] == 1), tt);
+  
 }

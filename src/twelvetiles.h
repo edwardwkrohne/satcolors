@@ -34,6 +34,8 @@
 #ifndef TWELVETILES_H
 #define TWELVETILES_H
 
+#include <type_traits> // for is_standard_layout
+#include <cstddef> // for offsetof
 #include "matrix.h"
 #include "matrixview.h"
 #include "cardinal.h"
@@ -47,43 +49,52 @@ class TwelveTiles {
   TwelveTiles& operator=(const TwelveTiles& copy) = default;
   TwelveTiles& operator=(TwelveTiles&& move) = default;
 
-  TwelveTiles(MinisatSolver* solver, int p, int q, int boundarySize, int depth);
+  TwelveTiles(MinisatSolver* solver, size_t p_, size_t q_, size_t boundarySize_, int depth);
 
   class ViewsIter {
   public:
+    ViewsIter();
+    ViewsIter(TwelveTiles* parent_);
     MatrixView<Scalar> operator*();
     ViewsIter& operator++();
+    bool operator!=(const ViewsIter& lhs);
+
+  private:
+    TwelveTiles* parent;
+    size_t row,col,tile;
+
+    // Pointers-to-members for the tiles in question
+    static Matrix<Scalar> TwelveTiles<Scalar>::* const (tileLookup[12]);
   };
   
-  class Views {
-  public:
-    ViewsIter begin();
-    ViewsIter end();
-  } views;
+  ViewsIter begin();
+  ViewsIter end();
   
  public:
   // Toroidal tiles
-  Matrix<Scalar> Tacac;
-  Matrix<Scalar> Tadad;
-  Matrix<Scalar> Tbcbc;
-  Matrix<Scalar> Tbdbd;
-
-  // Commutation tiles
+  Matrix<Scalar> Tacac;	 
+  Matrix<Scalar> Tadad;	 
+  Matrix<Scalar> Tbcbc;	 
+  Matrix<Scalar> Tbdbd;	 
+		         
+  // Commutation tiles	 
   Matrix<Scalar> Tcabcab;
   Matrix<Scalar> Tcbacba;
   Matrix<Scalar> Tcdacda;
   Matrix<Scalar> Tdcadca;
-
-  // "Long" tiles
+		         
+  // "Long" tiles	 
   Matrix<Scalar> Tcqadpa;
   Matrix<Scalar> Tdpacqa;
   Matrix<Scalar> Tcbpcaq;
   Matrix<Scalar> Tcaqcbp;
+
+  size_t n;
   
 };
 
 template<typename Scalar>
-TwelveTiles<Scalar>::TwelveTiles(MinisatSolver* solver, int p, int q, int n, int depth) :
+TwelveTiles<Scalar>::TwelveTiles(MinisatSolver* solver, size_t p, size_t q, size_t n, int depth) :
   Tacac(solver, p+n, p+n, 0, depth),
   Tadad(solver, p+n, q+n, 0, depth),
   Tbcbc(solver, q+n, p+n, 0, depth),
@@ -95,7 +106,8 @@ TwelveTiles<Scalar>::TwelveTiles(MinisatSolver* solver, int p, int q, int n, int
   Tcqadpa(solver, p+n, p*q + n, 0, depth),
   Tdpacqa(solver, p+n, p*q + n, 0, depth),
   Tcbpcaq(solver, p*q + n, p+n, 0, depth),
-  Tcaqcbp(solver, p*q + n, p+n, 0, depth)
+  Tcaqcbp(solver, p*q + n, p+n, 0, depth),
+  n(n)
 {
   // Link all the edges of all the tiles together, as in the paper.
 
@@ -250,5 +262,96 @@ std::ostream& operator<<(std::ostream& out, const TwelveTiles<Scalar>& tt) {
   out << tt.Tcaqcbp << endl;
 
 }
+
+template<typename Scalar>
+typename TwelveTiles<Scalar>::ViewsIter TwelveTiles<Scalar>::begin() {
+  return ViewsIter(this);
+}
+
+template<typename Scalar>
+typename TwelveTiles<Scalar>::ViewsIter TwelveTiles<Scalar>::end() {
+  return ViewsIter();
+}
+
+template<typename Scalar>
+TwelveTiles<Scalar>::ViewsIter::ViewsIter(TwelveTiles<Scalar>* parent_) :
+  parent(parent_),
+  row(0),
+  col(0),
+  tile(0)
+{
+}
+
+template<typename Scalar>
+TwelveTiles<Scalar>::ViewsIter::ViewsIter() :
+  parent(nullptr),
+  row(0),
+  col(0),
+  tile(0)
+{
+}
+
+template<typename Scalar>
+bool TwelveTiles<Scalar>::ViewsIter::operator!=(const ViewsIter& lhs) {
+  return
+    parent != lhs.parent ||
+    tile != lhs.tile ||
+    row != lhs.row ||
+    col != lhs.col;
+}
+
+template<typename Scalar>
+MatrixView<Scalar> TwelveTiles<Scalar>::ViewsIter::operator*() {
+  auto &tileObj = parent->*(tileLookup[tile]);
+
+  return tileObj.restrict(row, col, row+parent->n, col+parent->n);
+}
+
+template<typename Scalar>
+typename TwelveTiles<Scalar>::ViewsIter& TwelveTiles<Scalar>::ViewsIter::operator++() {
+  auto &tileObj = parent->*(tileLookup[tile]);
+  auto &n = parent->n;
+
+  // Can we simply increment the column?
+  col++;
+  if ( col < tileObj.width()-n ) {
+    return *this;
+  }
+
+  // Was at last column.  Can we simply increment the row?
+  col = 0;
+  row++;
+  if ( row < tileObj.height()-n ) {
+    return *this;
+  }
+
+  // Was also at last row.  Can we simply increment the tile? 
+  row = 0;
+  tile++;
+  if( tile < 12 ) {
+    return *this;
+  }
+
+  // Was also at last tile.  So this iterator is done.
+  tile = 0;
+  parent = nullptr;
+  return *this;
+}
+
+template<typename Scalar>
+Matrix<Scalar> TwelveTiles<Scalar>::* const (TwelveTiles<Scalar>::ViewsIter::tileLookup[12]) {
+  &TwelveTiles<Scalar>::Tacac,	 
+  &TwelveTiles<Scalar>::Tadad,	 
+  &TwelveTiles<Scalar>::Tbcbc,	 
+  &TwelveTiles<Scalar>::Tbdbd,	 
+  &TwelveTiles<Scalar>::Tcabcab,
+  &TwelveTiles<Scalar>::Tcbacba,
+  &TwelveTiles<Scalar>::Tcdacda,
+  &TwelveTiles<Scalar>::Tdcadca,
+  &TwelveTiles<Scalar>::Tcqadpa,
+  &TwelveTiles<Scalar>::Tdpacqa,
+  &TwelveTiles<Scalar>::Tcbpcaq,
+  &TwelveTiles<Scalar>::Tcaqcbp
+};
 
 #endif
