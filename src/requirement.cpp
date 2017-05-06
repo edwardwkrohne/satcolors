@@ -348,6 +348,13 @@ Requirement operator|(Literal lhs, Requirement rhs) {
   return move(rhs);
 }
 
+
+Requirement operator|(Atom lhs, DualClause rhs) {
+  Requirement req(move(rhs));
+  req |= move(lhs);
+  return req;
+}
+
 Requirement operator|(Literal lhs, DualClause rhs) {
   Requirement req(move(rhs));
   req |= move(lhs);
