@@ -31,15 +31,17 @@
 # All directories are relative to the satcolors toplevel directory.
 #
 
-DEPENDENCIES-${SCENNAME}:=${SOLUTIONS}/${SCENNAME}/completed-puzzle
+DEPENDENCIES-${SCENNAME}:=${SOLUTIONS}/${SCENNAME}/log
 
 # The solver.  This program does the work and is the point of compiling.
 ${SOLUTIONS}/${SCENNAME}/solve: ${SCENARIOS}/${SCENNAME}/solve.cpp ${OBJS} ${BIN}/test.touch
 	mkdir -p ${SOLUTIONS}/${SCENNAME}
 	${GPP} ${SCENARIOS}/${SCENNAME}/solve.cpp ${CPPFLAGS} ${OBJS} ${LIBMINISAT} -o $@
 
-${SOLUTIONS}/${SCENNAME}/completed-puzzle: ${SOLUTIONS}/${SCENNAME}/solve
-	rm -rf $@
-	touch $@
-	tail -f $@ &
-	$^  >  $@
+.PHONY: ${SOLUTIONS}/${SCENNAME}/log
+${SOLUTIONS}/${SCENNAME}/log: ${SOLUTIONS}/${SCENNAME}/solve
+	echo >> $@
+	echo >> $@
+	echo >> $@
+	echo "##############################################################################################################" >> $@
+	$^ | tee -a $@

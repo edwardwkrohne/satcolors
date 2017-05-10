@@ -27,8 +27,9 @@
 #ifndef MINISATSOLVER_H
 #define MINISATSOLVER_H
 
-#include "solver.h"
 #include <minisat/core/Solver.h>
+#include <chrono>
+#include "solver.h"
 
 class MinisatSolver : public Solver {
 public:
@@ -47,16 +48,24 @@ public:
   virtual bool solve(Literal lit) override;
   virtual bool solve(Literal lit1, Literal lit2) override;
   virtual bool solve(Literal lit1, Literal lit2, Literal lit3) override;
+  virtual bool solve(std::chrono::microseconds dur, const DualClause& assumptions = DualClause());
   virtual bool solve(const DualClause& assumptions) override;
 
   // Find out whether the last run was successful
   virtual bool okay() const override;
+  virtual bool interrupted() const;
 
   // Query the value of a particular variable.
   virtual bool modelValue(unsigned int var) const override;
 
 private:
-  bool successfulRun;
+  enum truefalseinterrupt {
+    tfiFalse = 0,
+    tfiTrue = 1,
+    tfiInterrupt = 2,
+  };
+  
+  truefalseinterrupt successfulRun;
   Minisat::Solver solver;
 };
 

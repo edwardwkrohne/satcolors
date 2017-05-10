@@ -24,11 +24,12 @@
 //
 // Implementation of the MinisatSolver
 
-#include <cmath>
-#include <algorithm>
 #include <stdexcept>
 #include <sstream>
+#include <future>
+#include <chrono>
 #include "minisatsolver.h"
+#include "manipulators.h"
 
 using namespace std;
 using Minisat::vec;
@@ -39,7 +40,7 @@ using Minisat::l_True;
 
 // Constructor
 MinisatSolver::MinisatSolver() :
-  successfulRun(false)
+  successfulRun(tfiFalse)
 {
   ;
 }
@@ -63,10 +64,10 @@ void MinisatSolver::require(const Clause& clause) {
   vec<Minisat::Lit> vecClause;
   
   for ( auto lit : clause ) {
-    if ( solver.nVars() <= abs(lit.getVar()) ) {
+    if ( solver.nVars() <= lit.getVar() ) {
       std::ostringstream sout;
       sout << "solver's variable space does not accommodate new literal "
-	   << "(" << solver.nVars() << " -> " << abs(lit.getVar()) << ")." << endl
+	   << "(" << solver.nVars() << " -> " << lit.getVar() << ")." << endl
 	   << "This should not be necessary, why is this not already done?.";
       throw std::out_of_range(sout.str());
     }
@@ -79,42 +80,62 @@ void MinisatSolver::require(const Clause& clause) {
 
 // Solve
 bool MinisatSolver::solve() {
-  solver.simplify();
-  return successfulRun = solver.solve();
+  return solve(DualClause());
 }
 bool MinisatSolver::solve(Literal lit) {
-  solver.simplify();
-  return successfulRun = solver.solve(Minisat::mkLit(lit.getVar(), lit.isPos()));
+  return solve(DualClause(lit));
 }
 bool MinisatSolver::solve(Literal lit1, Literal lit2) {
-  solver.simplify();
-  return successfulRun = solver.solve(Minisat::mkLit(lit1.getVar(), lit1.isPos()), 
-				      Minisat::mkLit(lit2.getVar(), lit2.isPos()));
+  return solve (lit1 & lit2);
 }
 bool MinisatSolver::solve(Literal lit1, Literal lit2, Literal lit3) {
-  solver.simplify();
-  return successfulRun = solver.solve(Minisat::mkLit(lit1.getVar(), lit1.isPos()), 
-				      Minisat::mkLit(lit2.getVar(), lit2.isPos()), 
-				      Minisat::mkLit(lit3.getVar(), lit3.isPos()));
+  return solve(lit1 & lit2 & lit3);
 }
+
+bool MinisatSolver::solve(std::chrono::microseconds dur, const DualClause& assumptions) {
+  auto func = [&] {return this->solve(assumptions);};
+
+  std::future<bool> result(std::async(std::launch::async, func));
+  switch ( result.wait_for(dur) ) {
+  case future_status::ready:
+    return result.get();
+  default:
+    solver.interrupt();
+    result.wait();
+    solver.clearInterrupt();
+    successfulRun = tfiInterrupt;
+    return okay();
+  }
+}
+
 bool MinisatSolver::solve(const DualClause& assumptions) {
+  // Load the assumptions into a minisat-style "vec"
   vec<Minisat::Lit> vecAssumps(0);
   for ( auto assump : assumptions ) {
     vecAssumps.push(Minisat::mkLit(assump.getVar(), !assump.isPos()));
   }
-  return successfulRun = solver.solve(vecAssumps);
+
+  // simplify
+  solver.simplify();
+
+  successfulRun = solver.solve(vecAssumps) ? tfiTrue : tfiFalse;
+  return okay();
 }
 
 
 // Find out whether the last run was successful
 bool MinisatSolver::okay() const {
-  return solver.okay();
+  return successfulRun == tfiTrue;
+}
+
+bool MinisatSolver::interrupted() const {
+  return successfulRun == tfiInterrupt;
 }
 
 // Query the value of a particular variable.
 bool MinisatSolver::modelValue(unsigned int var) const {
   // Check for bad conditions.
-  if ( !successfulRun ) {
+  if ( successfulRun != tfiTrue ) {
     throw logic_error("MinisatSolver::modelValue called, but no model is ready. Must follow a call to solve() which was satisfiable.");
   }
   if ( var >= solver.nVars() || var < 0 ) {
